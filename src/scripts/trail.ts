@@ -36,8 +36,9 @@ export function initTrail(): void {
 
   const resize = () => {
     dpr = low ? 1 : Math.min(window.devicePixelRatio || 1, 2);
-    width = window.innerWidth;
-    height = window.innerHeight;
+    /* Usa clientWidth/clientHeight (sin barra de scroll) para que el canvas coincida 1:1 en px CSS con clientX/clientY. */
+    width = document.documentElement.clientWidth;
+    height = document.documentElement.clientHeight;
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -50,6 +51,8 @@ export function initTrail(): void {
   let lastDraw = 0;
   let dirty: [number, number, number, number] | null = null;
   let visible = false;
+  let curX = 0;
+  let curY = 0;
 
   const clearDirty = () => {
     if (!dirty) return;
@@ -91,6 +94,11 @@ export function initTrail(): void {
       return;
     }
 
+    // Ancla la punta exacta de la estela al centro actual del cometa
+    const tip = points[points.length - 1];
+    tip.x = curX;
+    tip.y = curY;
+
     let minX = Infinity;
     let minY = Infinity;
     let maxX = -Infinity;
@@ -121,7 +129,7 @@ export function initTrail(): void {
       const alpha = Math.max(0, age * progress * 0.64);
       if (alpha <= 0.01) continue;
 
-      const widthPx = Math.max(1.4, progress * 9.5 * age);
+      const widthPx = Math.max(1.4, progress * 10.5 * age);
       const isBlue = progress > 0.42;
 
       ctx.beginPath();
@@ -144,7 +152,9 @@ export function initTrail(): void {
 
   const onMove = (ev: PointerEvent) => {
     if (ev.pointerType === 'touch' || document.hidden || reducedMotion()) return;
-    head.style.transform = `translate3d(${ev.clientX}px,${ev.clientY}px,0)`;
+    curX = ev.clientX;
+    curY = ev.clientY;
+    head.style.transform = `translate3d(${curX}px,${curY}px,0)`;
     if (!visible) {
       visible = true;
       head.classList.add('vis');
@@ -154,8 +164,8 @@ export function initTrail(): void {
 
     const now = performance.now();
     const last = points[points.length - 1];
-    if (last && Math.hypot(ev.clientX - last.x, ev.clientY - last.y) < (low ? 4 : 2)) return;
-    points.push({ x: ev.clientX, y: ev.clientY, t: now });
+    if (last && Math.hypot(curX - last.x, curY - last.y) < (low ? 4 : 2)) return;
+    points.push({ x: curX, y: curY, t: now });
     const limit = low ? 12 : 20;
     if (points.length > limit) points.shift();
     if (!raf) raf = requestAnimationFrame(render);
