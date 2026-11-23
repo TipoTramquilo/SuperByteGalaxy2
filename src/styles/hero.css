@@ -19,7 +19,16 @@
 }
 .hgrid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center}
 .eb{display:inline-flex;align-items:center;gap:10px;font:500 13px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:#8A93A8}
-.eb i{width:8px;height:8px;border-radius:2px;background:#309AE7}
+.eb > i{width:8px;height:8px;border-radius:2px;background:#309AE7;flex:none}
+.eb-txt{position:relative;display:inline-block}
+.eb-txt.is-term .eb-ghost{opacity:0;pointer-events:none}
+.eb-live{position:absolute;inset:0;white-space:nowrap;pointer-events:none}
+.eb-cur{display:inline-block;width:2px;height:1.05em;margin-left:4px;vertical-align:-.14em;border-radius:1px;background:#5FD6FF;box-shadow:0 0 8px rgba(95,214,255,.65);animation:termBlink .9s steps(1,end) infinite}
+.eb-txt.is-typing .eb-cur{animation:none;opacity:1}
+@media (prefers-reduced-motion:reduce){
+ .eb-txt.is-term .eb-ghost{opacity:1;pointer-events:auto}
+ .eb-live,.eb-cur{display:none}
+}
 .h1{font:700 clamp(44px,min(5.6vw,9.4svh),88px)/.98 "Satoshi",system-ui,sans-serif;letter-spacing:-.045em;margin:clamp(18px,2.6svh,26px) 0;text-wrap:balance}
 .h1 span{color:#5FD6FF}
 .lede{font-size:clamp(18px,1.5vw,20px);line-height:1.6;color:#AEB6C8;max-width:40ch}

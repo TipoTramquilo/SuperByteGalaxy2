@@ -1,6 +1,6 @@
 /* Contacto */
-.cta{position:relative;overflow:hidden;padding:clamp(96px,10vw,148px) 0 calc(clamp(96px,11vw,160px) + var(--fh,95px));text-align:left;background:radial-gradient(70% 85% at 50% 112%,rgba(95,214,255,.24),transparent 58%),radial-gradient(62% 76% at 15% 18%,rgba(80,54,234,.38),transparent 64%),linear-gradient(180deg,#070B16 0%,#09112C 26%,#0C153A 62%,#142565 100%)}
-.cta::before{content:"";position:absolute;left:0;right:0;top:0;height:clamp(96px,12vw,148px);background:linear-gradient(180deg,#070B16 0%,rgba(7,11,22,.62) 34%,rgba(7,11,22,.18) 70%,transparent 100%);pointer-events:none;z-index:1}
+.cta{position:relative;overflow:hidden;padding:clamp(92px,9.5vw,140px) 0 calc(clamp(96px,11vw,160px) + var(--fh,95px));text-align:left;background:radial-gradient(70% 85% at 50% 112%,rgba(95,214,255,.24),transparent 58%),radial-gradient(66% 80% at 15% 11%,rgba(80,54,234,.40),transparent 66%),linear-gradient(180deg,#070B16 0%,#09112D 16%,#0C153A 56%,#142565 100%)}
+.cta::before{content:"";position:absolute;left:0;right:0;top:0;height:clamp(72px,9vw,112px);background:linear-gradient(180deg,#070B16 0%,rgba(7,11,22,.48) 36%,transparent 100%);pointer-events:none;z-index:1}
 .cta>.w{z-index:2}
 .cta .grain{--go:.08}
 .cta h2{font:700 clamp(38px,min(4.6vw,8.4svh),72px)/1 "Satoshi",system-ui,sans-serif;letter-spacing:-.04em;max-width:14ch;margin:0;text-wrap:balance}

@@ -1,18 +1,78 @@
-/* Hero: los servicios rotan solos (01 → 05); al hacer clic o enfoque se pausan 10 s y al pasar el cursor 6 s, luego reanudan solos.
+/* Hero: los servicios rotan solos (01 → 05); tras interacción del usuario retoman rápido (2,2 s tras clic / 1,6 s al soltar hover).
    El texto del servicio que sale baja y se desvanece; el nuevo entra desde arriba.
    La B del centro crece un poco cuando el cursor se acerca (solo con mouse). */
 import services from '../data/services.json';
 import { finePointer, pad2, reducedMotion } from './env';
 
 const ROTATE_MS = 3800;
-const HOVER_HOLD_MS = 6000;
-const CLICK_HOLD_MS = 10000;
+const CLICK_RESUME_MS = 2200;
+const HOVER_RESUME_MS = 1600;
+
+function initHeroTagline(hero: HTMLElement): void {
+  const el = hero.querySelector<HTMLElement>('.eb-txt');
+  if (!el || reducedMotion()) return;
+  const full = el.textContent || '';
+  if (!full) return;
+
+  const ghost = document.createElement('span');
+  ghost.className = 'eb-ghost';
+  ghost.textContent = full;
+
+  const live = document.createElement('span');
+  live.className = 'eb-live';
+  live.setAttribute('aria-hidden', 'true');
+  const out = document.createElement('span');
+  const cur = document.createElement('span');
+  cur.className = 'eb-cur';
+  cur.setAttribute('aria-hidden', 'true');
+  live.append(out, cur);
+
+  el.textContent = '';
+  el.append(ghost, live);
+  el.classList.add('is-term');
+
+  let i = 0;
+  const finish = () => {
+    el.classList.remove('is-typing', 'is-term');
+    live.remove();
+    el.textContent = full;
+    el.appendChild(cur);
+  };
+
+  const step = () => {
+    if (reducedMotion()) {
+      finish();
+      cur.remove();
+      return;
+    }
+    if (document.hidden) {
+      document.addEventListener('visibilitychange', () => window.setTimeout(step, 32), { once: true });
+      return;
+    }
+    i += 1;
+    out.textContent = full.slice(0, i);
+    const ch = full.charAt(i - 1);
+    if (i < full.length) {
+      const delay = ch === '·' ? 140 : ch === ',' ? 100 : ch === ' ' ? 20 : 34;
+      window.setTimeout(step, delay);
+    } else {
+      finish();
+    }
+  };
+
+  window.setTimeout(() => {
+    el.classList.add('is-typing');
+    step();
+  }, 380);
+}
 
 export function initServices(): void {
   const hero = document.querySelector<HTMLElement>('.hero');
   const orb = hero?.querySelector<HTMLElement>('.orb');
   const cap = hero?.querySelector<HTMLElement>('.cap');
   if (!hero || !orb || !cap) return;
+
+  initHeroTagline(hero);
 
   const buttons = Array.from(orb.querySelectorAll<HTMLButtonElement>('.nb'));
   const spokes = Array.from(orb.querySelectorAll<HTMLElement>('.spoke'));
@@ -23,7 +83,7 @@ export function initServices(): void {
   let active = 0;
   let previous: number | null = null;
   let swaps = 0;
-  let holdUntil = 0;
+  let timer = 0;
 
   const fill = (el: HTMLElement, i: number) => {
     const [small, h3, p] = Array.from(el.children) as HTMLElement[];
@@ -59,24 +119,33 @@ export function initServices(): void {
     render();
   };
 
+  const schedule = (delay = ROTATE_MS) => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(tick, delay);
+  };
+
+  const tick = () => {
+    if (!document.hidden && !reducedMotion()) {
+      const r = hero.getBoundingClientRect();
+      if (r.bottom >= 0 && r.top <= window.innerHeight && !orb.querySelector('.nb:hover')) {
+        show((active + 1) % buttons.length);
+      }
+    }
+    schedule(ROTATE_MS);
+  };
+
   buttons.forEach((b, i) => {
     const pick = (ev: Event) => {
-      const wait = ev.type === 'click' || ev.type === 'focus' ? CLICK_HOLD_MS : HOVER_HOLD_MS;
-      holdUntil = Math.max(holdUntil, Date.now() + wait);
       show(i);
+      schedule(ev.type === 'mouseenter' ? HOVER_RESUME_MS : CLICK_RESUME_MS);
     };
     b.addEventListener('click', pick);
     b.addEventListener('focus', pick);
     b.addEventListener('mouseenter', pick);
+    b.addEventListener('mouseleave', () => schedule(HOVER_RESUME_MS));
   });
 
-  window.setInterval(() => {
-    if (document.hidden || reducedMotion() || Date.now() < holdUntil) return;
-    const r = hero.getBoundingClientRect();
-    if (r.bottom < 0 || r.top > window.innerHeight) return;
-    if (orb.querySelector('.nb:hover')) return;
-    show((active + 1) % buttons.length);
-  }, ROTATE_MS);
+  schedule(ROTATE_MS);
 
   /* ---- la B se acerca al cursor ---- */
   if (!finePointer() || rm) return;

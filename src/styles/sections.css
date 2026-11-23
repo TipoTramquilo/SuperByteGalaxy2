@@ -17,7 +17,7 @@
 .cons-sec{overflow:hidden;padding-bottom:0}
 section[id]{scroll-margin-top:72px}
 #metodo{border-top:1px solid rgba(237,234,245,.06);padding-top:clamp(56px,5vw,72px) !important;padding-bottom:clamp(64px,7vw,100px)}
-#nosotros{border-top:1px solid rgba(237,234,245,.06);padding-top:clamp(56px,5vw,72px) !important;padding-bottom:clamp(64px,7vw,104px)}
+#nosotros{border-top:1px solid rgba(237,234,245,.06);padding-top:clamp(56px,5vw,72px) !important;padding-bottom:clamp(44px,5vw,68px)}
 .trust,#metodo,#nosotros{overflow:hidden}
 /* estrellas ligeras (CSS) para Clientes, Método y Nosotros */
 .cons-sec::before,.cons-sec::after,.trust::before,#metodo::before,#nosotros::before,.trust::after,#metodo::after,#nosotros::after{content:"";position:absolute;left:-90px;top:-90px;right:-90px;bottom:-90px;z-index:0;pointer-events:none}
