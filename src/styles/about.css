@@ -1,9 +1,7 @@
 /* Quiénes somos */
 .state{font:500 clamp(28px,3.2vw,46px)/1.25 "Satoshi",system-ui,sans-serif;letter-spacing:-.025em;max-width:26ch;text-wrap:pretty}
 .state span{color:#6B7489}
-.pills{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:40px;font:500 14px/1.4 "IBM Plex Mono",monospace;color:#D3D8E3}
-.pills li::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;background:#5FD6FF;margin-right:10px;vertical-align:1px}
-.why{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;margin-top:88px}
+.why{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;margin-top:clamp(56px,6vw,80px)}
 .why div{padding-top:22px;border-top:1px solid rgba(237,234,245,.14)}
 .why small{font:500 12px/1 "IBM Plex Mono",monospace;color:#5FD6FF}
 .why h3{font:700 22px/1.2 "Satoshi",system-ui,sans-serif;margin-top:16px}

@@ -2,7 +2,6 @@
 /* Quiénes somos. */
 import Starfield from './Starfield.astro';
 
-const pillars = ['Proteger información estratégica', 'Integrar operaciones', 'Optimizar procesos', 'Fortalecer la capacidad operativa'];
 const reasons = [
   { title: 'Experiencia en entornos complejos', text: 'Trayectoria comprobada en proyectos tecnológicos estratégicos.' },
   { title: 'Soluciones integrales a medida', text: 'Integración, desarrollo e inteligencia digital adaptada a cada organización.' },
@@ -15,7 +14,6 @@ const delay = ['rv', 'rv d1', 'rv d2'];
   <div class="w">
     <h2 class="kick rv" id="h-n">Quiénes somos</h2>
     <p class="state rv" style="margin-top:24px">Byte es tu socio estratégico en tecnología y transformación digital. <span>Unimos investigación, innovación y desarrollo para diseñar soluciones avanzadas en sistemas, aplicaciones, infraestructura y ciberseguridad. El resultado: modelos de negocio más eficientes y valor sostenible para tu organización.</span></p>
-    <ul class="pills rv d1">{pillars.map((p) => <li>{p}</li>)}</ul>
     <div class="why">
       {reasons.map((r, i) => (
         <div class={delay[i % delay.length]}><small>{String(i + 1).padStart(2, '0')}</small><h3>{r.title}</h3><p>{r.text}</p></div>
