@@ -61,7 +61,7 @@ export function initNav(): void {
         const avail = vh - navH;
         let y: number;
         if (id === 'inicio') y = 0;
-        else if (id === 'contacto') y = max;
+        else if (id === 'contacto' && window.innerWidth > 1000) y = max;
         else {
           /* alto del contenido real de la sección (sin las capas decorativas) */
           const top0 = section.getBoundingClientRect().top + window.scrollY;
