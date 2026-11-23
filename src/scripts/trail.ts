@@ -1,6 +1,6 @@
-/* Estela luminosa que sigue al puntero en escritorio.
+/* Cometa luminoso que reemplaza el cursor en escritorio y deja una estela suave.
    Usa borrado por rectángulo sucio (dirty-rect) y escala su resolución/tasa en low-effects
-   para funcionar fluida incluso sin aceleración por hardware, y duerme al 0 % cuando el cursor para. */
+   para funcionar fluido incluso sin aceleración por hardware, y duerme al 0 % cuando el cursor para. */
 import { finePointer, reducedMotion } from './env';
 
 interface Point {
@@ -11,6 +11,7 @@ interface Point {
 
 const LIFE_MS = 300;
 const DIRTY_PAD = 24;
+const INTERACTIVE = 'a[href],button,[role="button"],summary,label';
 
 export function initTrail(): void {
   if (!finePointer() || reducedMotion()) return;
@@ -21,7 +22,12 @@ export function initTrail(): void {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  document.body.appendChild(canvas);
+  const head = document.createElement('i');
+  head.className = 'comet-head';
+  head.setAttribute('aria-hidden', 'true');
+
+  document.body.append(canvas, head);
+  document.documentElement.classList.add('has-comet');
 
   let low = document.documentElement.classList.contains('low-effects');
   let width = 0;
@@ -43,6 +49,7 @@ export function initTrail(): void {
   let raf = 0;
   let lastDraw = 0;
   let dirty: [number, number, number, number] | null = null;
+  let visible = false;
 
   const clearDirty = () => {
     if (!dirty) return;
@@ -57,14 +64,19 @@ export function initTrail(): void {
     clearDirty();
   };
 
+  const hideHead = () => {
+    visible = false;
+    head.classList.remove('vis', 'hot');
+    stop();
+  };
+
   const render = (now: number) => {
     raf = 0;
     if (document.hidden || reducedMotion()) {
-      stop();
+      hideHead();
       return;
     }
 
-    // En modo sin aceleración por hardware limita a ~30 fps para no cargar la CPU.
     if (low && now - lastDraw < 30) {
       raf = requestAnimationFrame(render);
       return;
@@ -100,40 +112,31 @@ export function initTrail(): void {
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
+    // Tono azul celeste ligeramente contenido para armonizar con el cielo oscuro
     for (let i = 1; i < points.length; i++) {
       const a = points[i - 1];
       const b = points[i];
       const age = 1 - (now - b.t) / LIFE_MS;
       const progress = i / (points.length - 1);
-      const alpha = Math.max(0, age * progress * 0.78);
+      const alpha = Math.max(0, age * progress * 0.64);
       if (alpha <= 0.01) continue;
 
       const widthPx = Math.max(1.4, progress * 9.5 * age);
-      const isCyan = progress > 0.45;
+      const isBlue = progress > 0.42;
 
-      // Halo suave alrededor del núcleo (sin shadowBlur para mantener alto rendimiento en CPU)
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.lineTo(b.x, b.y);
-      ctx.strokeStyle = isCyan ? `rgba(95,214,255,${(alpha * 0.22).toFixed(3)})` : `rgba(80,54,234,${(alpha * 0.2).toFixed(3)})`;
+      ctx.strokeStyle = isBlue ? `rgba(56,162,226,${(alpha * 0.22).toFixed(3)})` : `rgba(74,58,214,${(alpha * 0.2).toFixed(3)})`;
       ctx.lineWidth = widthPx * 1.85;
       ctx.stroke();
 
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.lineTo(b.x, b.y);
-      ctx.strokeStyle = isCyan ? `rgba(95,214,255,${alpha.toFixed(3)})` : `rgba(80,54,234,${(alpha * 0.92).toFixed(3)})`;
+      ctx.strokeStyle = isBlue ? `rgba(56,162,226,${alpha.toFixed(3)})` : `rgba(74,58,214,${(alpha * 0.88).toFixed(3)})`;
       ctx.lineWidth = widthPx;
       ctx.stroke();
-    }
-
-    const tip = points[points.length - 1];
-    const tipAge = Math.max(0, 1 - (now - tip.t) / LIFE_MS);
-    if (tipAge > 0.05) {
-      ctx.beginPath();
-      ctx.arc(tip.x, tip.y, 5.2 * tipAge, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(180,240,255,${(tipAge * 0.72).toFixed(3)})`;
-      ctx.fill();
     }
 
     raf = requestAnimationFrame(render);
@@ -141,6 +144,14 @@ export function initTrail(): void {
 
   const onMove = (ev: PointerEvent) => {
     if (ev.pointerType === 'touch' || document.hidden || reducedMotion()) return;
+    head.style.transform = `translate3d(${ev.clientX}px,${ev.clientY}px,0)`;
+    if (!visible) {
+      visible = true;
+      head.classList.add('vis');
+    }
+    const overInteractive = !!(ev.target as Element | null)?.closest?.(INTERACTIVE);
+    head.classList.toggle('hot', overInteractive);
+
     const now = performance.now();
     const last = points[points.length - 1];
     if (last && Math.hypot(ev.clientX - last.x, ev.clientY - last.y) < (low ? 4 : 2)) return;
@@ -151,7 +162,8 @@ export function initTrail(): void {
   };
 
   window.addEventListener('pointermove', onMove, { passive: true });
-  document.addEventListener('pointerleave', stop);
+  document.addEventListener('pointerleave', hideHead);
+  window.addEventListener('blur', hideHead);
   document.addEventListener('effectschange', () => {
     const nextLow = document.documentElement.classList.contains('low-effects');
     if (nextLow !== low) {

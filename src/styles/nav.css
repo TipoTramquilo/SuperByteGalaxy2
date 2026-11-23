@@ -22,6 +22,12 @@
  .nav,.nav > .w{transition:none}
 }
 .ctrail{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:35}
+.comet-head{position:fixed;top:0;left:0;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;pointer-events:none;z-index:9999;opacity:0;background:radial-gradient(circle at 38% 35%,#9BD7F8 0%,#38A2E2 58%,#277BC0 100%);box-shadow:0 0 12px 2px rgba(56,162,226,.46),0 0 0 1px rgba(155,215,248,.35);transition:opacity 140ms ease,width 180ms var(--eo),height 180ms var(--eo),margin 180ms var(--eo),box-shadow 180ms ease;will-change:transform}
+.comet-head.vis{opacity:1}
+.comet-head.hot{width:15px;height:15px;margin:-7.5px 0 0 -7.5px;box-shadow:0 0 16px 3px rgba(56,162,226,.6),0 0 0 2px rgba(155,215,248,.55)}
+@media (hover:hover) and (pointer:fine){
+ .has-comet,.has-comet *{cursor:none !important}
+}
 .ghost{border-color:rgba(237,234,245,.25);color:#EDEAF5 !important}
 .solid{background:#EDEAF5;color:#0A0F1C !important}
 @media (hover:hover) and (pointer:fine){.solid:hover{background:#FFFFFF}.ghost:hover{border-color:rgba(237,234,245,.6)}}

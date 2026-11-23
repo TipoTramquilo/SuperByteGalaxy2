@@ -21,7 +21,6 @@
  .nav .mnav a.on:not(.btn){color:#FFFFFF !important;background:rgba(237,234,245,.07);border-color:transparent;box-shadow:none;border-radius:14px}
  .nav .mnav a.mcontact{color:#309AE7 !important;border-bottom:0}
  .hgrid{grid-template-columns:minmax(0,1fr)}
- .why{grid-template-columns:minmax(0,1fr);gap:28px}
  .sect-l{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
  .cgrid{grid-template-columns:minmax(0,1fr);gap:48px}
 }

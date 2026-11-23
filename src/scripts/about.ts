@@ -1,5 +1,5 @@
-/* Quiénes somos: escritura tipo terminal letra por letra tras el fade-in, sin saltos de layout. */
-import { reducedMotion } from './env';
+/* Quiénes somos: escritura tipo terminal letra por letra tras el fade-in y carrusel móvil de mini terminales. */
+import { perFrame, reducedMotion } from './env';
 
 const FADE_WAIT_MS = 450;
 const LEAD_CHAR_MS = 32;
@@ -23,6 +23,8 @@ function charDelay(ch: string, isLead: boolean): number {
 }
 
 export function initAbout(): void {
+  initAboutCarousel();
+
   const el = document.querySelector<HTMLElement>('#nosotros .state');
   if (!el || reducedMotion() || !('IntersectionObserver' in window)) return;
 
@@ -110,4 +112,61 @@ export function initAbout(): void {
     { threshold: 0.08, rootMargin: '0px 0px 2% 0px' },
   );
   io.observe(el);
+}
+
+function initAboutCarousel(): void {
+  const wrap = document.querySelector<HTMLElement>('#nosotros .why-wrap');
+  const track = wrap?.querySelector<HTMLElement>('.why');
+  const prev = wrap?.querySelector<HTMLButtonElement>('.wnav.l');
+  const next = wrap?.querySelector<HTMLButtonElement>('.wnav.r');
+  if (!wrap || !track || !prev || !next) return;
+
+  const slides = Array.from(track.querySelectorAll<HTMLElement>('.why-slot'));
+  const pips = Array.from(wrap.querySelectorAll<HTMLElement>('.why-pips i'));
+  const counter = wrap.querySelector<HTMLElement>('.why-ct');
+  const n = slides.length;
+  if (n < 2) return;
+
+  let active = 0;
+
+  const sync = (index: number) => {
+    active = Math.max(0, Math.min(n - 1, index));
+    if (counter) counter.textContent = `${String(active + 1).padStart(2, '0')} / ${String(n).padStart(2, '0')}`;
+    pips.forEach((p, i) => p.classList.toggle('on', i === active));
+    prev.setAttribute('aria-disabled', active === 0 ? 'true' : 'false');
+    next.setAttribute('aria-disabled', active === n - 1 ? 'true' : 'false');
+  };
+
+  const go = (index: number) => {
+    const target = Math.max(0, Math.min(n - 1, index));
+    const padLeft = parseFloat(getComputedStyle(track).paddingLeft) || 0;
+    const left = Math.max(0, slides[target].offsetLeft - padLeft);
+    track.scrollTo({ left, behavior: reducedMotion() ? 'auto' : 'smooth' });
+    sync(target);
+  };
+
+  const onScroll = perFrame(() => {
+    const padLeft = parseFloat(getComputedStyle(track).paddingLeft) || 0;
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    if (maxScroll <= 2) return;
+    if (track.scrollLeft >= maxScroll - 6) {
+      sync(n - 1);
+      return;
+    }
+    let best = 0;
+    let bestDist = Infinity;
+    for (let i = 0; i < n; i++) {
+      const dist = Math.abs(slides[i].offsetLeft - padLeft - track.scrollLeft);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = i;
+      }
+    }
+    sync(best);
+  });
+
+  prev.addEventListener('click', () => go(active - 1));
+  next.addEventListener('click', () => go(active + 1));
+  track.addEventListener('scroll', onScroll, { passive: true });
+  sync(0);
 }
