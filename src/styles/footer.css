@@ -1,8 +1,14 @@
 /* Pie */
-.foot{position:relative;z-index:5;margin-top:calc(-1 * var(--fh,95px));padding:36px 0;background:rgba(7,11,22,.94);border-top:1px solid rgba(237,234,245,.08)}
-.v1{--fh:101px}
-@media (max-width:760px){.v1{--fh:137px}}
-.foot .w{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;font:400 13px/1.5 "IBM Plex Mono",monospace;color:#8A93A8}
-.foot img{height:28px;display:block}
+.v1{--fh:0px}
+.foot{position:relative;z-index:5;padding:22px 0 calc(22px + env(safe-area-inset-bottom,0px));background:#070B16;border-top:1px solid rgba(237,234,245,.08)}
+.foot .w{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 16px;font:400 13px/1.5 "IBM Plex Mono",monospace;color:#8A93A8}
+.foot img{height:24px;display:block}
 .foot nav{display:flex;gap:22px}
-.foot a{color:#D3D8E3 !important;text-decoration:none}
+.foot a{color:#D3D8E3 !important;text-decoration:none;padding:6px 2px;margin:-6px -2px;transition:color 200ms ease}
+@media (pointer:coarse){.foot a{padding:10px 2px;margin:-10px -2px}}
+@media (hover:hover) and (pointer:fine){.foot a:hover{color:#FFFFFF !important}}
+@media (hover:hover) and (pointer:fine) and (min-width:761px){
+ .v1{--fh:73px}
+ .foot{padding:24px 0}
+ .pg:not(.privacy-page) .foot{position:absolute;left:0;right:0;bottom:0}
+}
