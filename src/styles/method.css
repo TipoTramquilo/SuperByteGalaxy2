@@ -23,7 +23,7 @@
 .mbar{display:block;height:2px;border-radius:2px;background:rgba(237,234,245,.08);overflow:hidden;opacity:0;transition:opacity 300ms ease}
 .mbar i{display:block;height:100%;background:linear-gradient(90deg,#5FD6FF,#309AE7);transform-origin:left;transform:scaleX(0)}
 .auto .on .mbar{opacity:1}
-.auto .on .mbar i{animation:mBar 3400ms linear both}
+.auto .on .mbar i{animation:mBar 2900ms linear both}
 @keyframes mBar{to{transform:scaleX(1)}}
 
 /* A · Pipeline: un pulso viaja por la línea y enciende cada etapa al llegar */
