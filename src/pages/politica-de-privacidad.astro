@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+import SvgDefs from '../components/SvgDefs.astro';
+import Starfield from '../components/Starfield.astro';
+import PrivacyContent from '../components/PrivacyContent.astro';
+import '../styles/privacy.css';
+---
+<Base
+  title="Política de Privacidad | Byte Services 2024 C.A."
+  description="Conozca cómo Byte Services 2024 C.A. recopila, utiliza, protege y gestiona los datos personales de usuarios y clientes en sus servicios digitales."
+>
+  <div class="pg v1 privacy-page">
+    <SvgDefs />
+    <header class="privacy-brand">
+      <div class="w">
+        <a href="/" aria-label="Byte Services — Inicio"><img src="/img/logotipo-blanco.svg" alt="Byte" width="120" height="30" /></a>
+      </div>
+    </header>
+    <main class="privacy-main">
+      <div class="privacy-sky" aria-hidden="true"><Starfield name="nosotros" eager /></div>
+      <article class="w privacy-document" aria-label="Política de Privacidad">
+        <PrivacyContent />
+      </article>
+    </main>
+    <Footer />
+  </div>
+</Base>

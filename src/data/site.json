@@ -1,0 +1,44 @@
+{
+  "name": "Byte Services",
+  "title": "Byte Services · Ingeniería digital de nueva generación",
+  "description": "Diseñamos, desarrollamos y protegemos los sistemas tecnológicos que sostienen organizaciones estratégicas.",
+  "location": "Caracas, Venezuela",
+  "whatsapp": {
+    "url": "https://wa.me/584227707654",
+    "label": "+58 422-7707654",
+    "hours": "Lun – Vie · 8:00 AM – 5:00 PM"
+  },
+  "phone": {
+    "url": "tel:+584227707654",
+    "label": "+58 422-7707654",
+    "hours": "Lun – Vie · 8:00 AM – 5:00 PM"
+  },
+  "email": {
+    "address": "proyectos@byteservices.xyz",
+    "note": "Respuesta en menos de 24 h",
+    "copied": "Correo copiado al portapapeles"
+  },
+  "office": {
+    "label": "Torre Tamanaco, Av. Paseo Eraso, Oficina 5A, Las Mercedes, Caracas",
+    "url": "https://www.google.com/maps/search/?api=1&query=Torre+Tamanaco%2C+Av.+Paseo+Eraso%2C+Las+Mercedes%2C+Caracas",
+    "hours": "Lun – Vie · 9:00 AM – 4:00 PM"
+  },
+  "instagram": {
+    "url": "https://www.instagram.com/byte.xyz",
+    "label": "@byte.xyz"
+  },
+  "linkedin": "https://www.linkedin.com/company/byte-services-2024/",
+  "privacy": "/politica-de-privacidad",
+  "nav": [
+    { "id": "inicio", "label": "Inicio" },
+    { "id": "productos", "label": "Productos" },
+    { "id": "metodo", "label": "Método" },
+    { "id": "nosotros", "label": "Nosotros" }
+  ],
+  "stats": [
+    { "value": "+15", "label": "Proyectos ejecutados" },
+    { "value": "+5", "label": "Sectores económicos" },
+    { "value": "100%", "label": "Talento venezolano" },
+    { "value": "360°", "label": "Soluciones tecnológicas" }
+  ]
+}

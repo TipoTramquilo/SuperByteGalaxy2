@@ -1,0 +1,30 @@
+[
+  {
+    "name": "TrackLog",
+    "description": "Monitoreo de flotas y logística: ubicación en tiempo real, rutas, entregas y reportes.",
+    "features": ["Ubicación en tiempo real", "Rutas, entregas y reportes", "Por vehículo al mes"],
+    "glyph": "pin",
+    "colors": ["#FFD88F", "#F5A524"]
+  },
+  {
+    "name": "Sinapsis AI",
+    "description": "Asistente de IA privado que responde con los documentos y datos de la empresa, instalado en el servidor del cliente.",
+    "features": ["Respuestas con documentos y datos de la empresa", "Instalación en el servidor del cliente", "Implementación + mensualidad"],
+    "glyph": "cpu",
+    "colors": ["#A5E8FF", "#20B7D9"]
+  },
+  {
+    "name": "Sentinel",
+    "description": "Appliance de firewall de nueva generación y ciberseguridad gestionada.",
+    "features": ["Firewall en la sede del cliente", "Antivirus en los equipos", "Appliance + mensualidad por equipo"],
+    "glyph": "shield",
+    "colors": ["#C9B8FF", "#7C5CF5"]
+  },
+  {
+    "name": "Sistema de Atención Integral (SAI)",
+    "description": "Seguimiento de ayudas sociales para fundaciones, alcaldías y gobernaciones.",
+    "features": ["Registro de beneficiarios, solicitudes, aprobación, entrega e historial por persona", "Control de duplicados y reportes de gestión", "Implementación + mensualidad por institución"],
+    "glyph": "chat",
+    "colors": ["#8EEBC0", "#1DB57A"]
+  }
+]

@@ -1,0 +1,17 @@
+/* Aparición al hacer scroll, entradas del hero y movimiento reducido */
+/* aparición */
+.js .rv{opacity:0;transform:translateY(22px);transition:opacity 650ms cubic-bezier(.33,0,.2,1),transform 750ms var(--eo);transition-delay:calc(var(--d,0ms) + 30ms)}
+.js .rv.in{opacity:1;transform:none}
+.d1{--d:80ms}.d2{--d:150ms}.d3{--d:210ms}
+@keyframes rise{from{opacity:0;transform:translateY(var(--y,16px))}}
+@keyframes fade{from{opacity:0}}
+.e1{animation:rise 1000ms var(--eo) 180ms both;--y:22px}
+.e2{animation:rise 950ms var(--eo) 330ms both;--y:14px}
+.e3{animation:rise 900ms var(--eo) 470ms both;--y:12px}
+.e4{animation:fade 1600ms ease 520ms both}
+@media (prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ .logos-in,.orb .rot,.node .in,.orb .spoke.on,.stars,.stars *{animation:none}
+ .e1,.e2,.e3,.e4{animation:none}
+ .js .rv{transform:none;transition:opacity 300ms ease}
+}

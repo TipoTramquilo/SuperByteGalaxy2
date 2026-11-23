@@ -1,0 +1,48 @@
+/* Constelación de productos */
+.cons-sec .stars{opacity:.7}
+.cons{position:relative;margin-top:40px}
+.cons .vp{position:relative;height:var(--ch,520px);overflow:hidden;touch-action:pan-y;cursor:grab;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+.cons .vp:active{cursor:grabbing}
+.cons .vp:focus-visible{outline:none}
+.track{position:absolute;left:0;top:0;height:100%;transition:transform 900ms cubic-bezier(.77,0,.175,1);will-change:transform}
+.far{position:absolute;left:0;top:0;height:100%;pointer-events:none;transition:transform 1400ms cubic-bezier(.77,0,.175,1);will-change:transform}
+.far i{position:absolute;display:block;transform-origin:0 50%}
+.far .fl{height:1px;margin-top:-.5px;background:rgba(170,190,235,.13)}
+.far .fd{border-radius:50%;background:#C9D6F5;transform:translate(-50%,-50%);box-shadow:0 0 6px rgba(150,190,255,.55)}
+.cl{position:absolute;inset:0;pointer-events:none}
+.cl i{position:absolute;display:block;transform-origin:0 50%}
+.cl .seg{height:1.2px;margin-top:-.6px;background:rgba(237,234,245,.22);transition:background-color 500ms ease}
+.cl .seg.on{height:1.4px;margin-top:-.7px;background:repeating-linear-gradient(90deg,rgba(95,214,255,.8) 0 4px,transparent 4px 11px);animation:dashx 1.6s linear infinite}
+.cl .br{height:1px;margin-top:-.5px;background:repeating-linear-gradient(90deg,rgba(237,234,245,.16) 0 2px,transparent 2px 7px)}
+.cl .ds{border-radius:50%;background:#EDEAF5;transform:translate(-50%,-50%)}
+.cn{position:absolute;display:flex;flex-direction:column;align-items:center;text-align:center}
+.orbn{position:relative;display:grid;place-items:center;width:var(--cd,168px);height:var(--cd,168px);border-radius:50%;padding:0;cursor:pointer;color:inherit;border:1px solid rgba(237,234,245,.16);background:radial-gradient(circle at 35% 30%,#121B3A,#080D1D 72%);transform:scale(.68);transition:transform 700ms cubic-bezier(.77,0,.175,1),box-shadow 500ms ease,border-color 500ms ease}
+.orbn::after{content:"";position:absolute;inset:-16px;border-radius:50%;border:1px dashed color-mix(in srgb,var(--pc,#5FD6FF) 50%,transparent);opacity:0;transition:opacity 500ms ease;animation:spin 40s linear infinite}
+.orbn .gl{display:block;width:79px;height:79px;background:no-repeat center/100% 100%;opacity:.45;transition:opacity 500ms ease}
+.cn.on .orbn{transform:scale(1);border-color:color-mix(in srgb,var(--pc,#5FD6FF) 70%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--pc,#5FD6FF) 22%,transparent),inset 0 0 44px color-mix(in srgb,var(--pc,#5036EA) 30%,transparent);cursor:default}
+.cn::before{content:"";position:absolute;left:50%;top:calc(var(--cd,168px) / 2);width:calc(var(--cd,168px) * 2.1);aspect-ratio:1;transform:translate(-50%,-50%) scale(.6);border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--pc,#309AE7) 40%,transparent),color-mix(in srgb,var(--pc,#5036EA) 12%,transparent) 55%,transparent);opacity:0;pointer-events:none;transition:opacity 600ms ease,transform 700ms cubic-bezier(.77,0,.175,1)}
+.cn.on::before{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.cn > *{position:relative}
+.cn.on .orbn::after{opacity:1}
+.cn.on .orbn .gl{opacity:1}
+@media (hover:hover) and (pointer:fine){.cn:not(.on) .orbn:hover{transform:scale(.74);border-color:rgba(237,234,245,.4)}.cn:not(.on) .orbn:hover .gl{opacity:.8}}
+.cinfo{margin-top:6px;transition:transform 700ms cubic-bezier(.77,0,.175,1)}
+.cn.on .cinfo{transform:translateY(30px)}
+.cinfo .k{display:block;font:500 12px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;color:#8A93A8}
+.cn .cname{position:absolute;left:0;right:0;bottom:calc(100% + 24px);margin:0;font:700 22px/1.15 "Satoshi",system-ui,sans-serif;letter-spacing:-.02em;color:#8A93A8;text-align:center;transform:translateY(calc(var(--cd,168px) * .16 + 4px));transition:color 400ms ease,font-size 400ms ease,transform 700ms cubic-bezier(.77,0,.175,1)}
+.cn.on .cname{color:#EDEAF5;font-size:clamp(26px,2.4vw,32px);transform:none}
+.cinfo .more{opacity:0;transform:translateY(8px);visibility:hidden;transition:opacity 300ms ease,transform 300ms ease,visibility 0s 300ms}
+.cn.on .cinfo .more{opacity:1;transform:none;visibility:visible;transition:opacity 500ms ease 450ms,transform 600ms var(--eo) 450ms,visibility 0s}
+.cinfo p{color:#AEB6C8;font-size:18px;line-height:1.55;margin:0 auto;max-width:28ch}
+.cinfo ul{display:inline-flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:20px;text-align:left}
+.cinfo li{font:400 15px/1.4 "IBM Plex Sans",system-ui,sans-serif;color:#C9D0DE}
+.cinfo li::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--pc,#5FD6FF);box-shadow:0 0 8px color-mix(in srgb,var(--pc,#5FD6FF) 70%,transparent);margin-right:12px;vertical-align:2px}
+.cinfo .go{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:14px;font:500 14px/1 "IBM Plex Mono",monospace;text-decoration:none;min-height:44px}
+.cinfo .go svg{width:15px;height:15px}
+.cnav{position:absolute;z-index:3;top:calc(var(--rowy,240px) - 29px);width:58px;height:58px;color:#FFFFFF;border-color:rgba(95,214,255,.55);background:rgba(14,24,52,.85);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 0 0 4px rgba(95,214,255,.08),0 8px 30px -8px rgba(48,154,231,.55)}
+.cnav svg{width:20px;height:20px}
+@media (hover:hover) and (pointer:fine){.cnav:hover{border-color:#5FD6FF;background:rgba(20,36,76,.95)}}
+.cnav.l{left:clamp(16px,4vw,56px)}.cnav.r{right:clamp(16px,4vw,56px)}
+.cnav[aria-disabled="true"]{opacity:.3;pointer-events:none;box-shadow:none}
+@media (max-width:760px){.cnav{width:48px;height:48px;top:calc(var(--rowy,160px) - 24px)}.cnav.l{left:10px}.cnav.r{right:10px}}
+@media (prefers-reduced-motion:reduce){.track,.orbn,.cinfo{transition:none}.orbn::after,.cl .seg.on{animation:none}}

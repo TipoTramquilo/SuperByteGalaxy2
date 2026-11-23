@@ -1,0 +1,11 @@
+---
+/* Definiciones SVG compartidas: grano de película y destello de estrella (#spk). */
+---
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="grainw" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"></feTurbulence><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 2.2 -1.1"></feColorMatrix></filter>
+  <filter id="graind" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"></feTurbulence><feColorMatrix type="matrix" values="0 0 0 0 0.04  0 0 0 0 0.06  0 0 0 0 0.11  0 0 0 2.2 -1.1"></feColorMatrix></filter>
+  <filter id="sblur" x="-2" y="-2" width="5" height="5"><feGaussianBlur stdDeviation="2"></feGaussianBlur></filter>
+  <radialGradient id="sglow"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".9"></stop><stop offset=".35" stop-color="#BFE9FF" stop-opacity=".35"></stop><stop offset="1" stop-color="#BFE9FF" stop-opacity="0"></stop></radialGradient>
+  <radialGradient id="sglow2"><stop offset="0" stop-color="#FFFFFF" stop-opacity="1"></stop><stop offset=".28" stop-color="#E4F7FF" stop-opacity=".7"></stop><stop offset="1" stop-color="#BFE9FF" stop-opacity="0"></stop></radialGradient>
+  <symbol id="spk" overflow="visible"><circle r="9" fill="url(#sglow)"></circle><ellipse rx="28" ry="1.5" fill="url(#sglow2)"></ellipse><ellipse rx="1.5" ry="28" fill="url(#sglow2)"></ellipse><ellipse rx="11" ry="1" fill="url(#sglow2)" transform="rotate(45)"></ellipse><ellipse rx="11" ry="1" fill="url(#sglow2)" transform="rotate(-45)"></ellipse><circle r="2.2" fill="#FFFFFF"></circle></symbol>
+</svg>

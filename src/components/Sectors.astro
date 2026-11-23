@@ -1,0 +1,18 @@
+---
+/* Experiencia por sector. Los sectores viven en sectors.json y sus íconos en src/lib/glyphs.ts. */
+import sectors from '../data/sectors.json';
+import { glyphImage } from '../lib/glyphs';
+
+const delay = ['rv', 'rv d1', 'rv d2'];
+const glyphs = sectors.map((s) => glyphImage(s.glyph, '#5FD6FF', '#7C5CF5'));
+---
+<section class="sec" id="sectores" aria-labelledby="h-s">
+  <div class="w">
+    <div class="sect-h rv"><div><span class="kick">Industrias</span><h2 class="h2" id="h-s">Experiencia por sector</h2></div><p class="yrs"><b>+4</b> años en el mercado</p></div>
+    <ul class="sect-l">
+      {sectors.map((s, i) => (
+        <li class={delay[i % delay.length]}><span class="sg" aria-hidden="true" style={`background-image:${glyphs[i]}`}></span><h3>{s.name}</h3><p>{s.description}</p></li>
+      ))}
+    </ul>
+  </div>
+</section>

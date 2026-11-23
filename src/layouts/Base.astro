@@ -1,0 +1,55 @@
+---
+/* Documento base: metadatos, tipografías y la hoja global. */
+import '../styles/global.css';
+import site from '../data/site.json';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = site.title, description = site.description } = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/\/+$/, '') || '/', Astro.site);
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: site.name,
+  url: new URL('/', Astro.site).href,
+  logo: new URL('/img/logotipo-blanco.svg', Astro.site).href,
+  email: site.email.address,
+  telephone: site.phone.url.replace('tel:', ''),
+  sameAs: [site.linkedin, site.instagram.url],
+};
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    <meta name="theme-color" content="#070B16" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="es_VE" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(organization).replace(/</g, '\\u003c')} />
+    <link rel="preload" href="/fonts/Satoshi-Bold.woff" as="font" type="font/woff" crossorigin="anonymous" />
+    <link rel="preload" href="/fonts/IBMPlexSans-Regular.woff" as="font" type="font/woff" crossorigin="anonymous" />
+    <link rel="preload" href="/fonts/IBMPlexMono-Medium.woff" as="font" type="font/woff" crossorigin="anonymous" />
+    <script is:inline>if("IntersectionObserver" in window)document.documentElement.classList.add("js");</script>
+  </head>
+  <body>
+    <slot />
+    <script>
+      import '../scripts/main';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+/* Pausar también pseudo-elementos: sus animaciones continúan aunque el padre no se vea. */
+.effects-paused,.effects-paused *,.effects-paused::before,.effects-paused::after,.effects-paused *::before,.effects-paused *::after,
+.page-hidden *,.page-hidden *::before,.page-hidden *::after{animation-play-state:paused !important}
+
+/* Los gradientes ya tienen bordes suaves: no necesitan filtros sobre superficies grandes. */
+.blob{filter:none;background:radial-gradient(closest-side,rgba(80,54,234,.24),transparent) !important}
+.milky,.orb .halo{filter:none}
+.nav,.foot,.nb,.cnav{-webkit-backdrop-filter:none;backdrop-filter:none}
+.nav,.foot{background:rgba(7,11,22,.94)}
+.nav img,.foot img{width:auto}
+.nb{background:rgba(12,18,34,.94)}
+.nb.on{background:var(--acc)}
+.v1 .orb .core img{height:auto;filter:none;will-change:auto}
+.track,.far{will-change:auto}
+
+/* Sin aceleración GPU o con caídas sostenidas de cuadros: mismo criterio que móvil.
+   Se congela el fondo pesado (estrellas, grano y blobs) con destellos tenues fijos,
+   pero se mantienen vivas las animaciones de interfaz (órbita, Método Byte, productos y logos). */
+.low-effects .stars,.low-effects .stars>img,.low-effects .stars>svg:not(.bs),.low-effects .stars .bs,
+.low-effects .trust::before,.low-effects .trust::after,.low-effects #metodo::before,.low-effects #metodo::after,
+.low-effects #nosotros::before,.low-effects #nosotros::after,.low-effects .cons-sec::before,.low-effects .cons-sec::after{animation:none !important;will-change:auto !important}
+.low-effects .stars .b .sh{animation:none !important;opacity:0}
+.low-effects .stars .bs .b:nth-of-type(3n+1) .sh{opacity:.2}
+.low-effects .blob{animation:none !important}
+.low-effects .grain{display:none}
+
+@media(prefers-reduced-motion:reduce){
+ .blob,.cl .seg.on,.orbn::after{animation:none !important}
+ .grain{display:none}
+ .stars{will-change:auto}
+ .logos{mask-image:none;-webkit-mask-image:none;overflow-x:auto}
+ .logos-in{transform:none}
+ .logos .lg[aria-hidden="true"]{display:none}
+ .far{transition:none}
+}

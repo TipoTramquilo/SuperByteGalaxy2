@@ -1,0 +1,22 @@
+/* Táctil y móvil: fondo quieto y efectos baratos; Pipeline guiado por el scroll */
+/* táctil: fondo estrellado quieto (sin capas animadas grandes) para no agotar la memoria gráfica del teléfono;
+   los destellos quedan fijos y tenues */
+@media (hover:none),(max-width:760px){
+ .stars,.stars>img,.stars>svg:not(.bs),.stars .bs{animation:none !important;will-change:auto !important}
+ .trust::before,.trust::after,#metodo::before,#metodo::after,#nosotros::before,#nosotros::after,.cons-sec::before,.cons-sec::after{animation:none !important}
+ .stars .b .sh{animation:none !important;opacity:0}
+ .stars .bs .b:nth-of-type(3n+1) .sh{opacity:.2}
+ .blob{animation:none}
+ .grain{display:none}
+ .nb{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,18,34,.92)}
+ /* barra y pie sin desenfoque del fondo: en el teléfono se recalculaba en cada cuadro del scroll */
+ .nav,.foot{-webkit-backdrop-filter:none;backdrop-filter:none}
+ .nav{background:rgba(7,11,22,.9)}
+ /* brillos del fondo con máscara en vez de filtro de desenfoque (mucho más barato de dibujar) */
+ .blob{filter:none;-webkit-mask-image:radial-gradient(closest-side,#000,rgba(0,0,0,.45) 50%,transparent);mask-image:radial-gradient(closest-side,#000,rgba(0,0,0,.45) 50%,transparent)}
+ .milky{filter:none}
+}
+/* móvil: la línea sigue al scroll (sin autoavance) */
+.mp.scrub{--arr:0ms}
+.mp.scrub .mp-fill,.mp.scrub .mp-pk{transition-duration:180ms;transition-timing-function:linear}
+@media (prefers-reduced-motion:reduce){.mp-fill,.mp-pk,.mp-rail{transition:none}.mstep-node::after,.mstep-node::before,.mstep-node{animation:none !important}}

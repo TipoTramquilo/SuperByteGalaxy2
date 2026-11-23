@@ -1,0 +1,32 @@
+[
+  {
+    "short": "Desarrollo web y móvil",
+    "title": "Desarrollo de aplicaciones web y móviles",
+    "description": "Software a medida, escalable y de alto rendimiento.",
+    "icon": "code"
+  },
+  {
+    "short": "IA y automatización",
+    "title": "Inteligencia artificial y automatización",
+    "description": "Optimización de procesos mediante algoritmos avanzados.",
+    "icon": "cpu"
+  },
+  {
+    "short": "Infraestructura",
+    "title": "Gestión de infraestructura tecnológica",
+    "description": "Mantenimiento y arquitectura de servidores críticos.",
+    "icon": "server"
+  },
+  {
+    "short": "Ciberseguridad",
+    "title": "Ciberseguridad de nueva generación",
+    "description": "Implementación de arquitecturas Zero Trust.",
+    "icon": "shield"
+  },
+  {
+    "short": "Monitorización",
+    "title": "Monitorización e inteligencia de amenazas",
+    "description": "Vigilancia 24/7 y respuesta proactiva a incidentes.",
+    "icon": "activity"
+  }
+]

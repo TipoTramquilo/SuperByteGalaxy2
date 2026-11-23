@@ -1,0 +1,16 @@
+/* Cinta de logos de clientes */
+/* cinta de logos: se mueve de izquierda a derecha */
+.logos{position:relative;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.logos-in{display:flex;align-items:center;gap:clamp(56px,7vw,96px);width:max-content;padding:0 calc(clamp(56px,7vw,96px)/2);animation:ltr 46s linear infinite}
+.logos .lg{position:relative;display:block;flex:none}
+.logos img{display:block;height:var(--lh,34px);width:auto}
+.logos .lg .w0{opacity:.6;transition:opacity 260ms ease}
+.logos .lg .c0{position:absolute;left:0;top:0;opacity:0;transition:opacity 260ms ease}
+@media (hover:hover) and (pointer:fine){.logos .lg:hover .w0{opacity:0}.logos .lg:hover .c0{opacity:1}}
+/* en táctil: logos a color; dos velos fijos a los lados los pasan a gris, así se ven a color al cruzar el centro */
+@media (hover:none),(max-width:760px){
+ /* en táctil: logos a color, sin efectos */
+ .logos.tint .lg .w0{opacity:0}
+ .logos.tint .lg .c0{opacity:1;transition:none}
+}
+@keyframes ltr{from{transform:translateX(-50%)}to{transform:translateX(0)}}

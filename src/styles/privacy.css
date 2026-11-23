@@ -1,0 +1,29 @@
+/* Aviso: conserva el texto publicado y comparte el tema y las fuentes de la web. */
+.privacy-page{min-height:100vh}
+.privacy-brand{position:relative;z-index:2;border-bottom:1px solid rgba(237,234,245,.08);background:rgba(7,11,22,.7)}
+.privacy-brand .w{display:flex;align-items:center;min-height:80px}
+.privacy-brand a{display:inline-flex}
+.privacy-brand img{display:block;width:auto;height:30px}
+.privacy-main{position:relative;padding:clamp(40px,6vw,88px) 0 clamp(64px,8vw,112px);isolation:isolate;background:radial-gradient(ellipse 75% 560px at 85% 0,rgba(80,54,234,.14),transparent),radial-gradient(ellipse 65% 420px at 0 0,rgba(48,154,231,.12),transparent)}
+.privacy-sky{position:absolute;inset:0 0 auto;height:620px;overflow:hidden;pointer-events:none;opacity:.45;z-index:-1;mask-image:linear-gradient(#000,transparent)}
+.privacy-document{max-width:1000px;overflow-wrap:anywhere}
+.privacy-document header{padding-bottom:40px;border-bottom:1px solid rgba(237,234,245,.12);margin-bottom:48px}
+.privacy-document header>div{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.privacy-document h1{max-width:12ch;font:700 clamp(40px,6vw,72px)/1.06 "Satoshi",system-ui,sans-serif;letter-spacing:-.04em;text-wrap:balance}
+.privacy-document header>div>a,.privacy-document>section>div:last-child>a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:12px 20px;border:1px solid rgba(237,234,245,.25);border-radius:999px;font:500 14px/1.5 "IBM Plex Mono",monospace;text-decoration:none;color:#EDEAF5;transition:background-color .2s,border-color .2s}
+.privacy-document header>div>a:hover{border-color:#5FD6FF;background:rgba(95,214,255,.08)}
+.privacy-document header>p:first-of-type{margin-top:28px;font:500 14px/1.5 "IBM Plex Mono",monospace;color:#5FD6FF;letter-spacing:.06em;text-transform:uppercase}
+.privacy-document header>p:nth-of-type(2){margin-top:8px;color:#8A93A8;font-size:14px}
+.privacy-document header>p:last-child{margin-top:28px;font-size:19px;line-height:1.8;color:#C9D0DE}
+.privacy-document section section+section{margin-top:40px;padding-top:40px;border-top:1px solid rgba(237,234,245,.08)}
+.privacy-document h2{font:700 clamp(23px,3vw,30px)/1.3 "Satoshi",system-ui,sans-serif;letter-spacing:-.02em;color:#EDEAF5}
+.privacy-document h3{font:500 20px/1.4 "Satoshi",system-ui,sans-serif;margin-top:24px;color:#EDEAF5}
+.privacy-document section section p,.privacy-document ul{margin-top:16px;color:#C9D0DE;line-height:1.8}
+.privacy-document ul{padding-left:24px;list-style:disc}
+.privacy-document li+li{margin-top:8px}
+.privacy-document a{text-underline-offset:4px}
+.privacy-document>section>div:last-child{margin-top:56px;display:flex;justify-content:center}
+.privacy-document>section>div:last-child>a{background:#EDEAF5;color:#0A0F1C;min-height:52px;padding:14px 28px}
+.privacy-document>section>div:last-child>a:hover{background:#FFFFFF}
+.privacy-page .foot{margin-top:0}
+@media(max-width:600px){.privacy-brand .w{min-height:72px}.privacy-document header>div{gap:20px}.privacy-document header>div>a{font-size:14px}.privacy-document header>p:last-child{font-size:17px}.privacy-document header{margin-bottom:32px;padding-bottom:32px}.privacy-document section section+section{margin-top:28px;padding-top:28px}}

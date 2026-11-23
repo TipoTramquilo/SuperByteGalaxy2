@@ -1,0 +1,24 @@
+---
+/* Método Byte en formato Pipeline: un pulso recorre la línea y enciende cada etapa.
+   Escritorio: avanza solo y en ciclo. Móvil: lo guía el scroll. Lógica en src/scripts/method.ts. */
+import Starfield from './Starfield.astro';
+import steps from '../data/method.json';
+
+const pad = (i: number) => String(i).padStart(2, '0');
+---
+<section class="sec" id="metodo" aria-labelledby="h-m" style="padding-top:0">
+  <Starfield name="metodo" />
+  <div class="w">
+    <div class="rv"><span class="kick">Cómo trabajamos</span><h2 class="h2" id="h-m">Método Byte</h2><p class="sub">Un proceso estructurado, transparente y orientado a resultados que minimiza riesgos y maximiza el valor entregado en cada fase del proyecto.</p></div>
+    <div class="mwrap rv d1">
+      <div class="mp" style="--mf:0.000">
+        <div class="mp-rail" aria-hidden="true"><i class="mp-fill"></i><i class="mp-pk"></i></div>
+        <ol class="mp-steps">
+          {steps.map((s, i) => (
+            <li class={i === 0 ? 'on' : ''} aria-current={i === 0 ? 'true' : 'false'}><span class="mstep-node" aria-hidden="true"><span class={`mic mi-${s.icon}`}></span></span><small>{pad(i + 1)}</small><h3>{s.title}</h3><p>{s.description}</p><span class="mbar" aria-hidden="true"><i></i></span></li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>

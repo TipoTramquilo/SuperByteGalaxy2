@@ -1,0 +1,16 @@
+---
+/* Barra fija con enlaces a las secciones y menú desplegable en pantallas angostas.
+   La sección visible se marca desde src/scripts/nav.ts. */
+import site from '../data/site.json';
+---
+<header class="nav">
+  <div class="w">
+    <img src="/img/logotipo-blanco.svg" alt="Byte" width="646" height="322" />
+    <nav aria-label="Principal">{site.nav.map((l) => <a href={`#${l.id}`}>{l.label}</a>)}</nav>
+    <a class="btn ghost sm cbtn" href="#contacto">Contactar</a>
+    <button class="mbtn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mnav"><i></i><i></i></button>
+  </div>
+  <nav class="mnav" id="mnav" aria-label="Menú móvil">
+    <div class="w">{site.nav.map((l) => <a href={`#${l.id}`}>{l.label}</a>)}<a class="mcontact" href="#contacto">Contacto</a></div>
+  </nav>
+</header>

@@ -1,0 +1,19 @@
+/* Hoja global. El orden importa: cada archivo puede ajustar reglas de los anteriores. */
+@import "./base.css";
+@import "./grain.css";
+@import "./logos.css";
+@import "./orbit.css";
+@import "./sky.css";
+@import "./motion.css";
+@import "./nav.css";
+@import "./hero.css";
+@import "./sections.css";
+@import "./sectors.css";
+@import "./products.css";
+@import "./about.css";
+@import "./contact.css";
+@import "./footer.css";
+@import "./responsive.css";
+@import "./method.css";
+@import "./touch.css";
+@import "./performance.css";

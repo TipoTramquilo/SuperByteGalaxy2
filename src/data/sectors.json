@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Construcción y agroindustria",
+    "description": "IoT, gestión logística y de flotas, modernización de infraestructura y servicios de respaldo.",
+    "glyph": "helmet"
+  },
+  {
+    "name": "Sector automotriz",
+    "description": "Red de 7 concesionarios a nivel nacional: desarrollo de software y digitalización de procesos comerciales.",
+    "glyph": "car"
+  },
+  {
+    "name": "Sector público",
+    "description": "Digitalización, sistemas web, análisis de datos, modernización tecnológica, respaldo y recuperación.",
+    "glyph": "bank"
+  },
+  {
+    "name": "Banca nacional",
+    "description": "Integración, sistemas web y análisis de datos.",
+    "glyph": "coin"
+  },
+  {
+    "name": "Distribución y logística",
+    "description": "Aplicaciones móviles, sistemas web y modernización tecnológica.",
+    "glyph": "truck"
+  }
+]

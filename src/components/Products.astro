@@ -1,0 +1,46 @@
+---
+/* Constelación de productos: cada producto es una estrella unida a la siguiente.
+   Para sumar un producto basta con añadirlo a products.json: posiciones, líneas y botones se calculan solos.
+
+   El HTML inicial se calcula para un ancho de 1440 px; al cargar, src/scripts/products.ts
+   lo recalcula con el ancho real y se encarga de la navegación. */
+import Starfield from './Starfield.astro';
+import products from '../data/products.json';
+import { glyphImage } from '../lib/glyphs';
+import { css, consGeometry, consStyle, nodeStyle, trackStyle, farField, farStyle, farMarkup, clusterMarkup } from '../lib/geometry';
+
+const SW = 1440;
+const n = products.length;
+const g = consGeometry(SW, n);
+const far = farField(g);
+const glyphs = products.map((p) => glyphImage(p.glyph, p.colors[0], p.colors[1]));
+const pad = (i: number) => String(i).padStart(2, '0');
+---
+<section class="sec cons-sec" id="productos" aria-labelledby="h-p">
+  <Starfield name="productos" />
+  <div class="w">
+    <div class="ph rv">
+      <div><span class="kick">Plataformas propias</span><h2 class="h2" id="h-p">Nuestros productos</h2></div>
+      <div class="ctrl"><span class="ct" aria-live="polite">{`01 / ${pad(n)}`}</span></div>
+    </div>
+  </div>
+  <div class="cons rv d1" style={css(consStyle(g))} data-sw={String(SW)}>
+    <div class="vp" tabindex="0" role="group" aria-roledescription="carrusel" aria-label="Productos de Byte. Use las flechas para recorrerlos.">
+      <div class="far" style={css(farStyle(g, far.width, 0))} aria-hidden="true" set:html={farMarkup(far)}></div>
+      <div class="track" style={css(trackStyle(g, 0))}>
+        <div class="cl" aria-hidden="true" set:html={clusterMarkup(g, 0)}></div>
+        {products.map((p, i) => (
+          <div class={i === 0 ? 'cn on' : 'cn'} style={css(nodeStyle(g, i, p.colors[1]))}>
+            <h3 class="cname">{p.name}</h3>
+            <button class="orbn" type="button" aria-label={i === 0 ? `${p.name} (seleccionado)` : p.name} aria-current={i === 0 ? 'true' : 'false'} data-prod={String(i)}><span class="gl" aria-hidden="true" style={`background-image:${glyphs[i]}`}></span></button>
+            <div class="cinfo">
+              <div class="more" aria-hidden={i === 0 ? 'false' : 'true'}><p>{p.description}</p><ul>{p.features.map((f) => <li>{f}</li>)}</ul></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    <button class="ib cnav l" type="button" aria-label="Producto anterior" aria-disabled="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8H3M7 4L3 8l4 4"></path></svg></button>
+    <button class="ib cnav r" type="button" aria-label="Producto siguiente" aria-disabled={n > 1 ? 'false' : 'true'}><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></button>
+  </div>
+</section>

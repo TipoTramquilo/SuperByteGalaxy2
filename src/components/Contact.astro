@@ -1,0 +1,24 @@
+---
+/* Contacto. En táctil se muestra Teléfono en lugar de WhatsApp (CSS); el correo se copia al tocarlo (src/scripts/contact.ts). */
+import Starfield from './Starfield.astro';
+import Grain from './Grain.astro';
+import site from '../data/site.json';
+---
+<section class="cta" id="contacto" aria-labelledby="h-c">
+  <i class="milky" aria-hidden="true"></i>
+  <Starfield name="contacto" />
+  <Grain />
+  <div class="w cgrid rv">
+    <div class="cl-l">
+      <h2 id="h-c">Conversemos sobre el futuro tecnológico de su organización.</h2>
+      <p>Estamos listos para diseñar, desarrollar y proteger la infraestructura crítica que impulsará el crecimiento de su negocio.</p>
+    </div>
+    <address class="clist" style="font-style:normal">
+      <a class="ci wa" href={site.whatsapp.url} target="_blank" rel="noopener"><span class="cic"><i class="ic2 ci-wa"></i></span><span class="cbody"><small>WhatsApp</small><b>{site.whatsapp.label}</b><em><i class="ic2 ci-clock"></i>{site.whatsapp.hours}</em></span><i class="ic2 ci-out cgo"></i></a>
+      <a class="ci tel" href={site.phone.url}><span class="cic"><i class="ic2 ci-phone"></i></span><span class="cbody"><small>Teléfono</small><b>{site.phone.label}</b><em><i class="ic2 ci-clock"></i>{site.phone.hours}</em></span><i class="ic2 ci-out cgo"></i></a>
+      <button class="ci" type="button" aria-label={`Copiar el correo ${site.email.address}`} data-copy={site.email.address} data-note={site.email.note} data-copied={site.email.copied}><span class="cic"><i class="ic2 ci-mail"></i></span><span class="cbody"><small>Correo</small><b>{site.email.address}</b><em aria-live="polite"><i class="ic2 ci-clock"></i><span class="note">{site.email.note}</span></em></span><i class="ic2 ci-copy cgo"></i></button>
+      <a class="ci" href={site.office.url} target="_blank" rel="noopener"><span class="cic"><i class="ic2 ci-pin"></i></span><span class="cbody"><small>Oficina</small><b>{site.office.label}</b><em><i class="ic2 ci-clock"></i>{site.office.hours}</em></span><i class="ic2 ci-out cgo"></i></a>
+      <a class="ci" href={site.instagram.url} target="_blank" rel="noopener"><span class="cic"><i class="ic2 ci-ig"></i></span><span class="cbody"><small>Instagram</small><b>{site.instagram.label}</b></span><i class="ic2 ci-out cgo"></i></a>
+    </address>
+  </div>
+</section>

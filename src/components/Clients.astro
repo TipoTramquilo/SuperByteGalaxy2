@@ -1,0 +1,18 @@
+---
+/* Cinta de clientes. La lista se repite una vez (oculta a lectores de pantalla) para que el bucle no tenga corte. */
+import Starfield from './Starfield.astro';
+import clients from '../data/clients.json';
+
+const loop = [...clients.map((c) => ({ ...c, copy: false })), ...clients.map((c) => ({ ...c, copy: true }))];
+---
+<section class="trust" aria-label="Clientes">
+  <Starfield name="clientes" />
+  <p>Empresas que confían en Byte</p>
+  <div class="logos tint" style="--lh:34px">
+    <div class="logos-in">
+      {loop.map((c) => (
+        <span class="lg" aria-hidden={c.copy ? 'true' : undefined}><img class="w0" src={`/logos/${c.slug}-mono.webp`} alt={c.copy ? '' : c.name} width={c.width} height="34" loading="lazy" decoding="async" /><img class="c0" src={`/logos/${c.slug}-color.webp`} alt="" aria-hidden="true" width={c.width} height="34" loading="lazy" decoding="async" /></span>
+      ))}
+    </div>
+  </div>
+</section>

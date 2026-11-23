@@ -1,0 +1,59 @@
+---
+/* Hero: titular, cifras y la órbita de servicios.
+   La rotación de servicios, el texto que cambia y el zoom de la B viven en src/scripts/services.ts. */
+import Starfield from './Starfield.astro';
+import Grain from './Grain.astro';
+import services from '../data/services.json';
+import site from '../data/site.json';
+import { css, orbitNodes } from '../lib/geometry';
+
+const nodes = orbitNodes(services.length);
+const pad = (i: number) => String(i).padStart(2, '0');
+const total = pad(services.length);
+const first = services[0];
+---
+<section class="hero" id="inicio" aria-labelledby="h1">
+  <i class="blob" style="width:520px;height:520px;right:-120px;top:-80px;background:rgba(80,54,234,.35)" aria-hidden="true"></i>
+  <i class="blob" style="width:460px;height:460px;left:-160px;bottom:-200px;background:rgba(26,111,184,.40);animation-duration:32s" aria-hidden="true"></i>
+  <i class="milky" aria-hidden="true"></i>
+  <Starfield name="hero" eager />
+  <Grain />
+  <div class="w hgrid">
+    <div>
+      <span class="eb e1"><i></i>Byte Services · {site.location}</span>
+      <h1 class="h1 e1" id="h1">Ingeniería digital de <span>nueva generación.</span></h1>
+      <p class="lede e2">{site.description}</p>
+      <div class="ctas e3">
+        <a class="btn solid" href={site.whatsapp.url} target="_blank" rel="noopener">Agendar consultoría <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></a>
+      </div>
+      <dl class="nums e3" aria-label="Byte en cifras" style="margin-bottom:0">
+        {site.stats.map((s) => (
+          <div><dd style="margin:0"><b>{s.value}</b></dd><dt><span>{s.label}</span></dt></div>
+        ))}
+      </dl>
+    </div>
+    <div class="e4">
+      <div class="orb" style="--os:600px">
+        <div class="halo"></div>
+        <div class="rot">
+          <svg class="rings" viewBox="0 0 540 540" aria-hidden="true">
+            <circle class="ring" cx="270" cy="270" r="206"></circle>
+            <circle class="ring" cx="270" cy="270" r="128" style="stroke-dasharray:2 6"></circle>
+            <circle class="ring" cx="270" cy="270" r="262" style="opacity:.5"></circle>
+          </svg>
+          {nodes.map((n, i) => <i class={i === 0 ? 'spoke on' : 'spoke'} style={css(n.spoke)} aria-hidden="true"></i>)}
+          <i class="sat" style="left:98.5%;top:50%" aria-hidden="true"></i>
+          <i class="sat" style="left:9%;top:24%;opacity:.5" aria-hidden="true"></i>
+          {nodes.map((n, i) => (
+            <div class="node" style={css(n.pos)}><div class="in"><button class={i === 0 ? 'nb on' : 'nb'} type="button" aria-label={services[i].title} title={services[i].title} aria-pressed={i === 0 ? 'true' : 'false'} data-svc={String(i)}><span class={`ic ic-${services[i].icon}`} aria-hidden="true"></span></button></div></div>
+          ))}
+        </div>
+        <div class="core" aria-hidden="true"><Grain /><img src="/img/iconotipo-blanco.svg" alt="" width="859" height="913" /></div>
+      </div>
+      <div class="cap" aria-live="polite" data-total={total}>
+        <div class="capi gone" aria-hidden="true"><small>SERVICIO 01 / {total}</small><h2>{first.title}</h2><p>{first.description}</p></div>
+        <div class="capi in" aria-hidden="false"><small>SERVICIO 01 / {total}</small><h2>{first.title}</h2><p>{first.description}</p></div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,49 @@
+/* Hero: titular, cifras y texto del servicio activo */
+.hero{position:relative;overflow:hidden;padding:calc(72px + clamp(56px,7vw,96px)) 0 clamp(56px,6vw,80px);background:radial-gradient(55% 65% at 82% 28%,rgba(80,54,234,.40),transparent 62%),radial-gradient(45% 55% at 8% 92%,rgba(26,111,184,.45),transparent 62%),radial-gradient(30% 30% at 62% 58%,rgba(95,214,255,.12),transparent 70%),#070B16}
+.v1 .grain{--go:.07}
+.v1 .orb .core{width:29%;background:none;box-shadow:none;border-radius:0}
+.v1 .orb .core .grain{display:none}
+.v1 .orb .core img{width:100%;transform:translateX(-11%);filter:drop-shadow(0 0 18px rgba(95,214,255,.55)) drop-shadow(0 12px 40px rgba(80,54,234,.7));transition:transform 240ms var(--eo);will-change:transform}
+.v1 .orb .halo{transition:transform 240ms var(--eo)}
+.v1 .orb .halo{width:52%;background:radial-gradient(circle,rgba(48,154,231,.32),rgba(80,54,234,.12) 45%,transparent 68%)}
+.hero .milky{left:-20%;top:30%;width:140%;height:36%;transform:rotate(-27deg);background:radial-gradient(closest-side,rgba(95,214,255,.11),rgba(80,54,234,.09) 45%,transparent 100%)}
+.cta .milky{left:-10%;top:10%;width:120%;height:50%;transform:rotate(-14deg);background:radial-gradient(closest-side,rgba(95,214,255,.10),rgba(80,54,234,.10) 50%,transparent 100%)}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:180px;background:linear-gradient(to bottom,transparent,#070B16);pointer-events:none}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;animation:drift 26s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(60px,-40px) scale(1.12)}}
+.hero .w{z-index:1}
+@media (min-width:1001px){
+ .hero{display:flex;align-items:center;min-height:clamp(712px,100svh,952px);padding:calc(72px + clamp(28px,5svh,64px)) 0 clamp(36px,6svh,72px)}
+ .hero .w{width:100%}
+ .hero .orb{--os:clamp(400px,calc(100svh - 300px),560px) !important}
+}
+.hgrid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center}
+.eb{display:inline-flex;align-items:center;gap:10px;font:500 13px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:#8A93A8}
+.eb i{width:8px;height:8px;border-radius:2px;background:#309AE7}
+.h1{font:700 clamp(44px,min(5.6vw,9.4svh),88px)/.98 "Satoshi",system-ui,sans-serif;letter-spacing:-.045em;margin:clamp(18px,2.6svh,26px) 0;text-wrap:balance}
+.h1 span{color:#5FD6FF}
+.lede{font-size:clamp(18px,1.5vw,20px);line-height:1.6;color:#AEB6C8;max-width:40ch}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(24px,4svh,36px)}
+.ctas .btn{padding:0 20px;font-size:14px}
+.nums{display:flex;gap:clamp(24px,3.4vw,48px);margin-top:clamp(32px,6svh,56px);padding-top:24px;border-top:1px solid rgba(237,234,245,.10)}
+.nums b{display:block;font:700 clamp(30px,2.8vw,40px)/1 "Satoshi",system-ui,sans-serif;letter-spacing:-.03em}
+.nums span{display:block;font:500 13px/1.35 "Satoshi",system-ui,sans-serif;color:#8A93A8;margin-top:8px;max-width:12ch;transition:color 200ms ease}
+.nums b{transition:color 200ms ease}
+@media (hover:hover) and (pointer:fine){.nums>div:hover b{color:#309AE7}.nums>div:hover span{color:#AEB6C8}}
+.cap{display:grid;text-align:center;margin-top:4px;min-height:96px}
+.capi{grid-area:1/1}
+.capi.gone{visibility:hidden}
+/* el texto que se va baja y se desvanece; el nuevo baja desde arriba, un poco después */
+.capi.out{pointer-events:none;animation:capOutA 260ms cubic-bezier(.4,0,.6,1) both}
+.capi.out.b{animation-name:capOutB}
+.capi.in.a>*{animation:capInA 560ms var(--eo) both}
+.capi.in.b>*{animation:capInB 560ms var(--eo) both}
+.capi.in>:nth-child(1){animation-delay:90ms}.capi.in>:nth-child(2){animation-delay:130ms}.capi.in>:nth-child(3){animation-delay:180ms}
+@keyframes capOutA{to{opacity:0;transform:translateY(16px)}}
+@keyframes capOutB{to{opacity:0;transform:translateY(16px)}}
+@keyframes capInA{from{opacity:0;transform:translateY(-10px)}}
+@keyframes capInB{from{opacity:0;transform:translateY(-10px)}}
+@media (prefers-reduced-motion:reduce){.capi.out{animation:none;opacity:0}.capi.in>*{animation-name:fade !important}}
+.cap small{font:500 12px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;color:#8A93A8}
+.cap h2{font:700 22px/1.25 "Satoshi",system-ui,sans-serif;margin-top:10px}
+.cap p{color:#8A93A8;font-size:15px;margin-top:2px}

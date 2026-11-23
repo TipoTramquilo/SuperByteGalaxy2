@@ -1,0 +1,22 @@
+/* Tema oscuro, barra de navegación y botones */
+.v1 .btn{font-weight:600}
+.v1{background:#070B16;color:#EDEAF5;--ringc:rgba(237,234,245,.13);--acc:#309AE7;--nodeb:rgba(237,234,245,.16);--nodebg:rgba(12,18,34,.7);--nodec:#EDEAF5;--nodenum:rgba(237,234,245,.08)}
+.v1 a{color:#5FD6FF}
+.nav{position:sticky;top:0;z-index:40;margin-bottom:-72px;background:rgba(7,11,22,.42);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid rgba(237,234,245,.06)}
+.nav .w{display:flex;align-items:center;gap:32px;height:72px}
+.nav img{height:30px;display:block;margin-right:auto}
+.nav nav{display:flex;gap:4px}
+.nav nav a{font:500 14px/1 "IBM Plex Mono",monospace;color:#C9D0DE;text-decoration:none;padding:11px 16px;border-radius:999px;border:1px solid transparent;transition:background-color 250ms ease,color 250ms ease,border-color 250ms ease}
+.nav nav a:hover{color:#FFFFFF}
+.nav .cbtn.on{border-color:rgba(95,214,255,.55);background:rgba(95,214,255,.12);box-shadow:0 0 24px -6px rgba(95,214,255,.45)}
+.nav nav a.on{color:#FFFFFF;background:rgba(95,214,255,.12);border-color:rgba(95,214,255,.35);box-shadow:0 0 24px -6px rgba(95,214,255,.45)}
+.mbtn{display:none;position:relative;width:44px;height:44px;margin-right:-10px;border:0;background:none;cursor:pointer;color:#EDEAF5}
+.mbtn i{position:absolute;left:12px;right:12px;height:1.6px;border-radius:2px;background:currentColor;transition:transform 260ms var(--eo)}
+.mbtn i:first-child{top:17px}.mbtn i:last-child{top:25px}
+.mbtn[aria-expanded="true"] i:first-child{transform:translateY(4px) rotate(45deg)}
+.mbtn[aria-expanded="true"] i:last-child{transform:translateY(-4px) rotate(-45deg)}
+.nav .mnav{display:none}
+.ghost{border-color:rgba(237,234,245,.25);color:#EDEAF5 !important}
+.solid{background:#EDEAF5;color:#0A0F1C !important}
+@media (hover:hover) and (pointer:fine){.solid:hover{background:#FFFFFF}.ghost:hover{border-color:rgba(237,234,245,.6)}}
+.sm{min-height:42px;padding:0 18px;font-size:14px}

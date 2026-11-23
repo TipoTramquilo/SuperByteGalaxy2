@@ -1,0 +1,20 @@
+/* Tipografías, reset y piezas base (contenedor, botones) */
+@font-face{font-family:"Satoshi";src:url(/fonts/Satoshi-Bold.woff) format("woff");font-weight:700;font-display:swap}
+@font-face{font-family:"Satoshi";src:url(/fonts/Satoshi-Medium.woff) format("woff");font-weight:500;font-display:swap}
+@font-face{font-family:"IBM Plex Mono";src:url(/fonts/IBMPlexMono-Regular.woff) format("woff");font-weight:400;font-display:swap}
+@font-face{font-family:"IBM Plex Mono";src:url(/fonts/IBMPlexMono-Medium.woff) format("woff");font-weight:500;font-display:swap}
+@font-face{font-family:"IBM Plex Sans";src:url(/fonts/IBMPlexSans-Regular.woff) format("woff");font-weight:400;font-display:swap}
+@font-face{font-family:"IBM Plex Sans";src:url(/fonts/IBMPlexSans-Medium.woff) format("woff");font-weight:500;font-display:swap}
+html{scroll-behavior:smooth}
+body{margin:0}
+*,*::before,*::after{box-sizing:border-box}
+h1,h2,h3,h4,p{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+:focus-visible{outline:2px solid #5FD6FF;outline-offset:3px;border-radius:6px}
+.pg{--eo:cubic-bezier(.23,1,.32,1);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip}
+.w{width:100%;max-width:1240px;margin:0 auto;padding:0 clamp(20px,4vw,48px);position:relative}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:999px;font:500 15px/1 "IBM Plex Mono",monospace;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform 160ms var(--eo),background-color 200ms ease,border-color 200ms ease,color 200ms ease}
+.btn:active{transform:scale(.97)}
+.btn svg{width:16px;height:16px;transition:transform 200ms var(--eo)}
+@media (hover:hover) and (pointer:fine){.btn:hover svg{transform:translateX(3px)}}
+.mono{font-family:"IBM Plex Mono",monospace}

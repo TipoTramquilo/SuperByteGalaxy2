@@ -1,0 +1,22 @@
+{
+  "name": "byte-landing",
+  "description": "Landing de Byte Services (Órbita) en Astro: HTML estático y JavaScript mínimo.",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "dev": "astro dev",
+    "build": "astro build",
+    "build:tiny": "astro build && node scripts/optimize.mjs",
+    "build:tiny:gzip": "astro build && node scripts/optimize.mjs --gzip",
+    "size": "node scripts/optimize.mjs --report-only",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^6.0.0"
+  }
+}

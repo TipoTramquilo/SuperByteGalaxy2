@@ -1,0 +1,7 @@
+[
+  { "title": "Diagnóstico", "description": "Evaluación de infraestructura y necesidades.", "icon": "search" },
+  { "title": "Arquitectura", "description": "Diseño de soluciones adaptadas.", "icon": "layers" },
+  { "title": "Implementación", "description": "Desarrollo e integración.", "icon": "tool" },
+  { "title": "Monitoreo", "description": "Supervisión continua.", "icon": "eye" },
+  { "title": "Optimización", "description": "Evolución constante de los sistemas.", "icon": "trend" }
+]
