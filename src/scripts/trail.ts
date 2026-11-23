@@ -9,8 +9,8 @@ interface Point {
   t: number;
 }
 
-const LIFE_MS = 280;
-const DIRTY_PAD = 12;
+const LIFE_MS = 300;
+const DIRTY_PAD = 24;
 
 export function initTrail(): void {
   if (!finePointer() || reducedMotion()) return;
@@ -105,14 +105,25 @@ export function initTrail(): void {
       const b = points[i];
       const age = 1 - (now - b.t) / LIFE_MS;
       const progress = i / (points.length - 1);
-      const alpha = Math.max(0, age * progress * 0.68);
+      const alpha = Math.max(0, age * progress * 0.78);
       if (alpha <= 0.01) continue;
+
+      const widthPx = Math.max(1.4, progress * 9.5 * age);
+      const isCyan = progress > 0.45;
+
+      // Halo suave alrededor del núcleo (sin shadowBlur para mantener alto rendimiento en CPU)
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.strokeStyle = isCyan ? `rgba(95,214,255,${(alpha * 0.22).toFixed(3)})` : `rgba(80,54,234,${(alpha * 0.2).toFixed(3)})`;
+      ctx.lineWidth = widthPx * 1.85;
+      ctx.stroke();
 
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.lineTo(b.x, b.y);
-      ctx.strokeStyle = progress > 0.45 ? `rgba(95,214,255,${alpha.toFixed(3)})` : `rgba(80,54,234,${(alpha * 0.9).toFixed(3)})`;
-      ctx.lineWidth = Math.max(0.8, progress * 5.2 * age);
+      ctx.strokeStyle = isCyan ? `rgba(95,214,255,${alpha.toFixed(3)})` : `rgba(80,54,234,${(alpha * 0.92).toFixed(3)})`;
+      ctx.lineWidth = widthPx;
       ctx.stroke();
     }
 
@@ -120,8 +131,8 @@ export function initTrail(): void {
     const tipAge = Math.max(0, 1 - (now - tip.t) / LIFE_MS);
     if (tipAge > 0.05) {
       ctx.beginPath();
-      ctx.arc(tip.x, tip.y, 3.6 * tipAge, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(180,240,255,${(tipAge * 0.65).toFixed(3)})`;
+      ctx.arc(tip.x, tip.y, 5.2 * tipAge, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(180,240,255,${(tipAge * 0.72).toFixed(3)})`;
       ctx.fill();
     }
 
