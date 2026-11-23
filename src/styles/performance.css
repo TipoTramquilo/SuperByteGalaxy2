@@ -5,13 +5,20 @@
 /* Los gradientes ya tienen bordes suaves: no necesitan filtros sobre superficies grandes. */
 .blob{filter:none;background:radial-gradient(closest-side,rgba(80,54,234,.24),transparent) !important}
 .milky,.orb .halo{filter:none}
-.nav,.foot,.nb,.cnav{-webkit-backdrop-filter:none;backdrop-filter:none}
-.nav,.foot{background:rgba(7,11,22,.94)}
+.nb,.cnav{-webkit-backdrop-filter:none;backdrop-filter:none}
 .nav img,.foot img{width:auto}
 .nb{background:rgba(12,18,34,.94)}
 .nb.on{background:var(--acc)}
 .v1 .orb .core img{height:auto;filter:none;will-change:auto}
 .track,.far{will-change:auto}
+
+/* Desenfoque detrás de barra y pie solo en escritorio con puntero fino, soporte nativo y aceleración por hardware. */
+@media (hover:hover) and (pointer:fine) and (min-width:761px){
+ @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  :root:not(.low-effects) .nav,
+  :root:not(.low-effects) .foot{background:rgba(7,11,22,.54);-webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%)}
+ }
+}
 
 /* Sin aceleración GPU o con caídas sostenidas de cuadros: mismo criterio que móvil.
    Se congela el fondo pesado (estrellas, grano y blobs) con destellos tenues fijos,

@@ -41,8 +41,6 @@ export function initEffects(): void {
     document.querySelectorAll('.hero,.trust,.cons-sec,#metodo,#nosotros,.cta,.privacy-main').forEach((section) => observer.observe(section));
   }
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
   let low = false;
   const enableLowEffects = () => {
     if (low) return;
@@ -55,6 +53,8 @@ export function initEffects(): void {
     enableLowEffects();
     return;
   }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   let previous = 0;
   let frames = 0;

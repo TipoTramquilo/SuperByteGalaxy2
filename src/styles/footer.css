@@ -1,5 +1,5 @@
 /* Pie */
-.foot{position:relative;z-index:5;margin-top:calc(-1 * var(--fh,95px));padding:36px 0;background:rgba(7,11,22,.42);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-top:1px solid rgba(237,234,245,.08)}
+.foot{position:relative;z-index:5;margin-top:calc(-1 * var(--fh,95px));padding:36px 0;background:rgba(7,11,22,.94);border-top:1px solid rgba(237,234,245,.08)}
 .v1{--fh:101px}
 @media (max-width:760px){.v1{--fh:137px}}
 .foot .w{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;font:400 13px/1.5 "IBM Plex Mono",monospace;color:#8A93A8}
