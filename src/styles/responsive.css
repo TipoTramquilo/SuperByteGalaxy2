@@ -7,7 +7,7 @@
  .cn.on::before{opacity:.7}
  .v1 .orb .halo{opacity:.6}
  .v1 .orb .core img{filter:drop-shadow(0 0 10px rgba(95,214,255,.35)) drop-shadow(0 8px 24px rgba(80,54,234,.45))}
- .cta{background:radial-gradient(90% 46% at 50% 107%,rgba(95,214,255,.15),transparent 58%),radial-gradient(75% 44% at 15% 26%,rgba(80,54,234,.28),transparent 62%),linear-gradient(180deg,#070B16 0%,#070B16 14%,#0C153A 64%,#122150 100%)}
+ .cta{background:radial-gradient(90% 46% at 50% 107%,rgba(95,214,255,.15),transparent 58%),radial-gradient(78% 48% at 15% 16%,rgba(80,54,234,.30),transparent 64%),linear-gradient(180deg,#070B16 0%,#09112C 26%,#0C153A 62%,#122150 100%)}
 }
 @media (max-width:1000px){
  .nav nav{display:none}

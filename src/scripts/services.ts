@@ -1,4 +1,4 @@
-/* Hero: los servicios rotan solos (01 → 05) hasta que el visitante toque uno; pasar el cursor solo pausa 6 s.
+/* Hero: los servicios rotan solos (01 → 05); al hacer clic o enfoque se pausan 10 s y al pasar el cursor 6 s, luego reanudan solos.
    El texto del servicio que sale baja y se desvanece; el nuevo entra desde arriba.
    La B del centro crece un poco cuando el cursor se acerca (solo con mouse). */
 import services from '../data/services.json';
@@ -6,6 +6,7 @@ import { finePointer, pad2, reducedMotion } from './env';
 
 const ROTATE_MS = 3800;
 const HOVER_HOLD_MS = 6000;
+const CLICK_HOLD_MS = 10000;
 
 export function initServices(): void {
   const hero = document.querySelector<HTMLElement>('.hero');
@@ -22,7 +23,6 @@ export function initServices(): void {
   let active = 0;
   let previous: number | null = null;
   let swaps = 0;
-  let stopped = false;
   let holdUntil = 0;
 
   const fill = (el: HTMLElement, i: number) => {
@@ -61,8 +61,8 @@ export function initServices(): void {
 
   buttons.forEach((b, i) => {
     const pick = (ev: Event) => {
-      if (ev.type === 'click' || ev.type === 'focus') stopped = true;
-      else holdUntil = Date.now() + HOVER_HOLD_MS;
+      const wait = ev.type === 'click' || ev.type === 'focus' ? CLICK_HOLD_MS : HOVER_HOLD_MS;
+      holdUntil = Math.max(holdUntil, Date.now() + wait);
       show(i);
     };
     b.addEventListener('click', pick);
@@ -71,7 +71,7 @@ export function initServices(): void {
   });
 
   window.setInterval(() => {
-    if (document.hidden || stopped || reducedMotion() || Date.now() < holdUntil) return;
+    if (document.hidden || reducedMotion() || Date.now() < holdUntil) return;
     const r = hero.getBoundingClientRect();
     if (r.bottom < 0 || r.top > window.innerHeight) return;
     if (orb.querySelector('.nb:hover')) return;

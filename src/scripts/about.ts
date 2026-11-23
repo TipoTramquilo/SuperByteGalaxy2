@@ -128,6 +128,14 @@ function initAboutCarousel(): void {
   if (n < 2) return;
 
   let active = 0;
+  let lockTimer = 0;
+  let locked = false;
+
+  const unlock = () => {
+    locked = false;
+    window.clearTimeout(lockTimer);
+    lockTimer = 0;
+  };
 
   const sync = (index: number) => {
     active = Math.max(0, Math.min(n - 1, index));
@@ -141,11 +149,15 @@ function initAboutCarousel(): void {
     const target = Math.max(0, Math.min(n - 1, index));
     const padLeft = parseFloat(getComputedStyle(track).paddingLeft) || 0;
     const left = Math.max(0, slides[target].offsetLeft - padLeft);
-    track.scrollTo({ left, behavior: reducedMotion() ? 'auto' : 'smooth' });
+    locked = true;
+    window.clearTimeout(lockTimer);
+    lockTimer = window.setTimeout(unlock, 560);
     sync(target);
+    track.scrollTo({ left, behavior: reducedMotion() ? 'auto' : 'smooth' });
   };
 
   const onScroll = perFrame(() => {
+    if (locked) return;
     const padLeft = parseFloat(getComputedStyle(track).paddingLeft) || 0;
     const maxScroll = track.scrollWidth - track.clientWidth;
     if (maxScroll <= 2) return;
@@ -168,5 +180,7 @@ function initAboutCarousel(): void {
   prev.addEventListener('click', () => go(active - 1));
   next.addEventListener('click', () => go(active + 1));
   track.addEventListener('scroll', onScroll, { passive: true });
+  track.addEventListener('scrollend', unlock, { passive: true });
+  track.addEventListener('touchstart', unlock, { passive: true });
   sync(0);
 }
