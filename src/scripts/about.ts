@@ -2,10 +2,10 @@
 import { reducedMotion } from './env';
 
 const FADE_WAIT_MS = 450;
-const CHAR_MS = 16;
-const SPACE_MS = 10;
-const COMMA_MS = 70;
-const SENTENCE_MS = 160;
+const CHAR_MS = 32;
+const SPACE_MS = 22;
+const COMMA_MS = 130;
+const SENTENCE_MS = 280;
 const DONE_CLEANUP_MS = 2500;
 
 function charDelay(ch: string): number {

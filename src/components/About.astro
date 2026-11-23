@@ -28,23 +28,28 @@ const delay = ['rv', 'rv d1', 'rv d2'];
     <p class="state rv" style="margin-top:24px">Byte es tu socio estratégico en tecnología y transformación digital. <span class="state-sub">Unimos investigación, innovación y desarrollo para diseñar soluciones avanzadas en sistemas, aplicaciones, infraestructura y ciberseguridad. El resultado: modelos de negocio más eficientes y valor sostenible para tu organización.</span></p>
     <div class="why">
       {reasons.map((r, i) => (
-        <div class={delay[i % delay.length]}>
-          <div class="why-head">
-            <span class="why-ic" aria-hidden="true">
-              {r.icon === 'network' && (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.5" /><circle cx="5" cy="19" r="2.5" /><circle cx="19" cy="19" r="2.5" /><path d="M12 7.5V12m0 0L6.8 17.2M12 12l5.2 5.2" /></svg>
-              )}
-              {r.icon === 'blocks' && (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><path d="M17.5 14v7M14 17.5h7" /></svg>
-              )}
-              {r.icon === 'zap' && (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
-              )}
-            </span>
-            <small>{String(i + 1).padStart(2, '0')}</small>
-          </div>
-          <h3>{r.title}</h3>
-          <p>{r.text}</p>
+        <div class={`why-slot ${delay[i % delay.length]}`}>
+          <article class="why-term">
+            <div class="why-bar" aria-hidden="true">
+              <span class="why-dots"><i></i><i></i><i></i></span>
+              <small>byte://{String(i + 1).padStart(2, '0')}</small>
+            </div>
+            <div class="why-body">
+              <span class="why-ic" aria-hidden="true">
+                {r.icon === 'network' && (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.5" /><circle cx="5" cy="19" r="2.5" /><circle cx="19" cy="19" r="2.5" /><path d="M12 7.5V12m0 0L6.8 17.2M12 12l5.2 5.2" /></svg>
+                )}
+                {r.icon === 'blocks' && (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><path d="M17.5 14v7M14 17.5h7" /></svg>
+                )}
+                {r.icon === 'zap' && (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
+                )}
+              </span>
+              <h3>{r.title}</h3>
+              <p>{r.text}</p>
+            </div>
+          </article>
         </div>
       ))}
     </div>
