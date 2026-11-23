@@ -4,6 +4,7 @@ import { initNav } from './nav';
 import { initServices } from './services';
 import { initProducts } from './products';
 import { initMethod } from './method';
+import { initAbout } from './about';
 import { initContact } from './contact';
 import { initEffects } from './effects';
 
@@ -13,4 +14,5 @@ initNav();
 initServices();
 initProducts();
 initMethod();
+initAbout();
 initContact();
