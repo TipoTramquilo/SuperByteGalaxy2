@@ -16,7 +16,7 @@ import {
 } from '../lib/geometry';
 import { pad2, perFrame } from './env';
 
-const SWIPE_PX = 50;
+const SWIPE_PX = 36;
 
 export function initProducts(): void {
   const root = document.querySelector<HTMLElement>('.cons');
