@@ -25,13 +25,13 @@ const delay = ['rv', 'rv d1', 'rv d2'];
   <Starfield name="nosotros" />
   <div class="w">
     <h2 class="kick rv" id="h-n">Quiénes somos</h2>
-    <p class="state rv" style="margin-top:24px">Byte es tu socio estratégico en tecnología y transformación digital. <span class="state-sub">Unimos investigación, innovación y desarrollo para diseñar soluciones avanzadas en sistemas, aplicaciones, infraestructura y ciberseguridad. El resultado: modelos de negocio más eficientes y valor sostenible para tu organización.</span></p>
+    <p class="state rv" style="margin-top:24px">Byte es tu socio estratégico en tecnología y transformación digital. <span class="state-sub">Unimos investigación, innovación y desarrollo para diseñar soluciones avanzadas en sistemas, aplicaciones, infraestructura y ciberseguridad. El resultado: modelos de negocio más eficientes y valor sostenible para tu organización</span></p>
     <div class="why">
       {reasons.map((r, i) => (
         <div class={`why-slot ${delay[i % delay.length]}`}>
           <article class="why-term">
             <div class="why-bar" aria-hidden="true">
-              <span class="why-dots"><i></i><i></i><i></i></span>
+              <span class="why-dots">{[0, 1, 2].map((d) => <i class={d === i ? 'on' : undefined}></i>)}</span>
               <small>byte://{String(i + 1).padStart(2, '0')}</small>
             </div>
             <div class="why-body">

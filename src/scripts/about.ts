@@ -2,17 +2,24 @@
 import { reducedMotion } from './env';
 
 const FADE_WAIT_MS = 450;
-const CHAR_MS = 32;
-const SPACE_MS = 22;
-const COMMA_MS = 130;
-const SENTENCE_MS = 280;
-const DONE_CLEANUP_MS = 2500;
+const LEAD_CHAR_MS = 32;
+const LEAD_SPACE_MS = 22;
+const LEAD_SENTENCE_MS = 240;
+const REST_CHAR_MS = 12;
+const REST_SPACE_MS = 7;
+const REST_COMMA_MS = 55;
+const REST_SENTENCE_MS = 120;
 
-function charDelay(ch: string): number {
-  if (ch === '.' || ch === ':') return SENTENCE_MS;
-  if (ch === ',') return COMMA_MS;
-  if (ch === ' ') return SPACE_MS;
-  return CHAR_MS;
+function charDelay(ch: string, isLead: boolean): number {
+  if (isLead) {
+    if (ch === '.' || ch === ':') return LEAD_SENTENCE_MS;
+    if (ch === ' ') return LEAD_SPACE_MS;
+    return LEAD_CHAR_MS;
+  }
+  if (ch === '.' || ch === ':') return REST_SENTENCE_MS;
+  if (ch === ',') return REST_COMMA_MS;
+  if (ch === ' ') return REST_SPACE_MS;
+  return REST_CHAR_MS;
 }
 
 export function initAbout(): void {
@@ -42,6 +49,7 @@ export function initAbout(): void {
   restOut.className = 'state-sub';
   const cursor = document.createElement('i');
   cursor.className = 'state-cur';
+  cursor.setAttribute('aria-hidden', 'true');
   live.append(leadOut, restOut, cursor);
 
   el.append(ghost, live);
@@ -51,31 +59,28 @@ export function initAbout(): void {
   let index = 0;
 
   const finish = () => {
-    el.classList.remove('is-typing');
-    el.classList.add('is-done');
-    window.setTimeout(() => {
-      el.classList.remove('is-term', 'is-done');
-      live.remove();
-      while (ghost.firstChild) el.appendChild(ghost.firstChild);
-      ghost.remove();
-    }, DONE_CLEANUP_MS);
+    el.classList.remove('is-typing', 'is-term');
+    live.remove();
+    while (ghost.firstChild) el.appendChild(ghost.firstChild);
+    ghost.remove();
+    el.appendChild(cursor);
   };
 
   const step = () => {
     if (reducedMotion()) {
-      leadOut.textContent = leadText;
-      restOut.textContent = restText;
       finish();
+      cursor.remove();
       return;
     }
     if (document.hidden) {
-      document.addEventListener('visibilitychange', () => window.setTimeout(step, CHAR_MS), { once: true });
+      document.addEventListener('visibilitychange', () => window.setTimeout(step, REST_CHAR_MS), { once: true });
       return;
     }
 
     index += 1;
+    const isLead = index <= leadText.length;
     let ch: string;
-    if (index <= leadText.length) {
+    if (isLead) {
       leadOut.textContent = leadText.slice(0, index);
       ch = leadText.charAt(index - 1);
     } else {
@@ -86,7 +91,7 @@ export function initAbout(): void {
     }
 
     if (index < total) {
-      window.setTimeout(step, charDelay(ch));
+      window.setTimeout(step, charDelay(ch, isLead));
     } else {
       finish();
     }

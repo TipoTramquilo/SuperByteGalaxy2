@@ -6,20 +6,18 @@
 .state-live{display:block;position:absolute;inset:0;pointer-events:none}
 .state-cur{display:inline-block;width:.1em;min-width:2.5px;height:.88em;margin-left:.08em;vertical-align:-.1em;border-radius:1.5px;background:#5FD6FF;box-shadow:0 0 12px rgba(95,214,255,.65);animation:termBlink .9s steps(1,end) infinite}
 .state.is-typing .state-cur{animation:none;opacity:1}
-.state.is-done .state-cur{animation:termBlink .7s steps(1,end) 3,termFade .35s ease 2.1s forwards}
 @keyframes termBlink{0%,49%{opacity:1}50%,100%{opacity:0}}
-@keyframes termFade{to{opacity:0}}
 @media (prefers-reduced-motion:reduce){
  .state.is-term .state-ghost{opacity:1;pointer-events:auto}
- .state-live{display:none}
+ .state-live,.state-cur{display:none}
 }
 .why{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:clamp(56px,6vw,80px)}
 .why-slot{display:flex}
 .why-term{display:flex;flex-direction:column;width:100%;border-radius:14px;border:1px solid rgba(237,234,245,.12);background:rgba(10,16,34,.44);overflow:hidden;transform-origin:center;transition:transform 200ms var(--eo),border-color 220ms ease,background-color 220ms ease}
 .why-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 16px;border-bottom:1px solid rgba(237,234,245,.08);background:rgba(237,234,245,.025)}
 .why-dots{display:inline-flex;align-items:center;gap:6px}
-.why-dots i{width:7px;height:7px;border-radius:50%;background:rgba(237,234,245,.18);transition:background-color 220ms ease}
-.why-dots i:first-child{background:rgba(95,214,255,.55)}
+.why-dots i{width:7px;height:7px;border-radius:50%;background:rgba(237,234,245,.18);transition:background-color 220ms ease,box-shadow 220ms ease}
+.why-dots i.on{background:rgba(95,214,255,.6)}
 .why-bar small{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;color:#8A93A8;transition:color 220ms ease}
 .why-body{padding:22px 22px 24px}
 .why-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;border:1px solid rgba(95,214,255,.26);background:rgba(48,154,231,.10);color:#5FD6FF;transition:border-color 220ms ease,background-color 220ms ease}
@@ -28,7 +26,7 @@
 .why p{color:#8A93A8;font-size:15px;line-height:1.55;margin-top:8px}
 @media (hover:hover) and (pointer:fine){
  .why-slot:hover .why-term{transform:scale(1.03);border-color:rgba(95,214,255,.38);background:rgba(12,20,42,.62);transition:transform 260ms var(--eo),border-color 240ms ease,background-color 240ms ease}
- .why-slot:hover .why-dots i:first-child{background:#5FD6FF}
+ .why-slot:hover .why-dots i.on{background:#5FD6FF;box-shadow:0 0 8px rgba(95,214,255,.65)}
  .why-slot:hover .why-bar small{color:#5FD6FF}
  .why-slot:hover .why-ic{border-color:rgba(95,214,255,.5);background:rgba(48,154,231,.18)}
 }
