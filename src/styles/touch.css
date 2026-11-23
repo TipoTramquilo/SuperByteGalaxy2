@@ -10,7 +10,7 @@
  .grain{display:none}
  .nb{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,18,34,.92)}
  /* barra y pie sin desenfoque del fondo: en el teléfono se recalculaba en cada cuadro del scroll */
- .nav > .w,.foot{-webkit-backdrop-filter:none;backdrop-filter:none}
+ .nav,.foot{-webkit-backdrop-filter:none;backdrop-filter:none}
  /* brillos del fondo con máscara en vez de filtro de desenfoque (mucho más barato de dibujar) */
  .blob{filter:none;-webkit-mask-image:radial-gradient(closest-side,#000,rgba(0,0,0,.45) 50%,transparent);mask-image:radial-gradient(closest-side,#000,rgba(0,0,0,.45) 50%,transparent)}
  .milky{filter:none}

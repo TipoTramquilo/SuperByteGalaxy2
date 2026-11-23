@@ -15,8 +15,8 @@
 /* Desenfoque detrás de barra y pie solo en escritorio con puntero fino, soporte nativo y aceleración por hardware. */
 @media (hover:hover) and (pointer:fine) and (min-width:761px){
  @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-  :root:not(.low-effects) .nav.scrolled > .w,
-  :root:not(.low-effects) .foot{background:rgba(10,16,32,.62);-webkit-backdrop-filter:blur(18px) saturate(145%);backdrop-filter:blur(18px) saturate(145%)}
+  :root:not(.low-effects) .nav.scrolled,
+  :root:not(.low-effects) .foot{background:rgba(7,11,22,.56);-webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%)}
  }
 }
 
