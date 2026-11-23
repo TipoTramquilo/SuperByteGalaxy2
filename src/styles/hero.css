@@ -34,6 +34,12 @@
 .lede{font-size:clamp(18px,1.5vw,20px);line-height:1.6;color:#AEB6C8;max-width:40ch}
 .ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(24px,4svh,36px)}
 .ctas .btn{padding:0 20px;font-size:14px}
+@property --cta-angle{syntax:"<angle>";inherits:false;initial-value:0deg}
+@keyframes ctaOrbit{to{--cta-angle:360deg}}
+.v1 .ctas .btn.solid{font-weight:500;border:3px solid transparent;background:linear-gradient(180deg,#FFFFFF 0%,#F3F6FF 55%,#E6EFFD 100%) padding-box,conic-gradient(from var(--cta-angle),#5FD6FF 0deg,#2B8FE0 78deg,#5036EA 162deg,#7E68F5 235deg,#38B6FF 300deg,#5FD6FF 360deg) border-box;box-shadow:0 10px 30px -10px rgba(48,154,231,.48),0 3px 14px -4px rgba(80,54,234,.36),inset 0 1px 0 rgba(255,255,255,.95);transition:transform 160ms var(--eo),box-shadow 220ms ease,color 200ms ease;animation:ctaOrbit 5.5s linear infinite}
+@media (min-width:761px){.v1 .ctas .btn.solid{min-height:58px;padding:0 28px;font-size:15px;gap:11px}}
+@media (hover:hover) and (pointer:fine){.v1 .ctas .btn.solid:hover{background:linear-gradient(180deg,#FFFFFF 0%,#F8FAFF 58%,#EDF3FF 100%) padding-box,conic-gradient(from var(--cta-angle),#7EE2FF 0deg,#309AE7 78deg,#5B42F3 162deg,#9381FF 235deg,#5FD6FF 300deg,#7EE2FF 360deg) border-box;box-shadow:0 14px 36px -10px rgba(95,214,255,.55),0 4px 18px -6px rgba(80,54,234,.42),inset 0 1px 0 #FFFFFF}}
+@media (prefers-reduced-motion:reduce){.v1 .ctas .btn.solid{animation:none}}
 .nums{display:flex;gap:clamp(24px,3.4vw,48px);margin-top:clamp(32px,6svh,56px);padding-top:24px;border-top:1px solid rgba(237,234,245,.10)}
 .nums b{display:block;font:700 clamp(30px,2.8vw,40px)/1 "Satoshi",system-ui,sans-serif;letter-spacing:-.03em}
 .nums span{display:block;font:500 13px/1.35 "Satoshi",system-ui,sans-serif;color:#8A93A8;margin-top:8px;max-width:12ch;transition:color 200ms ease}

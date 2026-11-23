@@ -79,6 +79,7 @@ export function initServices(): void {
   const [outgoing, incoming] = Array.from(cap.querySelectorAll<HTMLElement>('.capi'));
   const total = cap.dataset.total || pad2(services.length);
   const rm = reducedMotion();
+  const hasFinePointer = finePointer();
 
   let active = 0;
   let previous: number | null = null;
@@ -127,7 +128,7 @@ export function initServices(): void {
   const tick = () => {
     if (!document.hidden && !reducedMotion()) {
       const r = hero.getBoundingClientRect();
-      if (r.bottom >= 0 && r.top <= window.innerHeight && !orb.querySelector('.nb:hover')) {
+      if (r.bottom >= 0 && r.top <= window.innerHeight && (!hasFinePointer || !orb.querySelector('.nb:hover'))) {
         show((active + 1) % buttons.length);
       }
     }
@@ -141,14 +142,16 @@ export function initServices(): void {
     };
     b.addEventListener('click', pick);
     b.addEventListener('focus', pick);
-    b.addEventListener('mouseenter', pick);
-    b.addEventListener('mouseleave', () => schedule(HOVER_RESUME_MS));
+    if (hasFinePointer) {
+      b.addEventListener('mouseenter', pick);
+      b.addEventListener('mouseleave', () => schedule(HOVER_RESUME_MS));
+    }
   });
 
   schedule(ROTATE_MS);
 
   /* ---- la B se acerca al cursor ---- */
-  if (!finePointer() || rm) return;
+  if (!hasFinePointer || rm) return;
   const img = orb.querySelector<HTMLElement>('.core img');
   const halo = orb.querySelector<HTMLElement>('.halo');
   if (!img) return;

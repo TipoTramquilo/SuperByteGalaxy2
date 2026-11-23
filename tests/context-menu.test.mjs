@@ -62,9 +62,9 @@ test('clasifica enlaces web, correo, teléfono y anclas internas', () => {
   assert.equal(web.kind, 'url');
   assert.equal(web.badge, 'instagram.com/byte.xyz');
 
-  const mail = formatLinkBadge('mailto:proyectos@byteservices.xyz', 'mailto:proyectos@byteservices.xyz');
+  const mail = formatLinkBadge('mailto:proyectos@byteservices.net', 'mailto:proyectos@byteservices.net');
   assert.equal(mail.kind, 'mail');
-  assert.equal(mail.value, 'proyectos@byteservices.xyz');
+  assert.equal(mail.value, 'proyectos@byteservices.net');
 
   const tel = formatLinkBadge('tel:+584227707654', 'tel:+584227707654');
   assert.equal(tel.kind, 'tel');
@@ -85,7 +85,7 @@ test('inspecciona contexto de selección, enlace, imagen y botón con data-copy'
     getAttribute: (name) => (name === 'alt' ? 'Byte' : null),
   };
   const copyEl = {
-    dataset: { copy: 'proyectos@byteservices.xyz' },
+    dataset: { copy: 'proyectos@byteservices.net' },
   };
   const target = {
     closest: (selector) => {
@@ -100,7 +100,7 @@ test('inspecciona contexto de selección, enlace, imagen y botón con data-copy'
   assert.equal(info.selection, 'Ingeniería   digital');
   assert.equal(info.link?.kind, 'url');
   assert.equal(info.image?.badge, 'Byte');
-  assert.equal(info.copyData?.value, 'proyectos@byteservices.xyz');
+  assert.equal(info.copyData?.value, 'proyectos@byteservices.net');
   assert.equal(info.copyData?.label, 'Copiar correo');
   assert.equal(info.scrolled, true);
   assert.equal(info.isHome, true);

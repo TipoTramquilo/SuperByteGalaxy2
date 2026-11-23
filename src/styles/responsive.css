@@ -16,10 +16,11 @@
  .mbtn{display:block}
  .nav .mnav{display:block;position:absolute;left:0;right:0;top:100%;background:#070B16;box-shadow:0 30px 60px -20px rgba(0,0,0,.7);border-bottom:1px solid rgba(237,234,245,.08);opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity 200ms ease,transform 240ms var(--eo),visibility 0s 240ms}
  .nav .mnav.open{opacity:1;visibility:visible;transform:none;transition:opacity 200ms ease,transform 240ms var(--eo),visibility 0s}
- .nav .mnav .w{display:flex;flex-direction:column;align-items:stretch;height:auto;gap:0;padding-top:8px;padding-bottom:24px}
- .nav .mnav a:not(.btn){font:700 28px/1 "Satoshi",system-ui,sans-serif;letter-spacing:-.02em;color:#EDEAF5 !important;text-decoration:none;padding:15px 18px;margin:2px -18px;border-radius:18px;border:1px solid transparent}
+ .nav .mnav .w{display:flex;flex-direction:column;align-items:stretch;height:auto;gap:0;padding:8px 0 24px}
+ .nav .mnav a:not(.btn){font:700 28px/1 "Satoshi",system-ui,sans-serif;letter-spacing:-.02em;color:#EDEAF5 !important;text-decoration:none;padding:15px clamp(20px,4vw,48px);margin:2px 0;border-radius:0;border:0}
+ .nav .mnav a:not(.btn):focus-visible{border-radius:0;outline-offset:-3px}
  .mnav .btn{margin-top:20px}
- .nav .mnav a.on:not(.btn){color:#FFFFFF !important;background:rgba(237,234,245,.07);border-color:transparent;box-shadow:none;border-radius:14px}
+ .nav .mnav a.on:not(.btn){color:#FFFFFF !important;background:rgba(237,234,245,.07);border-color:transparent;box-shadow:none;border-radius:0}
  .nav .mnav a.mcontact{color:#309AE7 !important;border-bottom:0}
  .hgrid{grid-template-columns:minmax(0,1fr)}
  .sect-l{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}

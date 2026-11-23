@@ -11,6 +11,7 @@ import { initEffects } from './effects';
 import { initTrail } from './trail';
 import { initContextMenu } from './context-menu';
 import { initMeteors } from './meteors';
+import { initFooter } from './footer';
 
 initReveal();
 initEffects();
@@ -24,3 +25,4 @@ initContact();
 initTrail();
 initContextMenu();
 initMeteors();
+initFooter();

@@ -2,7 +2,7 @@
    Intercepta el clic derecho en escritorio; con Shift + clic derecho (o en táctil / campos editables)
    se abre el menú nativo del navegador junto con las extensiones del usuario. */
 
-const DEFAULT_EMAIL = 'proyectos@byteservices.xyz';
+const DEFAULT_EMAIL = 'proyectos@byteservices.net';
 const MARGIN = 12;
 const TOAST_MS = 2200;
 
