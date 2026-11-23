@@ -1,6 +1,7 @@
 /* Aparición al hacer scroll (.rv → .in) y pausa de las estrellas que no están en pantalla. */
 
 export function initReveal(): void {
+  document.documentElement.dataset.rvReady = '1';
   const items = document.querySelectorAll<HTMLElement>('.rv');
   const skies = document.querySelectorAll<HTMLElement>('.stars');
 

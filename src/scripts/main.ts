@@ -7,8 +7,8 @@ import { initMethod } from './method';
 import { initContact } from './contact';
 import { initEffects } from './effects';
 
-initEffects();
 initReveal();
+initEffects();
 initNav();
 initServices();
 initProducts();
