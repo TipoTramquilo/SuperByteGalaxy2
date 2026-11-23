@@ -42,6 +42,6 @@
  .cic{width:48px;height:48px}
  .cinfo p{font-size:16px}
  .cn:not(.on) .cinfo,.cn:not(.on) .cname{opacity:0}
- .cn .cname{transition:opacity 200ms ease,transform 360ms cubic-bezier(.22,1,.36,1)}
- .cinfo{transition:transform 360ms cubic-bezier(.22,1,.36,1),opacity 200ms ease}
+ .cn .cname{transition:opacity 240ms ease,transform 450ms cubic-bezier(.25,.9,.3,1)}
+ .cinfo{transition:transform 450ms cubic-bezier(.25,.9,.3,1),opacity 240ms ease}
 }

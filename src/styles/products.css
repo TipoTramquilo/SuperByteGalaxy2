@@ -48,10 +48,10 @@
 .cnav[aria-disabled="true"]{opacity:.3;pointer-events:none;box-shadow:none}
 @media (max-width:760px){
  .cnav{width:48px;height:48px;top:calc(var(--rowy,160px) - 24px)}.cnav.l{left:10px}.cnav.r{right:10px}
- .track{transition:transform 440ms cubic-bezier(.22,1,.36,1)}
- .far{transition:transform 620ms cubic-bezier(.22,1,.36,1)}
- .orbn,.orbn .gl,.cn::before,.cinfo,.cn .cname{transition-duration:360ms}
- .cinfo .more{transition:opacity 160ms ease,transform 160ms ease,visibility 0s 160ms}
- .cn.on .cinfo .more{transition:opacity 260ms ease 140ms,transform 340ms var(--eo) 140ms,visibility 0s}
+ .track{transition:transform 540ms cubic-bezier(.25,.9,.3,1)}
+ .far{transition:transform 780ms cubic-bezier(.25,.9,.3,1)}
+ .orbn,.orbn .gl,.cn::before,.cinfo,.cn .cname{transition-duration:450ms}
+ .cinfo .more{transition:opacity 200ms ease,transform 200ms ease,visibility 0s 200ms}
+ .cn.on .cinfo .more{transition:opacity 300ms ease 180ms,transform 400ms var(--eo) 180ms,visibility 0s}
 }
-@media (prefers-reduced-motion:reduce){.track,.orbn,.cinfo{transition:none}.orbn::after,.cl .seg.on{animation:none}}
+@media (prefers-reduced-motion:reduce){.track,.far,.orbn,.orbn .gl,.cn::before,.cinfo,.cn .cname,.cinfo .more{transition:none}.orbn::after,.cl .seg.on::before{animation:none}}
