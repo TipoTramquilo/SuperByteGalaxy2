@@ -150,7 +150,7 @@ export function trackStyle(g: ConsGeometry, pi: number): Style {
 /** Líneas entre productos: se acortan para no tocar los círculos (el activo es más grande). */
 export function segments(g: ConsGeometry, pi: number): { style: Style; on: boolean }[] {
   const { X, Y, R, n } = g;
-  const rad = (i: number) => (i === pi ? R : R * 0.68) + 12;
+  const rad = (i: number) => (i === pi ? R * 1.12 : R * 0.54) + 14;
   const out: { style: Style; on: boolean }[] = [];
   for (let i = 0; i < n - 1; i++) {
     const dx = X[i + 1] - X[i];
