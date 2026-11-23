@@ -7,6 +7,7 @@ import { initMethod } from './method';
 import { initAbout } from './about';
 import { initContact } from './contact';
 import { initEffects } from './effects';
+import { initTrail } from './trail';
 
 initReveal();
 initEffects();
@@ -16,3 +17,4 @@ initProducts();
 initMethod();
 initAbout();
 initContact();
+initTrail();

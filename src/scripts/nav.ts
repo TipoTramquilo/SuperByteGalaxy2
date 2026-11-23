@@ -11,6 +11,7 @@ export function initNav(): void {
   const links = SECTIONS.map((id) => header.querySelectorAll<HTMLAnchorElement>(`a[href="#${id}"]`));
   let current = '';
   const spy = perFrame(() => {
+    header.classList.toggle('scrolled', window.scrollY > 36);
     const line = window.innerHeight * 0.45;
     let next = '';
     SECTIONS.forEach((id) => {
@@ -33,6 +34,7 @@ export function initNav(): void {
   if (button && menu) {
     const setMenu = (open: boolean) => {
       menu.classList.toggle('open', open);
+      header.classList.toggle('menu-open', open);
       button.setAttribute('aria-expanded', open ? 'true' : 'false');
       button.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
     };

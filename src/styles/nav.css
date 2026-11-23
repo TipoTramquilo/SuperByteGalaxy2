@@ -2,9 +2,13 @@
 .v1 .btn{font-weight:600}
 .v1{background:#070B16;color:#EDEAF5;--ringc:rgba(237,234,245,.13);--acc:#309AE7;--nodeb:rgba(237,234,245,.16);--nodebg:rgba(12,18,34,.7);--nodec:#EDEAF5;--nodenum:rgba(237,234,245,.08)}
 .v1 a{color:#5FD6FF}
-.nav{position:sticky;top:0;z-index:40;margin-bottom:-72px;background:rgba(7,11,22,.94);border-bottom:1px solid rgba(237,234,245,.08)}
-.nav .w{display:flex;align-items:center;gap:32px;height:72px}
-.nav img{height:30px;display:block;margin-right:auto}
+.nav{position:sticky;top:0;z-index:40;margin-bottom:-72px;height:72px;pointer-events:none}
+.nav > .w{display:flex;align-items:center;gap:32px;height:72px;border-radius:0;border:1px solid transparent;background:transparent;pointer-events:auto;transition:max-width 420ms var(--eo),height 360ms var(--eo),transform 360ms var(--eo),padding 360ms var(--eo),gap 360ms var(--eo),border-radius 360ms var(--eo),background-color 280ms ease,border-color 280ms ease,box-shadow 280ms ease}
+.nav.scrolled > .w{max-width:920px;height:58px;gap:20px;padding:0 8px 0 22px;transform:translateY(12px);border-radius:999px;background:rgba(10,16,32,.92);border-color:rgba(237,234,245,.14);box-shadow:0 14px 36px -14px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.07)}
+.nav.menu-open{background:#070B16;pointer-events:auto}
+.nav.menu-open > .w{max-width:1240px;width:100%;height:72px;transform:none;border-radius:0;border-color:transparent;background:#070B16;box-shadow:none;padding:0 clamp(20px,4vw,48px)}
+.nav img{height:30px;display:block;margin-right:auto;transition:height 320ms var(--eo)}
+.nav.scrolled > .w img{height:26px}
 .nav nav{display:flex;gap:4px}
 .nav nav a{font:500 14px/1 "IBM Plex Mono",monospace;color:#C9D0DE;text-decoration:none;padding:11px 16px;border-radius:999px;border:1px solid transparent;transition:background-color 250ms ease,color 250ms ease,border-color 250ms ease}
 .nav nav a:hover{color:#FFFFFF}
@@ -15,7 +19,14 @@
 .mbtn i:first-child{top:17px}.mbtn i:last-child{top:25px}
 .mbtn[aria-expanded="true"] i:first-child{transform:translateY(4px) rotate(45deg)}
 .mbtn[aria-expanded="true"] i:last-child{transform:translateY(-4px) rotate(-45deg)}
-.nav .mnav{display:none}
+.nav .mnav{display:none;pointer-events:auto}
+@media (max-width:1000px){
+ .nav.scrolled:not(.menu-open) > .w{width:calc(100% - 24px);max-width:680px;height:56px;padding:0 16px 0 20px;transform:translateY(10px);background:rgba(7,11,22,.96)}
+}
+@media (prefers-reduced-motion:reduce){
+ .nav > .w,.nav img{transition:none}
+}
+.ctrail{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:35}
 .ghost{border-color:rgba(237,234,245,.25);color:#EDEAF5 !important}
 .solid{background:#EDEAF5;color:#0A0F1C !important}
 @media (hover:hover) and (pointer:fine){.solid:hover{background:#FFFFFF}.ghost:hover{border-color:rgba(237,234,245,.6)}}
