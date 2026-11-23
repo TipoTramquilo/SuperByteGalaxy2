@@ -1,9 +1,9 @@
 ---
-/* Cinta de clientes. La lista se repite una vez (oculta a lectores de pantalla) para que el bucle no tenga corte. */
+/* Cinta de clientes. Se repite 4 veces (dos mitades idénticas) para cubrir incluso monitores ultraanchos sin huecos ni saltos al reiniciar. */
 import Starfield from './Starfield.astro';
 import clients from '../data/clients.json';
 
-const loop = [...clients.map((c) => ({ ...c, copy: false })), ...clients.map((c) => ({ ...c, copy: true }))];
+const loop = [0, 1, 2, 3].flatMap((pass) => clients.map((c) => ({ ...c, copy: pass > 0 })));
 ---
 <section class="trust" aria-label="Clientes">
   <Starfield name="clientes" />

@@ -1,5 +1,7 @@
 /* Contacto */
-.cta{position:relative;overflow:hidden;padding:clamp(96px,11vw,160px) 0 calc(clamp(96px,11vw,160px) + var(--fh,95px));text-align:left;background:radial-gradient(70% 85% at 50% 112%,rgba(95,214,255,.24),transparent 58%),radial-gradient(60% 80% at 15% 0%,rgba(80,54,234,.42),transparent 60%),linear-gradient(180deg,#070B16,#0C153A 60%,#142565)}
+.cta{position:relative;overflow:hidden;padding:clamp(112px,12vw,168px) 0 calc(clamp(96px,11vw,160px) + var(--fh,95px));text-align:left;background:radial-gradient(70% 85% at 50% 112%,rgba(95,214,255,.24),transparent 58%),radial-gradient(58% 72% at 15% 28%,rgba(80,54,234,.36),transparent 62%),linear-gradient(180deg,#070B16 0%,#070B16 14%,#0C153A 64%,#142565 100%)}
+.cta::before{content:"";position:absolute;left:0;right:0;top:0;height:clamp(140px,18vw,220px);background:linear-gradient(180deg,#070B16 0%,rgba(7,11,22,.78) 38%,rgba(7,11,22,.28) 72%,transparent 100%);pointer-events:none;z-index:1}
+.cta>.w{z-index:2}
 .cta .grain{--go:.08}
 .cta h2{font:700 clamp(38px,min(4.6vw,8.4svh),72px)/1 "Satoshi",system-ui,sans-serif;letter-spacing:-.04em;max-width:14ch;margin:0;text-wrap:balance}
 .cta p{color:#C9D2E6;font-size:19px;max-width:42ch;margin:24px 0 0}

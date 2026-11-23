@@ -9,6 +9,7 @@ import { initContact } from './contact';
 import { initEffects } from './effects';
 import { initTrail } from './trail';
 import { initContextMenu } from './context-menu';
+import { initMeteors } from './meteors';
 
 initReveal();
 initEffects();
@@ -20,3 +21,4 @@ initAbout();
 initContact();
 initTrail();
 initContextMenu();
+initMeteors();
