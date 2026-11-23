@@ -44,7 +44,7 @@ const organization = {
     <link rel="preload" href="/fonts/Satoshi-Bold.woff" as="font" type="font/woff" crossorigin="anonymous" />
     <link rel="preload" href="/fonts/IBMPlexSans-Regular.woff" as="font" type="font/woff" crossorigin="anonymous" />
     <link rel="preload" href="/fonts/IBMPlexMono-Medium.woff" as="font" type="font/woff" crossorigin="anonymous" />
-    <script is:inline>if("IntersectionObserver" in window){var d=document.documentElement;d.classList.add("js");addEventListener("error",function(e){if(e.target&&e.target.tagName==="SCRIPT")d.classList.remove("js");},true);addEventListener("DOMContentLoaded",function(){setTimeout(function(){if(!d.dataset.rvReady)d.classList.remove("js");},1500);});}</script>
+    <script is:inline>(function(){if("scrollRestoration" in history)history.scrollRestoration="manual";var n=performance.getEntriesByType&&performance.getEntriesByType("navigation")[0];if(n&&n.type==="reload"&&location.hash)history.replaceState(null,"",location.pathname+location.search);var top=function(){if(location.hash)return;try{scrollTo({top:0,left:0,behavior:"instant"});}catch{scrollTo(0,0);}};top();addEventListener("DOMContentLoaded",top,{once:true});addEventListener("pageshow",top);if("IntersectionObserver" in window){var d=document.documentElement;d.classList.add("js");addEventListener("error",function(e){if(e.target&&e.target.tagName==="SCRIPT")d.classList.remove("js");},true);addEventListener("DOMContentLoaded",function(){setTimeout(function(){if(!d.dataset.rvReady)d.classList.remove("js");},1500);});}})();</script>
   </head>
   <body>
     <slot />
