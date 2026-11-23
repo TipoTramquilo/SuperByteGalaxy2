@@ -1,8 +1,8 @@
 /* Cometas rápidos ocasionales que cruzan el fondo estrellado detrás del contenido. */
 import { reducedMotion } from './env';
 
-const MIN_GAP_MS = 3200;
-const MAX_GAP_MS = 7200;
+const MIN_GAP_MS = 2500;
+const MAX_GAP_MS = 5600;
 
 export function initMeteors(): void {
   if (reducedMotion()) return;
@@ -65,10 +65,10 @@ export function initMeteors(): void {
     if (document.hidden) {
       window.clearTimeout(timer);
     } else if (!reducedMotion()) {
-      schedule(1800);
+      schedule(1400);
     }
   });
 
   // Primer cometa tras un respiro breve al cargar
-  schedule(2200);
+  schedule(1700);
 }

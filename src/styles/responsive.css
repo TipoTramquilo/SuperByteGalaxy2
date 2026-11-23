@@ -1,6 +1,7 @@
 /* Ajustes por ancho de pantalla */
 @media (max-width:760px){
  .hero{padding-top:88px;background:radial-gradient(90% 40% at 85% 22%,rgba(80,54,234,.24),transparent 65%),radial-gradient(80% 35% at 5% 88%,rgba(26,111,184,.26),transparent 65%),#070B16}
+ .hgrid>:first-child{min-height:calc(100svh - 88px)}
  .hero .blob{opacity:.38}
  .hero .milky{opacity:.5}
  .cn::before{opacity:0}
@@ -33,6 +34,7 @@
  .nums{flex-wrap:wrap;row-gap:28px;justify-content:center;text-align:center}.nums div{width:calc(50% - 16px)}.nums span{margin-left:auto;margin-right:auto}
  .nav .btn.sm{display:none}
  .hero{padding-top:80px}
+ .hgrid>:first-child{min-height:calc(100svh - 80px)}
  .ctas{flex-direction:column}.ctas .btn{width:100%}
  .cap{min-height:150px}
  .ci{--cx:16px;grid-template-columns:48px minmax(0,1fr) 16px;gap:16px}
