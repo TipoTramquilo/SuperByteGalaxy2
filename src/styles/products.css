@@ -12,7 +12,9 @@
 .cl{position:absolute;inset:0;pointer-events:none}
 .cl i{position:absolute;display:block;transform-origin:0 50%}
 .cl .seg{height:1.2px;margin-top:-.6px;background:rgba(237,234,245,.22);transition:background-color 500ms ease}
-.cl .seg.on{height:1.4px;margin-top:-.7px;background:repeating-linear-gradient(90deg,rgba(95,214,255,.8) 0 4px,transparent 4px 11px);animation:dashx 1.6s linear infinite}
+.cl .seg.on{height:1.4px;margin-top:-.7px;background:none;overflow:hidden}
+.cl .seg.on::before{content:"";position:absolute;inset:0 0 0 -22px;background:repeating-linear-gradient(90deg,rgba(95,214,255,.8) 0 4px,transparent 4px 11px);animation:segMove 1.6s linear infinite}
+@keyframes segMove{to{transform:translate3d(22px,0,0)}}
 .cl .br{height:1px;margin-top:-.5px;background:repeating-linear-gradient(90deg,rgba(237,234,245,.16) 0 2px,transparent 2px 7px)}
 .cl .ds{border-radius:50%;background:#EDEAF5;transform:translate(-50%,-50%)}
 .cn{position:absolute;display:flex;flex-direction:column;align-items:center;text-align:center}

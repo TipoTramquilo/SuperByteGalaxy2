@@ -12,7 +12,9 @@ import { initTrail } from './trail';
 import { initContextMenu } from './context-menu';
 import { initMeteors } from './meteors';
 import { initFooter } from './footer';
+import { initNoSelect } from './noselect';
 
+initNoSelect();
 initReveal();
 initEffects();
 initNav();

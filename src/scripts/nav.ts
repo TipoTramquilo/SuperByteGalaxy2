@@ -42,6 +42,15 @@ export function initNav(): void {
     menu.addEventListener('click', (ev) => {
       if ((ev.target as Element).closest('a')) setMenu(false);
     });
+    document.addEventListener('pointerdown', (ev) => {
+      if (menu.classList.contains('open') && !header.contains(ev.target as Node)) setMenu(false);
+    });
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape' && menu.classList.contains('open')) {
+        setMenu(false);
+        button.focus();
+      }
+    });
   }
 
   /* ---- enlaces internos (barra, menú móvil, Contactar): la sección queda centrada en el espacio visible bajo la barra ---- */

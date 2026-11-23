@@ -32,7 +32,7 @@
 .low-effects .grain{display:none}
 
 @media(prefers-reduced-motion:reduce){
- .blob,.cl .seg.on,.orbn::after{animation:none !important}
+ .blob,.cl .seg.on::before,.orb .spoke.on::before,.orbn::after{animation:none !important}
  .grain{display:none}
  .stars{will-change:auto}
  .logos{mask-image:none;-webkit-mask-image:none;overflow-x:auto}

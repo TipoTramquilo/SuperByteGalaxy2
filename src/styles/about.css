@@ -34,9 +34,9 @@
 }
 @media (max-width:1000px){
  .why-wrap{margin-top:44px}
- .why{position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 calc(-1 * clamp(20px,4vw,48px));padding:4px clamp(20px,4vw,48px);scroll-padding-inline:clamp(20px,4vw,48px);touch-action:pan-x pan-y}
+ .why{--slot-w:min(84vw,400px);position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 calc(-1 * clamp(20px,4vw,48px));padding:4px calc(50% + clamp(20px,4vw,48px) - var(--slot-w) / 2);scroll-padding-inline:0;touch-action:pan-x pan-y}
  .why::-webkit-scrollbar{display:none}
- .why-slot{flex:0 0 86%;scroll-snap-align:start;scroll-snap-stop:always}
+ .why-slot{flex:0 0 var(--slot-w);scroll-snap-align:center;scroll-snap-stop:always}
  .js .why-slot.rv{opacity:1;transform:none}
  .why-ctrl{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:20px}
  .wnav{width:46px;height:46px;color:#FFFFFF;border-color:rgba(95,214,255,.55);background:rgba(14,24,52,.85);box-shadow:0 0 0 4px rgba(95,214,255,.08),0 8px 26px -8px rgba(48,154,231,.5)}

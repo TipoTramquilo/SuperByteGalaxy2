@@ -80,7 +80,7 @@ export function initTrail(): void {
       return;
     }
 
-    if (low && now - lastDraw < 30) {
+    if (low && now - lastDraw < 40) {
       raf = requestAnimationFrame(render);
       return;
     }

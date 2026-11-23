@@ -22,9 +22,10 @@
  .nav,.nav > .w{transition:none}
 }
 .ctrail{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:35}
-.comet-head{position:fixed;top:0;left:0;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;border-radius:50%;pointer-events:none;z-index:9999;opacity:0;background:radial-gradient(circle at 38% 35%,#9BD7F8 0%,#38A2E2 58%,#277BC0 100%);box-shadow:0 0 13px 2px rgba(56,162,226,.46),0 0 0 1px rgba(155,215,248,.35);transition:opacity 140ms ease,width 180ms var(--eo),height 180ms var(--eo),margin 180ms var(--eo),box-shadow 180ms ease;will-change:transform}
+.comet-head{position:fixed;top:0;left:0;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;pointer-events:none;z-index:9999;opacity:0;transition:opacity 140ms ease;will-change:transform}
+.comet-head::before{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 38% 35%,#9BD7F8 0%,#38A2E2 58%,#277BC0 100%);box-shadow:0 0 13px 2px rgba(56,162,226,.46),0 0 0 1px rgba(155,215,248,.35);transition:transform 180ms var(--eo),box-shadow 180ms ease}
 .comet-head.vis{opacity:1}
-.comet-head.hot{width:17px;height:17px;margin:-8.5px 0 0 -8.5px;box-shadow:0 0 17px 3px rgba(56,162,226,.6),0 0 0 2px rgba(155,215,248,.55)}
+.comet-head.hot::before{transform:scale(1.31);box-shadow:0 0 17px 3px rgba(56,162,226,.6),0 0 0 2px rgba(155,215,248,.55)}
 @media (hover:hover) and (pointer:fine){
  .has-comet,.has-comet *{cursor:none !important}
 }

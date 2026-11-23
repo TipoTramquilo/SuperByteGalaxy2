@@ -145,10 +145,12 @@ function initAboutCarousel(): void {
     next.setAttribute('aria-disabled', active === n - 1 ? 'true' : 'false');
   };
 
+  const targetLeft = (slide: HTMLElement) =>
+    Math.max(0, Math.round(slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2));
+
   const go = (index: number) => {
     const target = Math.max(0, Math.min(n - 1, index));
-    const padLeft = parseFloat(getComputedStyle(track).paddingLeft) || 0;
-    const left = Math.max(0, slides[target].offsetLeft - padLeft);
+    const left = targetLeft(slides[target]);
     locked = true;
     window.clearTimeout(lockTimer);
     lockTimer = window.setTimeout(unlock, 560);
@@ -158,7 +160,6 @@ function initAboutCarousel(): void {
 
   const onScroll = perFrame(() => {
     if (locked) return;
-    const padLeft = parseFloat(getComputedStyle(track).paddingLeft) || 0;
     const maxScroll = track.scrollWidth - track.clientWidth;
     if (maxScroll <= 2) return;
     if (track.scrollLeft >= maxScroll - 6) {
@@ -168,7 +169,7 @@ function initAboutCarousel(): void {
     let best = 0;
     let bestDist = Infinity;
     for (let i = 0; i < n; i++) {
-      const dist = Math.abs(slides[i].offsetLeft - padLeft - track.scrollLeft);
+      const dist = Math.abs(targetLeft(slides[i]) - track.scrollLeft);
       if (dist < bestDist) {
         bestDist = dist;
         best = i;
