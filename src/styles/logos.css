@@ -7,12 +7,12 @@
 .logos .lg .w0{opacity:.6;transition:opacity 220ms ease,transform 200ms var(--eo)}
 .logos .lg .c0{position:absolute;left:0;top:0;opacity:0;transition:opacity 220ms ease,transform 200ms var(--eo)}
 @media (hover:hover) and (pointer:fine){
- .logos .lg:hover img{transform:scale(1.14);transition:opacity 260ms ease,transform 280ms var(--eo)}
- .logos .lg:hover .w0{opacity:0}
- .logos .lg:hover .c0{opacity:1}
+ .logos .lg.is-hot img,:root:not(.js) .logos .lg:hover img{transform:scale(1.14);transition:opacity 260ms ease,transform 280ms var(--eo)}
+ .logos .lg.is-hot .w0,:root:not(.js) .logos .lg:hover .w0{opacity:0}
+ .logos .lg.is-hot .c0,:root:not(.js) .logos .lg:hover .c0{opacity:1}
 }
 @media (prefers-reduced-motion:reduce){
- .logos .lg:hover img{transform:none}
+ .logos .lg.is-hot img,.logos .lg:hover img{transform:none}
 }
 /* en táctil: logos a color; dos velos fijos a los lados los pasan a gris, así se ven a color al cruzar el centro */
 @media (hover:none),(max-width:760px){

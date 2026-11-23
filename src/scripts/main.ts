@@ -2,6 +2,7 @@
 import { initReveal } from './reveal';
 import { initNav } from './nav';
 import { initServices } from './services';
+import { initClients } from './clients';
 import { initProducts } from './products';
 import { initMethod } from './method';
 import { initAbout } from './about';
@@ -15,6 +16,7 @@ initReveal();
 initEffects();
 initNav();
 initServices();
+initClients();
 initProducts();
 initMethod();
 initAbout();
