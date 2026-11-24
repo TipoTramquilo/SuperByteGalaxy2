@@ -94,28 +94,33 @@ export function initProducts(): void {
   });
   let downX: number | null = null;
   let downY: number | null = null;
+  let activePointer: number | null = null;
   const resetSwipe = () => {
     downX = null;
     downY = null;
+    activePointer = null;
   };
   vp.addEventListener('pointerdown', (e) => {
+    if (activePointer !== null) return;
     if (e.pointerType === 'mouse' && e.button !== 0) return;
+    activePointer = e.pointerId;
     downX = e.clientX;
     downY = e.clientY;
   });
   vp.addEventListener('pointercancel', resetSwipe);
   vp.addEventListener('pointerup', (e) => {
-    if (downX == null || downY == null) return;
+    if (e.pointerId !== activePointer || downX == null || downY == null) return;
     const dx = e.clientX - downX;
     const dy = e.clientY - downY;
     resetSwipe();
     if (Math.abs(dx) > SWIPE_PX && Math.abs(dx) > Math.abs(dy) * 1.2) go(active + (dx < 0 ? 1 : -1));
   });
 
+  const scheduleLayout = perFrame(layout);
   /* ResizeObserver entrega el ancho ya calculado: leerlo al cargar forzaría un reflujo de toda la página */
-  if ('ResizeObserver' in window) new ResizeObserver(layout).observe(vp);
+  if ('ResizeObserver' in window) new ResizeObserver(scheduleLayout).observe(vp);
   else {
     layout();
-    window.addEventListener('resize', perFrame(layout));
+    window.addEventListener('resize', scheduleLayout);
   }
 }

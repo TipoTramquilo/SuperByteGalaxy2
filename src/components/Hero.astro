@@ -20,11 +20,11 @@ const first = services[0];
   <Grain />
   <div class="w hgrid">
     <div>
-      <span class="eb e1"><i></i><span class="eb-txt">Byte Services · {site.location}</span></span>
+      <span class="eb e1"><i aria-hidden="true"></i><span class="eb-txt">Byte Services · {site.location}</span></span>
       <h1 class="h1 e1" id="h1">Ingeniería digital de <span>nueva generación.</span></h1>
       <p class="lede e2">{site.description}</p>
       <div class="ctas e3">
-        <a class="btn solid" href={site.whatsapp.url} target="_blank" rel="noopener"><span class="cta-bg" aria-hidden="true"><i class="cta-ring"></i><i class="cta-fill"></i></span><span class="cta-lbl">Agendar consultoría</span> <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></a>
+        <a class="btn solid" href={site.whatsapp.url} target="_blank" rel="noopener noreferrer"><span class="cta-bg" aria-hidden="true"><i class="cta-ring"></i><i class="cta-fill"></i></span><span class="cta-lbl">Agendar consultoría</span> <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></a>
       </div>
       <dl class="nums e3" aria-label="Byte en cifras" style="margin-bottom:0">
         {site.stats.map((s) => (

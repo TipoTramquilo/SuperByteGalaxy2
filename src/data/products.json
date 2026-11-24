@@ -4,14 +4,14 @@
     "description": "Monitoreo de flotas y logística: ubicación en tiempo real, rutas, entregas y reportes.",
     "features": ["Ubicación en tiempo real", "Rutas, entregas y reportes", "Por vehículo al mes"],
     "glyph": "pin",
-    "colors": ["#FFD88F", "#F5A524"]
+    "colors": ["#A5E8FF", "#20B7D9"]
   },
   {
     "name": "Sinapsis AI",
     "description": "Asistente de IA privado que responde con los documentos y datos de la empresa, instalado en el servidor del cliente.",
     "features": ["Respuestas con documentos y datos de la empresa", "Instalación en el servidor del cliente", "Implementación + mensualidad"],
     "glyph": "cpu",
-    "colors": ["#A5E8FF", "#20B7D9"]
+    "colors": ["#FFD88F", "#F5A524"]
   },
   {
     "name": "Sentinel",

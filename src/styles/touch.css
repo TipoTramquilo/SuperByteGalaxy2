@@ -3,7 +3,7 @@
    los destellos quedan fijos y tenues */
 @media (hover:none),(max-width:760px){
  .stars,.stars>img,.stars>svg:not(.bs),.stars .bs{animation:none !important;will-change:auto !important}
- .trust::before,.trust::after,#sectores::before,#sectores::after,#metodo::before,#metodo::after,#nosotros::before,#nosotros::after,.cons-sec::before,.cons-sec::after{animation:none !important}
+ .trust::before,.trust::after,#sectores::before,#sectores::after,.sol-const,#metodo::before,#metodo::after,#nosotros::before,#nosotros::after,.cons-sec::before,.cons-sec::after{animation:none !important}
  .stars .b .sh{animation:none !important;opacity:0}
  .stars .bs .b:nth-of-type(3n+1) .sh{opacity:.2}
  .blob{animation:none}

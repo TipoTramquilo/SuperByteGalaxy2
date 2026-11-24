@@ -1,7 +1,7 @@
 /* Cometa luminoso que reemplaza el cursor en escritorio y deja una estela suave.
    Usa borrado por rectángulo sucio (dirty-rect) y escala su resolución/tasa en low-effects
    para funcionar fluido incluso sin aceleración por hardware, y duerme al 0 % cuando el cursor para. */
-import { finePointer, reducedMotion } from './env';
+import { finePointer, perFrame, reducedMotion } from './env';
 
 interface Point {
   x: number;
@@ -39,12 +39,16 @@ export function initTrail(): void {
     /* Usa clientWidth/clientHeight (sin barra de scroll) para que el canvas coincida 1:1 en px CSS con clientX/clientY. */
     width = document.documentElement.clientWidth;
     height = document.documentElement.clientHeight;
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
+    const nextW = Math.round(width * dpr);
+    const nextH = Math.round(height * dpr);
+    if (canvas.width !== nextW || canvas.height !== nextH) {
+      canvas.width = nextW;
+      canvas.height = nextH;
+    }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   };
   resize();
-  window.addEventListener('resize', resize, { passive: true });
+  window.addEventListener('resize', perFrame(resize), { passive: true });
 
   const points: Point[] = [];
   let raf = 0;
@@ -53,6 +57,8 @@ export function initTrail(): void {
   let visible = false;
   let curX = 0;
   let curY = 0;
+  let lastTarget: EventTarget | null = null;
+  let lastHot = false;
 
   const clearDirty = () => {
     if (!dirty) return;
@@ -69,6 +75,8 @@ export function initTrail(): void {
 
   const hideHead = () => {
     visible = false;
+    lastTarget = null;
+    lastHot = false;
     head.classList.remove('vis', 'hot');
     stop();
   };
@@ -159,8 +167,11 @@ export function initTrail(): void {
       visible = true;
       head.classList.add('vis');
     }
-    const overInteractive = !!(ev.target as Element | null)?.closest?.(INTERACTIVE);
-    head.classList.toggle('hot', overInteractive);
+    if (ev.target !== lastTarget) {
+      lastTarget = ev.target;
+      lastHot = !!(ev.target as Element | null)?.closest?.(INTERACTIVE);
+      head.classList.toggle('hot', lastHot);
+    }
 
     const now = performance.now();
     const last = points[points.length - 1];
@@ -174,6 +185,12 @@ export function initTrail(): void {
   window.addEventListener('pointermove', onMove, { passive: true });
   document.addEventListener('pointerleave', hideHead);
   window.addEventListener('blur', hideHead);
+  const rmQuery = window.matchMedia('(prefers-reduced-motion:reduce)');
+  rmQuery.addEventListener('change', () => {
+    const rm = rmQuery.matches;
+    document.documentElement.classList.toggle('has-comet', !rm);
+    if (rm) hideHead();
+  });
   document.addEventListener('effectschange', () => {
     const nextLow = document.documentElement.classList.contains('low-effects');
     if (nextLow !== low) {

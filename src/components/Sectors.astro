@@ -15,11 +15,11 @@ const n = sectors.length;
 const half = Math.floor(n / 2);
 const pad = (i: number) => String(i).padStart(2, '0');
 
-/* Geometría inicial SSR para escritorio (coincide con src/scripts/sectors.ts):
-   pivote solar en (-75, 296), radio orbital 495px, ángulos ópticos (0°, ±20.4°, ±33.8°). */
-const CX = -75;
-const CY = 296;
-const R = 495;
+/* Geometría inicial SSR para escritorio (escala 0.85x para encajar cómodo en pantallas de 768–900px):
+   pivote solar en (-64, 252), radio orbital 420px, ángulos ópticos (0°, ±20.4°, ±33.8°). */
+const CX = -64;
+const CY = 252;
+const R = 420;
 const DESKTOP_ANGLES = [0, 20.4, 33.8];
 
 const signedOffset = (i: number, active: number) => ((i - active + n + half) % n) - half;
@@ -40,6 +40,35 @@ const RING_B =
 ---
 <section class="sec" id="sectores" aria-labelledby="h-s">
   <Starfield name="sectores" />
+  <!-- Constelaciones lejanas sutiles y esparcidas (mismo trazo ligero que #productos .far) -->
+  <svg class="sol-const" viewBox="0 0 1440 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <!-- Arco estelar pequeño arriba-centro -->
+    <g opacity="0.65">
+      <path d="M710 118 L748 104 L788 114 L822 96" fill="none" stroke="rgba(170,190,235,0.13)" stroke-width="1" />
+      <circle cx="710" cy="118" r="1.4" fill="#C9D6F5" opacity="0.48" />
+      <circle cx="748" cy="104" r="1.8" fill="#D8F3FF" opacity="0.62" />
+      <circle cx="788" cy="114" r="1.3" fill="#C9D6F5" opacity="0.44" />
+      <circle cx="822" cy="96" r="1.6" fill="#C9D6F5" opacity="0.54" />
+    </g>
+    <!-- Constelación pequeña derecha-media -->
+    <g opacity="0.62">
+      <path d="M1284 268 L1328 246 L1366 274 L1344 316 L1298 302 Z" fill="none" stroke="rgba(170,190,235,0.12)" stroke-width="1" />
+      <circle cx="1284" cy="268" r="1.3" fill="#C9D6F5" opacity="0.46" />
+      <circle cx="1328" cy="246" r="1.7" fill="#D8F3FF" opacity="0.6" />
+      <circle cx="1366" cy="274" r="1.4" fill="#C9D6F5" opacity="0.48" />
+      <circle cx="1344" cy="316" r="1.6" fill="#C9D6F5" opacity="0.54" />
+      <circle cx="1298" cy="302" r="1.2" fill="#C9D6F5" opacity="0.42" />
+    </g>
+    <!-- Casiopea compacta abajo-derecha -->
+    <g opacity="0.68">
+      <path d="M1076 618 L1116 586 L1158 612 L1202 574 L1240 600" fill="none" stroke="rgba(170,190,235,0.13)" stroke-width="1" />
+      <circle cx="1076" cy="618" r="1.3" fill="#C9D6F5" opacity="0.46" />
+      <circle cx="1116" cy="586" r="1.8" fill="#D8F3FF" opacity="0.62" />
+      <circle cx="1158" cy="612" r="1.4" fill="#C9D6F5" opacity="0.5" />
+      <circle cx="1202" cy="574" r="1.7" fill="#C9D6F5" opacity="0.58" />
+      <circle cx="1240" cy="600" r="1.3" fill="#C9D6F5" opacity="0.44" />
+    </g>
+  </svg>
   <div class="w">
     <div class="sect-h rv">
       <div>
@@ -117,7 +146,7 @@ const RING_B =
         </p>
 
         <!-- Arco orbital SVG (se sincroniza en src/scripts/sectors.ts) -->
-        <svg class="sol-arc" viewBox="0 0 560 592" aria-hidden="true" focusable="false">
+        <svg class="sol-arc" viewBox="0 0 490 504" aria-hidden="true" focusable="false">
           <defs>
             <linearGradient id="sol-arc-g" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#5FD6FF" stop-opacity="0" />
@@ -127,8 +156,8 @@ const RING_B =
               <stop offset="100%" stop-color="#7C5CF5" stop-opacity="0" />
             </linearGradient>
           </defs>
-          <path class="sol-arc-bg" d="M 310.7 -14.1 A 495 495 0 0 1 310.7 606.1" fill="none" />
-          <path class="sol-arc-hi" d="M 386.1 116.7 A 495 495 0 0 1 386.1 475.3" fill="none" stroke="url(#sol-arc-g)" />
+          <path class="sol-arc-bg" d="M 263.3 -11.4 A 420 420 0 0 1 263.3 515.4" fill="none" />
+          <path class="sol-arc-hi" d="M 327.3 99.9 A 420 420 0 0 1 327.3 404.1" fill="none" stroke="url(#sol-arc-g)" />
         </svg>
 
         <!-- Planetas montados sobre brazos orbitales concéntricos al sol (movimiento curvo real) -->

@@ -3,13 +3,13 @@
     "name": "Construcción y agroindustria",
     "description": "IoT, gestión logística y de flotas, modernización de infraestructura y servicios de respaldo.",
     "glyph": "hammer",
-    "colors": ["#FFD88F", "#F5A524"]
+    "colors": ["#A5E8FF", "#20B7D9"]
   },
   {
     "name": "Sector automotriz",
     "description": "Red de 7 concesionarios a nivel nacional: desarrollo de software y digitalización de procesos comerciales.",
     "glyph": "car",
-    "colors": ["#A5E8FF", "#20B7D9"]
+    "colors": ["#FFD88F", "#F5A524"]
   },
   {
     "name": "Sector público",

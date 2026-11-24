@@ -13,7 +13,7 @@
 @keyframes drift{to{transform:translate(60px,-40px) scale(1.12)}}
 .hero .w{z-index:1}
 @media (min-width:1001px){
- .hero{display:flex;align-items:center;min-height:clamp(712px,100svh,952px);padding:calc(72px + clamp(28px,5svh,64px)) 0 clamp(36px,6svh,72px)}
+ .hero{display:flex;align-items:center;min-height:clamp(680px,100svh,920px);padding:calc(72px + clamp(14px,2.4svh,36px)) 0 clamp(28px,4.5svh,58px)}
  .hero .w{width:100%}
  .hero .orb{--os:clamp(400px,calc(100svh - 300px),560px) !important}
 }

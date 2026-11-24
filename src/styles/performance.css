@@ -29,11 +29,11 @@
 .low-effects .stars .b .sh{animation:none !important;opacity:0}
 .low-effects .stars .bs .b:nth-of-type(3n+1) .sh{opacity:.2}
 .low-effects .blob{animation:none !important}
-.low-effects .sol-ring,.low-effects .sol-arc-hi{animation:none !important}
+.low-effects .sol-ring,.low-effects .sol-arc-hi,.low-effects .sol-const{animation:none !important}
 .low-effects .grain{display:none}
 
 @media(prefers-reduced-motion:reduce){
- .blob,.cl .seg.on::before,.orb .spoke.on::before,.orbn::after,.sol-ring,.sol-arc-hi,.sol-pbtn::after{animation:none !important}
+ .blob,.cl .seg.on::before,.orb .spoke.on::before,.orbn::after,.sol-ring,.sol-arc-hi,.sol-pbtn::after,.sol-const{animation:none !important}
  .grain{display:none}
  .stars{will-change:auto}
  .logos{mask-image:none;-webkit-mask-image:none;overflow-x:auto}

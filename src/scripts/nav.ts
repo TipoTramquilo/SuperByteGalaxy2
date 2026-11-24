@@ -8,14 +8,15 @@ export function initNav(): void {
   if (!header) return;
 
   /* ---- sección visible ---- */
+  const sectionEls = SECTIONS.map((id) => document.getElementById(id));
   const links = SECTIONS.map((id) => header.querySelectorAll<HTMLAnchorElement>(`a[href="#${id}"]`));
   let current = '';
   const spy = perFrame(() => {
     header.classList.toggle('scrolled', window.scrollY > 36);
     const line = window.innerHeight * 0.45;
     let next = '';
-    SECTIONS.forEach((id) => {
-      const el = document.getElementById(id);
+    SECTIONS.forEach((id, k) => {
+      const el = sectionEls[k];
       if (!el) return;
       const r = el.getBoundingClientRect();
       if (r.top <= line && r.bottom > line) next = id;
@@ -84,8 +85,9 @@ export function initNav(): void {
             t = Math.min(t, top0 + el.offsetTop);
             b = Math.max(b, top0 + el.offsetTop + el.offsetHeight);
           });
-          const h = b - t;
-          y = t - navH - (h < avail - 48 ? (avail - h) / 2 : vh < 760 ? 16 : 24);
+          const h = t < b ? b - t : section.getBoundingClientRect().height;
+          const anchorTop = t < b ? t : top0;
+          y = anchorTop - navH - (h < avail - 48 ? (avail - h) / 2 : vh < 760 ? 16 : 24);
         }
         y = Math.max(0, Math.min(max, Math.round(y)));
         window.scrollTo({ top: y, behavior: reducedMotion() ? 'auto' : 'smooth' });

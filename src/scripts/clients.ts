@@ -64,4 +64,7 @@ export function initClients(): void {
   wrap.addEventListener('pointermove', onPointer, { passive: true });
   wrap.addEventListener('pointerleave', stop);
   window.addEventListener('blur', stop);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+  });
 }

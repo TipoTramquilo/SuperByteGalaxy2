@@ -39,21 +39,38 @@ export function initMethod(): void {
     render();
   };
 
+  let timer = 0;
+  const syncTimer = () => {
+    const shouldRun = !document.hidden && visible && !reducedMotion() && !mobile;
+    if (shouldRun && !timer) {
+      timer = window.setInterval(() => {
+        if (document.hidden || !visible || reducedMotion() || mobile) return;
+        setStep(turn + 1);
+      }, STEP_MS);
+    } else if (!shouldRun && timer) {
+      window.clearInterval(timer);
+      timer = 0;
+    }
+  };
+
   /* escritorio: avance automático */
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver((es) => (visible = es[0].isIntersecting), { threshold: 0.35 }).observe(section);
-  } else visible = true;
-  window.setInterval(() => {
-    if (document.hidden || !visible || reducedMotion() || mobile) return;
-    setStep(turn + 1);
-  }, STEP_MS);
+    new IntersectionObserver(
+      (es) => {
+        visible = es[0].isIntersecting;
+        syncTimer();
+      },
+      { threshold: 0.35 },
+    ).observe(section);
+  } else {
+    visible = true;
+    syncTimer();
+  }
+  document.addEventListener('visibilitychange', syncTimer);
 
   /* móvil: el scroll mueve el pulso */
   const scrub = perFrame(() => {
-    if (!mobile || dots.length < 2) {
-      rail.style.removeProperty('--mf');
-      return;
-    }
+    if (!mobile || dots.length < 2) return;
     const rr = rail.getBoundingClientRect();
     if (rr.bottom < -300 || rr.top > window.innerHeight + 300) return;
     const r0 = dots[0].getBoundingClientRect();
@@ -65,13 +82,22 @@ export function initMethod(): void {
     rail.style.setProperty('--mf', p.toFixed(4));
     if (k !== mod(turn)) setStep(k);
   });
-  window.addEventListener('scroll', scrub, { passive: true });
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (mobile) scrub();
+    },
+    { passive: true },
+  );
   narrow.addEventListener('change', () => {
     mobile = narrow.matches;
+    if (!mobile) rail.style.removeProperty('--mf');
     render();
-    scrub();
+    syncTimer();
+    if (mobile) scrub();
   });
 
   render();
-  scrub();
+  syncTimer();
+  if (mobile) scrub();
 }

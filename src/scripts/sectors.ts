@@ -8,11 +8,13 @@ import { finePointer, pad2, perFrame, reducedMotion } from './env';
 const COMPACT_BP = 900;
 const SWIPE_PX = 34;
 const SWIPE_VEL = 0.14;
+const ROTATE_MS = 3200;
+const CLICK_RESUME_MS = 3200;
+const HOVER_RESUME_MS = 2400;
 
-const D_CX = -75;
-const D_R = 495;
-/* Ángulos compensados por radio visual (activo + anillo 91px, vecino 37px, extremo 30px)
-   para que la separación borde a borde entre todos los planetas sea idéntica (~47px). */
+const D_CX = -64;
+const D_R = 420;
+/* Ángulos compensados por radio visual (escala 0.85x) para mantener igual separación borde a borde (~41px). */
 const D_ANGLES = [0, 20.4, 33.8];
 
 interface ArcGeom {
@@ -26,10 +28,10 @@ interface ArcGeom {
 }
 
 function measure(vis: HTMLElement, compact: boolean): ArcGeom {
-  const w = vis.clientWidth || (compact ? 360 : 560);
-  const h = vis.clientHeight || (compact ? 284 : 592);
+  const w = vis.clientWidth || (compact ? 360 : 490);
+  const h = vis.clientHeight || (compact ? 276 : 504);
   if (!compact) {
-    const scale = Math.min(1, w / 560);
+    const scale = Math.min(1, w / 490);
     return {
       compact: false,
       cx: D_CX * scale,
@@ -41,17 +43,16 @@ function measure(vis: HTMLElement, compact: boolean): ArcGeom {
     };
   }
   const narrow = w < 420;
-  const cy = narrow ? 14 : 18;
-  const pd = narrow ? 84 : 94;
+  /* Centro solar arriba (coincide con el sol ancho en móvil) para que el arco abrace su horizonte */
+  const cy = narrow ? -54 : -70;
+  const pd = narrow ? 80 : 88;
   /* Radios visuales reales en móvil (activo + anillo punteado, vecino y extremo) para igualar el espacio borde a borde */
   const r0 = (pd * 1.04) / 2 + 10;
   const r1 = (pd * 0.58) / 2;
   const r2 = (pd * 0.48) / 2;
-  const maxOuterDeg = narrow ? 47 : 46;
-  const maxOuterRad = (maxOuterDeg * Math.PI) / 180;
-  const maxRByWidth = (w / 2 - r2 - 6) / Math.sin(maxOuterRad);
-  const maxRByHeight = h - cy - r0 - 4;
-  const r = Math.max(150, Math.min(212, maxRByWidth, maxRByHeight));
+  const r = Math.max(206, Math.min(296, h - cy - r0 - 4));
+  const maxX = Math.max(100, w / 2 - r2 - 6);
+  const maxOuterRad = Math.asin(Math.min(0.92, maxX / r));
   const arcTotal = r * maxOuterRad;
   const gap = Math.max(10, (arcTotal - (r0 + r1 * 2 + r2)) / 2);
   const a1 = ((r0 + gap + r1) / r) * (180 / Math.PI);
@@ -133,6 +134,10 @@ export function initSectors(): void {
 
   /** Clona el planeta saliente para desvanecerlo suavemente más allá del horizonte del arco. */
   const spawnHorizonExit = (arm: HTMLElement, fromDeg: number, exitDeg: number) => {
+    const sectorIdx = arm.dataset.sector;
+    if (sectorIdx != null) {
+      pivot.querySelectorAll(`.sol-ghost[data-sector="${sectorIdx}"]`).forEach((node) => node.remove());
+    }
     const ghost = arm.cloneNode(true) as HTMLElement;
     ghost.classList.add('sol-ghost');
     ghost.classList.remove('on', 'sol-snap');
@@ -149,6 +154,10 @@ export function initSectors(): void {
     if (gPlanet) gPlanet.style.transform = planetOffset(g, fromDeg);
     pivot.appendChild(ghost);
 
+    if (typeof ghost.animate !== 'function') {
+      ghost.remove();
+      return;
+    }
     const animArm = ghost.animate(
       [
         { transform: armRot(g, fromDeg), opacity: 1 },
@@ -319,25 +328,74 @@ export function initSectors(): void {
     positionPlanets(true);
   };
 
+  const hasFinePointer = finePointer();
+  let autoTimer = 0;
+  let hovered = false;
+
+  const scheduleAuto = (delay = ROTATE_MS) => {
+    window.clearTimeout(autoTimer);
+    if (reducedMotion()) return;
+    autoTimer = window.setTimeout(tickAuto, delay);
+  };
+
+  const tickAuto = () => {
+    if (!document.hidden && !reducedMotion() && !hovered) {
+      const r = section.getBoundingClientRect();
+      const inView = r.bottom > 80 && r.top < window.innerHeight - 80;
+      const keyboardFocus = Boolean(stage.querySelector(':focus-visible'));
+      if (inView && !keyboardFocus) {
+        select(active + 1, 1);
+      }
+    }
+    scheduleAuto(ROTATE_MS);
+  };
+
+  const userSelect = (target: number, explicitDir?: number) => {
+    select(target, explicitDir);
+    scheduleAuto(CLICK_RESUME_MS);
+  };
+
   arms.forEach((arm, i) => {
-    arm.querySelector<HTMLButtonElement>('.sol-pbtn')?.addEventListener('click', () => select(i));
+    arm.querySelector<HTMLButtonElement>('.sol-pbtn')?.addEventListener('click', () => userSelect(i));
   });
 
   dots.forEach((dot, i) => {
-    dot.addEventListener('click', () => select(i));
+    dot.addEventListener('click', () => userSelect(i));
   });
 
-  prevBtn?.addEventListener('click', () => select(active - 1, -1));
-  nextBtn?.addEventListener('click', () => select(active + 1, 1));
+  prevBtn?.addEventListener('click', () => userSelect(active - 1, -1));
+  nextBtn?.addEventListener('click', () => userSelect(active + 1, 1));
+
+  if (hasFinePointer) {
+    stage.addEventListener('mouseenter', () => {
+      hovered = true;
+      window.clearTimeout(autoTimer);
+    });
+    stage.addEventListener('mouseleave', () => {
+      hovered = false;
+      scheduleAuto(HOVER_RESUME_MS);
+    });
+  }
+
+  stage.addEventListener('focusout', () => {
+    window.setTimeout(() => {
+      if (!hovered && !stage.contains(document.activeElement)) scheduleAuto(HOVER_RESUME_MS);
+    }, 0);
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) window.clearTimeout(autoTimer);
+    else if (!hovered) scheduleAuto(HOVER_RESUME_MS);
+  });
 
   stage.addEventListener('keydown', (e) => {
     if ((!compact && e.key === 'ArrowDown') || (compact && e.key === 'ArrowRight')) {
       e.preventDefault();
-      select(active + 1, 1);
+      userSelect(active + 1, 1);
       arms[active]?.querySelector<HTMLButtonElement>('.sol-pbtn')?.focus();
     } else if ((!compact && e.key === 'ArrowUp') || (compact && e.key === 'ArrowLeft')) {
       e.preventDefault();
-      select(active - 1, -1);
+      userSelect(active - 1, -1);
       arms[active]?.querySelector<HTMLButtonElement>('.sol-pbtn')?.focus();
     }
   });
@@ -373,7 +431,7 @@ export function initSectors(): void {
     const vel = Math.abs(dx) / dt;
     resetSwipe();
     if (Math.abs(dx) > Math.abs(dy) * 1.15 && (Math.abs(dx) >= SWIPE_PX || (Math.abs(dx) >= 18 && vel > SWIPE_VEL))) {
-      select(active + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
+      userSelect(active + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
     }
   });
 
@@ -383,6 +441,7 @@ export function initSectors(): void {
 
   relayout();
   syncDeck(0, false);
+  scheduleAuto(ROTATE_MS);
 
   /* ---- Destello reactivo del borde solar al cursor (solo escritorio con puntero fino) ----
      El sol permanece fijo en su sitio; únicamente el arco luminoso .sol-spot sigue el ángulo y cercanía
@@ -397,8 +456,10 @@ export function initSectors(): void {
 
   const stepSun = () => {
     spotRaf = 0;
-    if (reducedMotion() || document.documentElement.classList.contains('low-effects')) {
+    if (document.hidden || compact || reducedMotion() || document.documentElement.classList.contains('low-effects')) {
       sunSpot.style.opacity = '0';
+      cSpotOp = 0;
+      tSpotOp = 0;
       return;
     }
 
@@ -419,24 +480,48 @@ export function initSectors(): void {
     if (!spotRaf) spotRaf = requestAnimationFrame(stepSun);
   };
 
+  let ptrX = 0;
+  let ptrY = 0;
+  const sampleSun = perFrame(() => {
+    if (
+      compact ||
+      document.hidden ||
+      reducedMotion() ||
+      section.classList.contains('effects-paused') ||
+      document.documentElement.classList.contains('low-effects')
+    ) {
+      return;
+    }
+    const r = sun.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > window.innerHeight) return;
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const dx = ptrX - cx;
+    const dy = ptrY - cy;
+    const dist = Math.hypot(dx, dy);
+    const maxR = Math.max(540, r.width * 1.15);
+    let pull = Math.max(0, 1 - dist / maxR);
+    pull = pull * pull * (3 - 2 * pull);
+
+    tSpotOp = Math.min(0.92, pull * 1.2);
+    tAngle = (Math.atan2(dy, dx) * 180) / Math.PI;
+    kickSun();
+  });
+
   section.addEventListener(
     'pointermove',
     (ev) => {
-      if (compact || reducedMotion() || document.documentElement.classList.contains('low-effects')) return;
-      const r = sun.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > window.innerHeight) return;
-      const cx = r.left + r.width / 2;
-      const cy = r.top + r.height / 2;
-      const dx = ev.clientX - cx;
-      const dy = ev.clientY - cy;
-      const dist = Math.hypot(dx, dy);
-      const maxR = Math.max(540, r.width * 1.15);
-      let pull = Math.max(0, 1 - dist / maxR);
-      pull = pull * pull * (3 - 2 * pull);
-
-      tSpotOp = Math.min(0.92, pull * 1.2);
-      tAngle = (Math.atan2(dy, dx) * 180) / Math.PI;
-      kickSun();
+      if (
+        compact ||
+        reducedMotion() ||
+        section.classList.contains('effects-paused') ||
+        document.documentElement.classList.contains('low-effects')
+      ) {
+        return;
+      }
+      ptrX = ev.clientX;
+      ptrY = ev.clientY;
+      sampleSun();
     },
     { passive: true },
   );

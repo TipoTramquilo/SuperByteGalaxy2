@@ -5,7 +5,8 @@ const MIN_GAP_MS = 2500;
 const MAX_GAP_MS = 5600;
 
 export function initMeteors(): void {
-  if (reducedMotion()) return;
+  const isDisabled = () => reducedMotion() || document.documentElement.classList.contains('low-effects');
+  if (isDisabled()) return;
   const skies = Array.from(document.querySelectorAll<HTMLElement>('.stars'));
   if (!skies.length) return;
 
@@ -23,7 +24,7 @@ export function initMeteors(): void {
   };
 
   const spawn = () => {
-    if (document.hidden || reducedMotion()) return;
+    if (document.hidden || isDisabled()) return;
     const sky = pickSky();
     if (!sky) return;
 
@@ -53,7 +54,14 @@ export function initMeteors(): void {
     sky.appendChild(m);
   };
 
+  const stop = () => {
+    window.clearTimeout(timer);
+    timer = 0;
+  };
+
   const schedule = (delay?: number) => {
+    stop();
+    if (isDisabled() || document.hidden) return;
     const wait = delay ?? Math.round(MIN_GAP_MS + Math.random() * (MAX_GAP_MS - MIN_GAP_MS));
     timer = window.setTimeout(() => {
       spawn();
@@ -62,11 +70,12 @@ export function initMeteors(): void {
   };
 
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      window.clearTimeout(timer);
-    } else if (!reducedMotion()) {
-      schedule(1400);
-    }
+    if (document.hidden) stop();
+    else schedule(1400);
+  });
+
+  document.addEventListener('effectschange', () => {
+    if (isDisabled()) stop();
   });
 
   // Primer cometa tras un respiro breve al cargar

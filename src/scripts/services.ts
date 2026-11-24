@@ -1,12 +1,12 @@
-/* Hero: los servicios rotan solos (01 → 05); tras interacción del usuario retoman rápido (2,2 s tras clic / 1,6 s al soltar hover).
+/* Hero: los servicios rotan solos (01 → 05); tras interacción del usuario retoman tras 3,2 s (clic) o 2,6 s (al soltar hover).
    El texto del servicio que sale baja y se desvanece; el nuevo entra desde arriba.
    La B del centro crece un poco cuando el cursor se acerca (solo con mouse). */
 import services from '../data/services.json';
 import { finePointer, pad2, reducedMotion } from './env';
 
 const ROTATE_MS = 3800;
-const CLICK_RESUME_MS = 2200;
-const HOVER_RESUME_MS = 1600;
+const CLICK_RESUME_MS = 3200;
+const HOVER_RESUME_MS = 2600;
 
 function initHeroTagline(hero: HTMLElement): void {
   const el = hero.querySelector<HTMLElement>('.eb-txt');
@@ -122,6 +122,7 @@ export function initServices(): void {
 
   const schedule = (delay = ROTATE_MS) => {
     window.clearTimeout(timer);
+    if (reducedMotion()) return;
     timer = window.setTimeout(tick, delay);
   };
 
@@ -148,6 +149,11 @@ export function initServices(): void {
     }
   });
 
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) window.clearTimeout(timer);
+    else schedule(HOVER_RESUME_MS);
+  });
+
   schedule(ROTATE_MS);
 
   /* ---- la B se acerca al cursor ---- */
@@ -158,16 +164,30 @@ export function initServices(): void {
   let x = 0;
   let y = 0;
   let raf = 0;
-  window.addEventListener(
+  const resetCore = () => {
+    if (raf) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    }
+    img.style.transform = '';
+    if (halo) halo.style.transform = '';
+  };
+  hero.addEventListener(
     'pointermove',
     (ev) => {
-      if (reducedMotion()) return;
+      if (
+        reducedMotion() ||
+        hero.classList.contains('effects-paused') ||
+        document.documentElement.classList.contains('low-effects')
+      ) {
+        return;
+      }
       x = ev.clientX;
       y = ev.clientY;
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = 0;
-        if (reducedMotion()) return;
+        if (reducedMotion() || document.documentElement.classList.contains('low-effects')) return;
         const r = (img.parentNode as HTMLElement).getBoundingClientRect();
         if (r.bottom < 0 || r.top > window.innerHeight) return;
         const d = Math.hypot(x - (r.left + r.width / 2), y - (r.top + r.height / 2));
@@ -180,4 +200,5 @@ export function initServices(): void {
     },
     { passive: true },
   );
+  hero.addEventListener('pointerleave', resetCore);
 }

@@ -1,16 +1,17 @@
 /* Experiencia por sector: sol monumental (estilo corona orgánica) + órbita real de planetas + spotlight editorial */
-#sectores{padding-top:clamp(56px,5vw,72px);padding-bottom:clamp(68px,6vw,88px)}
+#sectores{padding-top:clamp(44px,4.2vw,60px);padding-bottom:clamp(52px,4.8vw,68px)}
 #sectores .stars{opacity:.75}
+.sol-const{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;animation:skyd 24s ease-in-out infinite alternate;--sdx:14px;--sdy:-8px}
 .sect-h{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px 40px}
 
-/* Escenario principal: sistema solar monumental a la izquierda + spotlight editorial a la derecha */
-.sol-stage{display:grid;grid-template-columns:minmax(480px,560px) minmax(0,1fr);gap:clamp(36px,5vw,76px);align-items:center;margin-top:clamp(52px,4.8vw,68px)}
+/* Escenario principal: escala proporcional 0.85x para encajar holgado en 768–900px sin perder proporciones */
+.sol-stage{display:grid;grid-template-columns:minmax(420px,490px) minmax(0,1fr);gap:clamp(32px,4.5vw,68px);align-items:center;margin-top:clamp(34px,3.4vw,46px)}
 
-/* Contenedor orbital (escritorio: 560 x 592) */
-.sol-vis{position:relative;width:560px;max-width:100%;height:592px;touch-action:pan-y}
+/* Contenedor orbital (escritorio: 490 x 504) */
+.sol-vis{position:relative;width:490px;max-width:100%;height:504px;touch-action:pan-y}
 
-/* Sol monumental: ~700px de diámetro asomando desde la izquierda sin cortes rectos */
-.sol-sun{position:absolute;left:-75px;top:296px;width:700px;height:700px;transform:translate(-50%,-50%);pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 48%,#000 62%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,transparent 48%,#000 62%,#000 100%)}
+/* Sol monumental escalado proporcionalmente: ~596px asomando desde la izquierda sin cortes rectos */
+.sol-sun{position:absolute;left:-64px;top:252px;width:596px;height:596px;transform:translate(-50%,-50%);pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 48%,#000 62%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,transparent 48%,#000 62%,#000 100%)}
 .sol-react{width:100%;height:100%;transform-origin:50% 50%;will-change:transform}
 .sol-corona{display:block;width:100%;height:100%;overflow:visible}
 .sol-ring,.sol-spot{transform-origin:0 0}
@@ -20,7 +21,7 @@
 @keyframes solSpin{to{transform:rotate(360deg)}}
 
 /* Cifra central centrada en el núcleo visual del sol: bloque tipográfico rectangular (mismo ancho visual por línea) */
-.sol-stat{--su:clamp(72px,6.2vw,88px);position:absolute;left:32px;top:50%;transform:translate(-50%,-50%);z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;font-family:"Satoshi",system-ui,sans-serif;font-weight:700;color:#EDEAF5;pointer-events:none;white-space:nowrap}
+.sol-stat{--su:clamp(62px,5.2vw,74px);position:absolute;left:28px;top:50%;transform:translate(-50%,-50%);z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;font-family:"Satoshi",system-ui,sans-serif;font-weight:700;color:#EDEAF5;pointer-events:none;white-space:nowrap}
 .sol-line{display:block}
 .sol-l1{font-size:var(--su);line-height:.84;letter-spacing:-.04em;color:#FFFFFF;font-variant-numeric:tabular-nums;margin-bottom:.08em}
 .sol-l1 span{color:#5FD6FF;margin-right:1px}
@@ -35,7 +36,7 @@
 
 /* Planetas sobre brazos orbitales concéntricos: toda la órbita comparte la misma familia temporal (480ms)
    para que escalado y rotación avancen en sincronía sin que dos planetas se superpongan nunca. */
-.sol-planets{position:absolute;inset:0;pointer-events:none;--pd:138px;--orb-t:480ms;--orb-e:cubic-bezier(.22,1,.36,1)}
+.sol-planets{position:absolute;inset:0;pointer-events:none;--pd:118px;--orb-t:480ms;--orb-e:cubic-bezier(.22,1,.36,1)}
 .sol-pivot{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}
 .sol-planets.sol-instant .sol-arm,.sol-planets.sol-instant .sol-p,.sol-planets.sol-instant .sol-pbtn,.sol-planets.sol-instant .sol-gl,.sol-planets.sol-instant .sol-p::before{transition:none !important}
 
@@ -50,23 +51,23 @@
 .sol-arm.sol-snap .sol-p{transition:none !important}
 .sol-arm.sol-ghost .sol-p{pointer-events:none}
 
-/* Halo atmosférico radial del mismo color del planeta al activarse (como .cn::before en productos.css) */
-.sol-p::before{content:"";position:absolute;left:50%;top:50%;width:calc(var(--pd) * 2.15);aspect-ratio:1;transform:translate(-50%,-50%) scale(.42);border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--pc,#5FD6FF) 42%,transparent),color-mix(in srgb,var(--pc,#5FD6FF) 14%,transparent) 55%,transparent);opacity:0;pointer-events:none;transition:opacity 380ms ease,transform var(--orb-t) var(--orb-e)}
-.sol-arm.on .sol-p::before{opacity:1;transform:translate(-50%,-50%) scale(1.16)}
+/* Halo atmosférico radial sutil del mismo color del planeta al activarse */
+.sol-p::before{content:"";position:absolute;left:50%;top:50%;width:calc(var(--pd) * 1.95);aspect-ratio:1;transform:translate(-50%,-50%) scale(.42);border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--pc,#5FD6FF) 22%,transparent),color-mix(in srgb,var(--pc,#5FD6FF) 7%,transparent) 54%,transparent);opacity:0;pointer-events:none;transition:opacity 380ms ease,transform var(--orb-t) var(--orb-e)}
+.sol-arm.on .sol-p::before{opacity:.82;transform:translate(-50%,-50%) scale(1.04)}
 
 /* Esfera del planeta (como .orbn en productos.css) */
 .sol-pbtn{position:relative;z-index:1;display:grid;place-items:center;width:100%;height:100%;padding:0;border-radius:50%;border:1px solid rgba(237,234,245,.18);background:radial-gradient(circle at 35% 30%,#121B3A,#080D1D 72%);color:inherit;cursor:pointer;transform:scale(.54);transition:transform var(--orb-t) var(--orb-e),box-shadow 340ms ease,border-color 340ms ease,opacity 320ms ease}
 .sol-arm[data-tier="2"] .sol-pbtn{transform:scale(.44);opacity:.86}
 .sol-pbtn:active{transform:scale(.5)}
 .sol-arm[data-tier="2"] .sol-pbtn:active{transform:scale(.41)}
-.sol-arm.on .sol-pbtn{transform:scale(1.12);opacity:1;border-color:color-mix(in srgb,var(--pc,#5FD6FF) 72%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--pc,#5FD6FF) 24%,transparent),inset 0 0 44px color-mix(in srgb,var(--pc,#5036EA) 32%,transparent);cursor:default}
+.sol-arm.on .sol-pbtn{transform:scale(1.12);opacity:1;border-color:color-mix(in srgb,var(--pc,#5FD6FF) 66%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--pc,#5FD6FF) 20%,transparent),inset 0 0 32px color-mix(in srgb,var(--pc,#5FD6FF) 20%,transparent);cursor:default}
 
 /* Anillo punteado exterior girando alrededor del planeta activo (como .orbn::after) */
-.sol-pbtn::after{content:"";position:absolute;inset:-14px;border-radius:50%;border:1px dashed color-mix(in srgb,var(--pc,#5FD6FF) 54%,transparent);opacity:0;pointer-events:none;transition:opacity 320ms ease;animation:spin 40s linear infinite}
+.sol-pbtn::after{content:"";position:absolute;inset:-12px;border-radius:50%;border:1px dashed color-mix(in srgb,var(--pc,#5FD6FF) 54%,transparent);opacity:0;pointer-events:none;transition:opacity 320ms ease;animation:spin 40s linear infinite}
 .sol-arm.on .sol-pbtn::after{opacity:1}
 
 /* Glifo interior (como .orbn .gl) */
-.sol-gl{display:block;width:64px;height:64px;background:no-repeat center/100% 100%;opacity:.56;transform:scale(.86);transition:opacity 320ms ease,transform var(--orb-t) var(--orb-e)}
+.sol-gl{display:block;width:54px;height:54px;background:no-repeat center/100% 100%;opacity:.56;transform:scale(.86);transition:opacity 320ms ease,transform var(--orb-t) var(--orb-e)}
 .sol-arm[data-tier="2"] .sol-gl{opacity:.48}
 .sol-arm.on .sol-gl{opacity:1;transform:scale(1.06)}
 
@@ -77,8 +78,8 @@
 }
 
 /* Spotlight editorial único a la derecha */
-.sol-body{display:flex;flex-direction:column;align-items:flex-start;gap:32px;min-width:0}
-.sol-deck{display:grid;width:100%;min-height:210px;align-items:center}
+.sol-body{display:flex;flex-direction:column;align-items:flex-start;gap:26px;min-width:0}
+.sol-deck{display:grid;width:100%;min-height:184px;align-items:center}
 .sol-slide{grid-area:1 / 1;min-width:0;opacity:0;visibility:hidden;pointer-events:none}
 .sol-slide.on{opacity:1;visibility:visible;pointer-events:auto}
 .sol-slide.enter{animation:solInV 420ms var(--eo) 55ms both}
@@ -93,8 +94,8 @@
  to{opacity:0;filter:blur(3px);transform:translate3d(0,calc(var(--sdir,1) * -16px),0)}
 }
 
-.sol-title{font:700 clamp(36px,3.6vw,54px)/1.04 "Satoshi",system-ui,sans-serif;letter-spacing:-.032em;color:#FFFFFF;text-wrap:balance;max-width:16ch}
-.sol-desc{margin-top:20px;color:#C2CBE0;font-size:clamp(19px,1.55vw,22px);line-height:1.58;max-width:36ch}
+.sol-title{font:700 clamp(32px,3.2vw,46px)/1.05 "Satoshi",system-ui,sans-serif;letter-spacing:-.032em;color:#FFFFFF;text-wrap:balance;max-width:16ch}
+.sol-desc{margin-top:16px;color:#C2CBE0;font-size:clamp(17.5px,1.4vw,20px);line-height:1.56;max-width:36ch}
 
 /* Controles orbitales (^ / v + indicadores de los 5 sectores) */
 .sol-ctrl{display:flex;align-items:center;gap:20px}
@@ -109,35 +110,36 @@
  .sol-dot:not(.on):hover{background:rgba(237,234,245,.52)}
 }
 
-/* ===== Tablet y Móvil (<= 900px): Rotación 90° — Horizonte solar arriba + arco horizontal ===== */
+/* ===== Tablet y Móvil (<= 900px): Rotación 90° — Horizonte solar ancho arriba + arco horizontal ===== */
 @media (max-width:900px){
- .sol-stage{grid-template-columns:minmax(0,1fr);gap:16px;margin-top:34px}
- .sol-vis{width:100%;max-width:520px;height:292px;margin:0 auto}
- .sol-sun{left:50%;top:18px;width:304px;height:304px;transform:translate(-50%,-50%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,transparent 38%,#000 56%,#000 100%);mask-image:linear-gradient(180deg,transparent 0%,transparent 38%,#000 56%,#000 100%)}
- .sol-stat{--su:clamp(46px,12vw,58px);left:50%;top:14px;transform:translateX(-50%)}
+ .sol-const{opacity:.55}
+ .sol-stage{grid-template-columns:minmax(0,1fr);gap:14px;margin-top:20px}
+ .sol-vis{width:100%;max-width:520px;height:276px;margin:0 auto}
+ .sol-sun{left:50%;top:-70px;width:520px;height:520px;transform:translate(-50%,-50%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,transparent 60%,#000 74%,#000 100%);mask-image:linear-gradient(180deg,transparent 0%,transparent 60%,#000 74%,#000 100%)}
+ .sol-stat{--su:clamp(46px,12vw,58px);left:50%;top:10px;transform:translateX(-50%)}
 
- .sol-planets{--pd:94px}
+ .sol-planets{--pd:88px}
  .sol-p::before{opacity:0}
- .sol-arm.on .sol-p::before{opacity:.78;transform:translate(-50%,-50%) scale(1.06)}
+ .sol-arm.on .sol-p::before{opacity:.62;transform:translate(-50%,-50%) scale(.96)}
  .sol-pbtn::after{inset:-10px}
- .sol-gl{width:42px;height:42px}
+ .sol-gl{width:40px;height:40px}
  .sol-arm[data-tier="1"] .sol-pbtn{transform:scale(.58)}
  .sol-arm[data-tier="2"] .sol-pbtn{transform:scale(.48)}
  .sol-arm.on .sol-pbtn{transform:scale(1.04)}
 
- .sol-body{align-items:center;text-align:center;gap:18px;max-width:520px;width:100%;margin:0 auto}
- .sol-deck{min-height:142px}
+ .sol-body{align-items:center;text-align:center;gap:14px;max-width:520px;width:100%;margin:0 auto}
+ .sol-deck{min-height:128px}
  .sol-slide.enter{animation-name:solInH}
  .sol-slide.out{animation-name:solOutH}
- .sol-title{font-size:clamp(26px,6.8vw,34px);margin:0 auto;max-width:20ch}
- .sol-desc{font-size:clamp(16.5px,4.2vw,18.5px);margin:10px auto 0;max-width:38ch}
+ .sol-title{font-size:clamp(25px,6.5vw,32px);margin:0 auto;max-width:20ch}
+ .sol-desc{font-size:clamp(16px,4vw,18px);margin:8px auto 0;max-width:38ch}
 
  .sol-ctrl{flex-direction:row;align-items:center;justify-content:center;gap:22px}
  .sol-nav{display:contents}
  .sol-prev{order:1}
  .sol-dots{order:2}
  .sol-next{order:3}
- .sol-btn{width:46px;height:46px}
+ .sol-btn{width:44px;height:44px}
  .sol-prev svg,.sol-next svg{transform:rotate(-90deg)}
 }
 
@@ -151,16 +153,16 @@
 }
 
 @media (max-width:420px){
- .sol-vis{height:278px}
- .sol-sun{width:276px;height:276px;top:14px}
- .sol-stat{top:10px}
- .sol-planets{--pd:84px}
- .sol-gl{width:38px;height:38px}
+ .sol-vis{height:262px}
+ .sol-sun{width:460px;height:460px;top:-54px}
+ .sol-stat{top:8px}
+ .sol-planets{--pd:80px}
+ .sol-gl{width:36px;height:36px}
 }
 
 /* Movimiento reducido: colapsa coreografía a fade limpio y congela la corona */
 @media (prefers-reduced-motion:reduce){
- .sol-r1,.sol-r2,.sol-arc-hi,.sol-pbtn::after{animation:none !important}
+ .sol-r1,.sol-r2,.sol-arc-hi,.sol-pbtn::after,.sol-const{animation:none !important}
  .sol-react{transform:none !important}
  .sol-spot{display:none}
  .sol-arm,.sol-p,.sol-pbtn,.sol-gl,.sol-p::before{transition:opacity 200ms ease !important}
