@@ -55,5 +55,11 @@ export function buildConsoleBanner(): { format: string; styles: string[] } {
 export function initConsoleBanner(): void {
   if (typeof console === 'undefined' || typeof console.log !== 'function') return;
   const { format, styles } = buildConsoleBanner();
-  console.log(format, ...styles);
+  const print = console.log.bind(console, format, ...styles);
+  /* Invocar console.log ligado desde setTimeout evita mostrar el nombre del bundle a la derecha en DevTools. */
+  if (typeof window !== 'undefined' && typeof window.setTimeout === 'function') {
+    window.setTimeout(print, 0);
+  } else {
+    print();
+  }
 }
