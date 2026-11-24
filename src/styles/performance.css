@@ -30,6 +30,18 @@
 .low-effects .stars .bs .b:nth-of-type(3n+1) .sh{opacity:.17}
 .low-effects .blob{animation:none !important}
 .low-effects .sol-ring,.low-effects .sol-arc-hi,.low-effects .sol-const{animation:none !important}
+.low-effects .sol-spot{display:none}
+.low-effects .sol-arm,.low-effects .sol-p{will-change:auto}
+.low-effects .sol-slide.enter{animation-name:solInLow}
+.low-effects .sol-slide.out{animation-name:solOutLow}
+@keyframes solInLow{from{opacity:0;transform:translate3d(0,calc(var(--sdir,1) * 16px),0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes solOutLow{from{opacity:1;transform:translate3d(0,0,0)}to{opacity:0;transform:translate3d(0,calc(var(--sdir,1) * -12px),0)}}
+@media (max-width:900px){
+ .low-effects .sol-slide.enter{animation-name:solInLowH}
+ .low-effects .sol-slide.out{animation-name:solOutLowH}
+}
+@keyframes solInLowH{from{opacity:0;transform:translate3d(calc(var(--sdir,1) * 16px),0,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes solOutLowH{from{opacity:1;transform:translate3d(0,0,0)}to{opacity:0;transform:translate3d(calc(var(--sdir,1) * -12px),0,0)}}
 .low-effects .grain{display:none}
 
 @media(prefers-reduced-motion:reduce){
