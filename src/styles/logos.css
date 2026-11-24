@@ -14,10 +14,8 @@
 @media (prefers-reduced-motion:reduce){
  .logos .lg.is-hot img,.logos .lg:hover img{transform:none}
 }
-/* en táctil: logos a color; dos velos fijos a los lados los pasan a gris, así se ven a color al cruzar el centro */
+/* en táctil y móvil: logos siempre en gris monocromo, sin capa de color */
 @media (hover:none),(max-width:760px){
- /* en táctil: logos a color, sin efectos */
- .logos.tint .lg .w0{opacity:0}
- .logos.tint .lg .c0{opacity:1;transition:none}
+ .logos .lg .c0{display:none}
 }
 @keyframes ltr{from{transform:translate3d(-50%,0,0)}to{transform:translate3d(0,0,0)}}
