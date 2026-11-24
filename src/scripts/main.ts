@@ -14,7 +14,9 @@ import { initContextMenu } from './context-menu';
 import { initMeteors } from './meteors';
 import { initFooter } from './footer';
 import { initNoSelect } from './noselect';
+import { initConsoleBanner } from './console-banner';
 
+initConsoleBanner();
 initNoSelect();
 initReveal();
 initEffects();

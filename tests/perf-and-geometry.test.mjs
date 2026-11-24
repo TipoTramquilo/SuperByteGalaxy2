@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { finePointer, pad2, perFrame, reducedMotion } from '../src/scripts/env.ts';
 import { consGeometry, farField, orbitNodes, segments } from '../src/lib/geometry.ts';
+import { buildConsoleBanner } from '../src/scripts/console-banner.ts';
 
 test('env cachea MediaQueryList sin reasignar en cada cuadro y respeta cambios de matchMedia', (t) => {
   const originalWindow = globalThis.window;
@@ -105,4 +106,19 @@ test('stars.json mantiene estructura válida y sin destellos vacíos', () => {
       assert.match(s.gdl, /^-?\d+\.\d+s$/);
     }
   }
+});
+
+test('buildConsoleBanner empareja cada %c con su estilo, degradado RGB y eslogan exacto', () => {
+  const { format, styles } = buildConsoleBanner();
+  const placeholders = format.match(/%c/g) || [];
+  assert.equal(placeholders.length, styles.length);
+
+  const plain = format.replace(/%c/g, '');
+  assert.ok(plain.includes('███████████  █████ █████ ███████████ ██████████'));
+  assert.ok(plain.includes('Construyendo tus sueños... byte a byte.'));
+  assert.ok(plain.includes('click-spamming a Byte en el footer'));
+  assert.ok(styles[0].includes('rgb('));
+  assert.ok(styles.some((s) => s.includes('rgb(72,156,234)')));
+  assert.ok(styles[styles.length - 2].includes('#9BB4E0'));
+  assert.ok(styles[styles.length - 1].includes('0.48'));
 });
