@@ -129,7 +129,10 @@
  .sect-h::after{display:none}
  .sect-h .h2{font-size:clamp(38px,4.6vw,64px);margin-top:18px}
  .sol-vis{grid-column:auto;grid-row:auto;width:100%;max-width:520px;height:276px;margin:0 auto}
- .sol-sun{left:50%;top:-70px;width:520px;height:520px;transform:translate(-50%,-50%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,transparent 60%,#000 74%,#000 100%);mask-image:linear-gradient(180deg,transparent 0%,transparent 60%,#000 74%,#000 100%)}
+ .sol-sun{left:50%;top:-70px;width:520px;height:520px;transform:translate(-50%,-50%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,transparent 65%,#000 78%,#000 100%);mask-image:linear-gradient(180deg,transparent 0%,transparent 65%,#000 78%,#000 100%)}
+ /* En móvil suavizamos muy sutilmente el brillo emitido (bloom y halos anchos) manteniendo nítido el borde del sol */
+ .sol-corona > circle:first-of-type{opacity:.72}
+ .sol-r1 path:nth-child(-n+3),.sol-r2 path:first-child{opacity:.8}
  .sol-stat{--su:clamp(46px,12vw,58px);left:50%;top:10px;transform:translateX(-50%)}
 
  .sol-planets{--pd:88px}
