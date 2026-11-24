@@ -112,14 +112,14 @@ export function consGeometry(sw: number, n: number): ConsGeometry {
   const GAP = mob ? Math.round(sw * 0.56) : 600;
   const CD = mob ? 132 : 168;
   const IW = mob ? Math.min(sw - 48, 330) : 420;
-  const rowY = mob ? 215 : 255;
+  const rowY = mob ? 192 : 255;
   const X: number[] = [];
   const Y: number[] = [];
   for (let i = 0; i < n; i++) {
     X.push(40 + IW / 2 + i * GAP);
     Y.push(rowY + (mob ? 0.6 : 1) * CONS_Y[i % CONS_Y.length]);
   }
-  return { sw, n, mob, CD, R: CD / 2, IW, rowY, CH: mob ? 590 : 660, PAD: Math.max(mob ? 20 : 48, (sw - 1240) / 2 + 48), X, Y };
+  return { sw, n, mob, CD, R: CD / 2, IW, rowY, CH: mob ? 548 : 660, PAD: Math.max(mob ? 20 : 48, (sw - 1240) / 2 + 48), X, Y };
 }
 
 /** Variables CSS del contenedor. */

@@ -8,13 +8,14 @@ import { finePointer, pad2, perFrame, reducedMotion } from './env';
 const COMPACT_BP = 900;
 const SWIPE_PX = 34;
 const SWIPE_VEL = 0.14;
-const ROTATE_MS = 3200;
-const CLICK_RESUME_MS = 3200;
-const HOVER_RESUME_MS = 2400;
+const INITIAL_COOLDOWN_MS = 4000;
+const ROTATE_MS = 4800;
+const CLICK_RESUME_MS = 5200;
+const RESUME_MS = 2400;
 
-const D_CX = -64;
-const D_R = 420;
-/* Ángulos compensados por radio visual (escala 0.85x) para mantener igual separación borde a borde (~41px). */
+const D_CX = -74;
+const D_R = 485;
+/* Ángulos compensados por radio visual (proporción plena 566x582) para mantener separación uniforme borde a borde. */
 const D_ANGLES = [0, 20.4, 33.8];
 
 interface ArcGeom {
@@ -28,10 +29,10 @@ interface ArcGeom {
 }
 
 function measure(vis: HTMLElement, compact: boolean): ArcGeom {
-  const w = vis.clientWidth || (compact ? 360 : 490);
-  const h = vis.clientHeight || (compact ? 276 : 504);
+  const w = vis.clientWidth || (compact ? 360 : 566);
+  const h = vis.clientHeight || (compact ? 276 : 582);
   if (!compact) {
-    const scale = Math.min(1, w / 490);
+    const scale = Math.min(1, w / 566);
     return {
       compact: false,
       cx: D_CX * scale,
@@ -328,29 +329,30 @@ export function initSectors(): void {
     positionPlanets(true);
   };
 
-  const hasFinePointer = finePointer();
   let autoTimer = 0;
-  let hovered = false;
+  let inView = false;
+  let cooledDown = false;
 
   const scheduleAuto = (delay = ROTATE_MS) => {
     window.clearTimeout(autoTimer);
-    if (reducedMotion()) return;
+    autoTimer = 0;
+    if (reducedMotion() || !inView || document.hidden) return;
     autoTimer = window.setTimeout(tickAuto, delay);
   };
 
   const tickAuto = () => {
-    if (!document.hidden && !reducedMotion() && !hovered) {
-      const r = section.getBoundingClientRect();
-      const inView = r.bottom > 80 && r.top < window.innerHeight - 80;
-      const keyboardFocus = Boolean(stage.querySelector(':focus-visible'));
-      if (inView && !keyboardFocus) {
-        select(active + 1, 1);
-      }
+    autoTimer = 0;
+    if (!inView || document.hidden || reducedMotion()) return;
+    cooledDown = true;
+    const keyboardFocus = Boolean(stage.querySelector(':focus-visible'));
+    if (!keyboardFocus) {
+      select(active + 1, 1);
     }
     scheduleAuto(ROTATE_MS);
   };
 
   const userSelect = (target: number, explicitDir?: number) => {
+    cooledDown = true;
     select(target, explicitDir);
     scheduleAuto(CLICK_RESUME_MS);
   };
@@ -366,26 +368,21 @@ export function initSectors(): void {
   prevBtn?.addEventListener('click', () => userSelect(active - 1, -1));
   nextBtn?.addEventListener('click', () => userSelect(active + 1, 1));
 
-  if (hasFinePointer) {
-    stage.addEventListener('mouseenter', () => {
-      hovered = true;
-      window.clearTimeout(autoTimer);
-    });
-    stage.addEventListener('mouseleave', () => {
-      hovered = false;
-      scheduleAuto(HOVER_RESUME_MS);
-    });
-  }
-
   stage.addEventListener('focusout', () => {
     window.setTimeout(() => {
-      if (!hovered && !stage.contains(document.activeElement)) scheduleAuto(HOVER_RESUME_MS);
+      if (!stage.contains(document.activeElement)) {
+        scheduleAuto(cooledDown ? RESUME_MS : INITIAL_COOLDOWN_MS);
+      }
     }, 0);
   });
 
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) window.clearTimeout(autoTimer);
-    else if (!hovered) scheduleAuto(HOVER_RESUME_MS);
+    if (document.hidden) {
+      window.clearTimeout(autoTimer);
+      autoTimer = 0;
+    } else if (inView) {
+      scheduleAuto(cooledDown ? RESUME_MS : INITIAL_COOLDOWN_MS);
+    }
   });
 
   stage.addEventListener('keydown', (e) => {
@@ -400,7 +397,7 @@ export function initSectors(): void {
     }
   });
 
-  /* Swipe horizontal con umbral de distancia + velocidad en modo compacto */
+  /* Swipe horizontal en toda la sección (círculos, sol, textos y cabecera) en modo compacto */
   let downX: number | null = null;
   let downY: number | null = null;
   let downT = 0;
@@ -412,7 +409,7 @@ export function initSectors(): void {
     activePointer = null;
   };
 
-  stage.addEventListener('pointerdown', (e) => {
+  section.addEventListener('pointerdown', (e) => {
     if (!compact || activePointer !== null) return;
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     activePointer = e.pointerId;
@@ -421,9 +418,11 @@ export function initSectors(): void {
     downT = performance.now();
   });
 
-  stage.addEventListener('pointercancel', resetSwipe);
+  window.addEventListener('pointercancel', (e) => {
+    if (e.pointerId === activePointer) resetSwipe();
+  });
 
-  stage.addEventListener('pointerup', (e) => {
+  window.addEventListener('pointerup', (e) => {
     if (!compact || e.pointerId !== activePointer || downX === null || downY === null) return;
     const dx = e.clientX - downX;
     const dy = e.clientY - downY;
@@ -441,7 +440,27 @@ export function initSectors(): void {
 
   relayout();
   syncDeck(0, false);
-  scheduleAuto(ROTATE_MS);
+
+  /* Cooldown inicial de 4 s al entrar en pantalla por primera vez antes de iniciar el loop normal. */
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(
+      (entries) => {
+        const visible = entries.some((entry) => entry.isIntersecting);
+        if (visible === inView) return;
+        inView = visible;
+        if (inView) {
+          scheduleAuto(cooledDown ? ROTATE_MS : INITIAL_COOLDOWN_MS);
+        } else {
+          window.clearTimeout(autoTimer);
+          autoTimer = 0;
+        }
+      },
+      { threshold: 0.2 },
+    ).observe(section);
+  } else {
+    inView = true;
+    scheduleAuto(INITIAL_COOLDOWN_MS);
+  }
 
   /* ---- Destello reactivo del borde solar al cursor (solo escritorio con puntero fino) ----
      El sol permanece fijo en su sitio; únicamente el arco luminoso .sol-spot sigue el ángulo y cercanía

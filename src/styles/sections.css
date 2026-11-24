@@ -14,7 +14,7 @@
 .ib:active{transform:scale(.94)}
 .ib svg{width:18px;height:18px}
 @media (hover:hover) and (pointer:fine){.ib:hover{border-color:rgba(237,234,245,.6)}}
-.cons-sec{overflow:hidden;border-top:1px solid rgba(237,234,245,.06);padding-top:clamp(64px,6vw,88px);padding-bottom:0}
+.cons-sec{overflow:hidden;border-top:1px solid rgba(237,234,245,.06);padding-top:clamp(52px,4.8vw,74px);padding-bottom:0}
 section[id]{scroll-margin-top:72px}
 #metodo{border-top:1px solid rgba(237,234,245,.06);padding-top:clamp(56px,5vw,72px) !important;padding-bottom:clamp(64px,7vw,100px)}
 #nosotros{border-top:1px solid rgba(237,234,245,.06);padding-top:clamp(56px,5vw,72px) !important;padding-bottom:clamp(44px,5vw,68px)}

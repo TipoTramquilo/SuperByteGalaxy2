@@ -1,17 +1,26 @@
 /* Experiencia por sector: sol monumental (estilo corona orgánica) + órbita real de planetas + spotlight editorial */
-#sectores{padding-top:clamp(44px,4.2vw,60px);padding-bottom:clamp(52px,4.8vw,68px)}
+#sectores{padding-top:clamp(72px,7.5svh,108px);padding-bottom:clamp(76px,8svh,114px)}
+@media (min-width:1001px){
+ #sectores{display:flex;align-items:center;min-height:clamp(696px,calc(100svh - 72px),880px)}
+ #sectores > .w{width:100%}
+}
 #sectores .stars{opacity:.75}
 .sol-const{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;animation:skyd 24s ease-in-out infinite alternate;--sdx:14px;--sdy:-8px}
-.sect-h{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px 40px}
 
-/* Escenario principal: escala proporcional 0.85x para encajar holgado en 768–900px sin perder proporciones */
-.sol-stage{display:grid;grid-template-columns:minmax(420px,490px) minmax(0,1fr);gap:clamp(32px,4.5vw,68px);align-items:center;margin-top:clamp(34px,3.4vw,46px)}
+/* Escenario principal escritorio: sol monumental + órbita a la izquierda; título y spotlight alineados al margen derecho
+   con jerarquía clara entre encabezado de sección y sector activo. */
+.sol-stage{display:grid;grid-template-columns:minmax(460px,566px) minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:clamp(28px,3.6vw,52px);row-gap:clamp(28px,3.4svh,44px);align-items:center}
 
-/* Contenedor orbital (escritorio: 490 x 504) */
-.sol-vis{position:relative;width:490px;max-width:100%;height:504px;touch-action:pan-y}
+.sect-h{grid-column:2;grid-row:1;justify-self:end;display:flex;flex-direction:column;align-items:flex-end;text-align:right;gap:10px;padding-top:clamp(18px,2.4svh,34px);width:100%}
+.sect-h .h2{font-size:clamp(36px,3.65vw,52px);margin-top:12px}
+.sect-h .ctrl .ct{margin-right:0}
+.sect-h::after{content:"";display:block;width:min(100%,380px);height:1px;margin-top:12px;background:linear-gradient(90deg,transparent,rgba(237,234,245,.18))}
 
-/* Sol monumental escalado proporcionalmente: ~596px asomando desde la izquierda sin cortes rectos */
-.sol-sun{position:absolute;left:-64px;top:252px;width:596px;height:596px;transform:translate(-50%,-50%);pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 48%,#000 62%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,transparent 48%,#000 62%,#000 100%)}
+/* Contenedor orbital (escritorio: 566 x 582, ocupa las dos filas a la izquierda) */
+.sol-vis{grid-column:1;grid-row:1 / -1;align-self:center;position:relative;width:566px;max-width:100%;height:582px;touch-action:pan-y}
+
+/* Sol monumental a proporción plena: ~688px asomando desde la izquierda sin cortes rectos */
+.sol-sun{position:absolute;left:-74px;top:291px;width:688px;height:688px;transform:translate(-50%,-50%);pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 48%,#000 62%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,transparent 48%,#000 62%,#000 100%)}
 .sol-react{width:100%;height:100%;transform-origin:50% 50%;will-change:transform}
 .sol-corona{display:block;width:100%;height:100%;overflow:visible}
 .sol-ring,.sol-spot{transform-origin:0 0}
@@ -21,7 +30,7 @@
 @keyframes solSpin{to{transform:rotate(360deg)}}
 
 /* Cifra central centrada en el núcleo visual del sol: bloque tipográfico rectangular (mismo ancho visual por línea) */
-.sol-stat{--su:clamp(62px,5.2vw,74px);position:absolute;left:28px;top:50%;transform:translate(-50%,-50%);z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;font-family:"Satoshi",system-ui,sans-serif;font-weight:700;color:#EDEAF5;pointer-events:none;white-space:nowrap}
+.sol-stat{--su:clamp(70px,5.6vw,84px);position:absolute;left:32px;top:50%;transform:translate(-50%,-50%);z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;font-family:"Satoshi",system-ui,sans-serif;font-weight:700;color:#EDEAF5;pointer-events:none;white-space:nowrap}
 .sol-line{display:block}
 .sol-l1{font-size:var(--su);line-height:.84;letter-spacing:-.04em;color:#FFFFFF;font-variant-numeric:tabular-nums;margin-bottom:.08em}
 .sol-l1 span{color:#5FD6FF;margin-right:1px}
@@ -36,7 +45,7 @@
 
 /* Planetas sobre brazos orbitales concéntricos: toda la órbita comparte la misma familia temporal (480ms)
    para que escalado y rotación avancen en sincronía sin que dos planetas se superpongan nunca. */
-.sol-planets{position:absolute;inset:0;pointer-events:none;--pd:118px;--orb-t:480ms;--orb-e:cubic-bezier(.22,1,.36,1)}
+.sol-planets{position:absolute;inset:0;pointer-events:none;--pd:136px;--orb-t:480ms;--orb-e:cubic-bezier(.22,1,.36,1)}
 .sol-pivot{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}
 .sol-planets.sol-instant .sol-arm,.sol-planets.sol-instant .sol-p,.sol-planets.sol-instant .sol-pbtn,.sol-planets.sol-instant .sol-gl,.sol-planets.sol-instant .sol-p::before{transition:none !important}
 
@@ -63,11 +72,11 @@
 .sol-arm.on .sol-pbtn{transform:scale(1.12);opacity:1;border-color:color-mix(in srgb,var(--pc,#5FD6FF) 66%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--pc,#5FD6FF) 20%,transparent),inset 0 0 32px color-mix(in srgb,var(--pc,#5FD6FF) 20%,transparent);cursor:default}
 
 /* Anillo punteado exterior girando alrededor del planeta activo (como .orbn::after) */
-.sol-pbtn::after{content:"";position:absolute;inset:-12px;border-radius:50%;border:1px dashed color-mix(in srgb,var(--pc,#5FD6FF) 54%,transparent);opacity:0;pointer-events:none;transition:opacity 320ms ease;animation:spin 40s linear infinite}
+.sol-pbtn::after{content:"";position:absolute;inset:-14px;border-radius:50%;border:1px dashed color-mix(in srgb,var(--pc,#5FD6FF) 54%,transparent);opacity:0;pointer-events:none;transition:opacity 320ms ease;animation:spin 40s linear infinite}
 .sol-arm.on .sol-pbtn::after{opacity:1}
 
 /* Glifo interior (como .orbn .gl) */
-.sol-gl{display:block;width:54px;height:54px;background:no-repeat center/100% 100%;opacity:.56;transform:scale(.86);transition:opacity 320ms ease,transform var(--orb-t) var(--orb-e)}
+.sol-gl{display:block;width:62px;height:62px;background:no-repeat center/100% 100%;opacity:.56;transform:scale(.86);transition:opacity 320ms ease,transform var(--orb-t) var(--orb-e)}
 .sol-arm[data-tier="2"] .sol-gl{opacity:.48}
 .sol-arm.on .sol-gl{opacity:1;transform:scale(1.06)}
 
@@ -77,9 +86,9 @@
  .sol-arm:not(.on) .sol-pbtn:hover .sol-gl{opacity:.85;transform:scale(.95)}
 }
 
-/* Spotlight editorial único a la derecha */
-.sol-body{display:flex;flex-direction:column;align-items:flex-start;gap:26px;min-width:0}
-.sol-deck{display:grid;width:100%;min-height:184px;align-items:center}
+/* Spotlight editorial a la derecha: alineado al margen derecho y diferenciado del título por escala y tono del planeta */
+.sol-body{grid-column:2;grid-row:2;justify-self:end;align-self:start;display:flex;flex-direction:column;align-items:flex-end;text-align:right;gap:26px;width:min(100%,460px);min-width:0;padding-top:clamp(6px,1svh,14px)}
+.sol-deck{display:grid;width:100%;min-height:166px;align-items:center}
 .sol-slide{grid-area:1 / 1;min-width:0;opacity:0;visibility:hidden;pointer-events:none}
 .sol-slide.on{opacity:1;visibility:visible;pointer-events:auto}
 .sol-slide.enter{animation:solInV 420ms var(--eo) 55ms both}
@@ -94,11 +103,11 @@
  to{opacity:0;filter:blur(3px);transform:translate3d(0,calc(var(--sdir,1) * -16px),0)}
 }
 
-.sol-title{font:700 clamp(32px,3.2vw,46px)/1.05 "Satoshi",system-ui,sans-serif;letter-spacing:-.032em;color:#FFFFFF;text-wrap:balance;max-width:16ch}
-.sol-desc{margin-top:16px;color:#C2CBE0;font-size:clamp(17.5px,1.4vw,20px);line-height:1.56;max-width:36ch}
+.sol-title{font:500 clamp(26px,2.35vw,34px)/1.12 "Satoshi",system-ui,sans-serif;letter-spacing:-.022em;color:#E2E8F5;text-wrap:balance;max-width:20ch;margin-left:auto}
+.sol-desc{margin:14px 0 0 auto;color:#AEB8CE;font-size:clamp(17px,1.35vw,19px);line-height:1.6;max-width:38ch;text-wrap:pretty}
 
 /* Controles orbitales (^ / v + indicadores de los 5 sectores) */
-.sol-ctrl{display:flex;align-items:center;gap:20px}
+.sol-ctrl{display:flex;flex-direction:row-reverse;align-items:center;gap:20px}
 .sol-nav{display:flex;align-items:center;gap:10px}
 .sol-btn{width:48px;height:48px;border-color:rgba(95,214,255,.35);background:rgba(12,20,44,.75)}
 .sol-btn:hover{border-color:rgba(95,214,255,.8)}
@@ -112,9 +121,14 @@
 
 /* ===== Tablet y Móvil (<= 900px): Rotación 90° — Horizonte solar ancho arriba + arco horizontal ===== */
 @media (max-width:900px){
+ #sectores{padding-top:clamp(44px,5vw,60px);padding-bottom:clamp(48px,5.5vw,64px)}
+ #sectores,.sol-stage,.sol-body,.sol-deck{touch-action:pan-y}
  .sol-const{opacity:.55}
- .sol-stage{grid-template-columns:minmax(0,1fr);gap:14px;margin-top:20px}
- .sol-vis{width:100%;max-width:520px;height:276px;margin:0 auto}
+ .sol-stage{grid-template-columns:minmax(0,1fr);grid-template-rows:auto;gap:14px;margin-top:0}
+ .sect-h{grid-column:auto;grid-row:auto;justify-self:stretch;flex-direction:row;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;text-align:left;gap:18px 28px;padding-top:0;margin-bottom:6px}
+ .sect-h::after{display:none}
+ .sect-h .h2{font-size:clamp(38px,4.6vw,64px);margin-top:18px}
+ .sol-vis{grid-column:auto;grid-row:auto;width:100%;max-width:520px;height:276px;margin:0 auto}
  .sol-sun{left:50%;top:-70px;width:520px;height:520px;transform:translate(-50%,-50%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,transparent 60%,#000 74%,#000 100%);mask-image:linear-gradient(180deg,transparent 0%,transparent 60%,#000 74%,#000 100%)}
  .sol-stat{--su:clamp(46px,12vw,58px);left:50%;top:10px;transform:translateX(-50%)}
 
@@ -127,7 +141,7 @@
  .sol-arm[data-tier="2"] .sol-pbtn{transform:scale(.48)}
  .sol-arm.on .sol-pbtn{transform:scale(1.04)}
 
- .sol-body{align-items:center;text-align:center;gap:14px;max-width:520px;width:100%;margin:0 auto}
+ .sol-body{grid-column:auto;grid-row:auto;justify-self:center;align-self:auto;align-items:center;text-align:center;gap:14px;max-width:520px;width:100%;margin:0 auto;padding-top:0}
  .sol-deck{min-height:128px}
  .sol-slide.enter{animation-name:solInH}
  .sol-slide.out{animation-name:solOutH}

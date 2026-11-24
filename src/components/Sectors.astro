@@ -15,11 +15,11 @@ const n = sectors.length;
 const half = Math.floor(n / 2);
 const pad = (i: number) => String(i).padStart(2, '0');
 
-/* Geometría inicial SSR para escritorio (escala 0.85x para encajar cómodo en pantallas de 768–900px):
-   pivote solar en (-64, 252), radio orbital 420px, ángulos ópticos (0°, ±20.4°, ±33.8°). */
-const CX = -64;
-const CY = 252;
-const R = 420;
+/* Geometría inicial SSR para escritorio (566 x 582, proporción plena):
+   pivote solar en (-74, 291), radio orbital 485px, ángulos ópticos (0°, ±20.4°, ±33.8°). */
+const CX = -74;
+const CY = 291;
+const R = 485;
 const DESKTOP_ANGLES = [0, 20.4, 33.8];
 
 const signedOffset = (i: number, active: number) => ((i - active + n + half) % n) - half;
@@ -70,15 +70,15 @@ const RING_B =
     </g>
   </svg>
   <div class="w">
-    <div class="sect-h rv">
-      <div>
-        <span class="kick">Industrias</span>
-        <h2 class="h2" id="h-s">Experiencia por sector</h2>
+    <div class="sol-stage rv" data-dir="1" style={`--sc:${accents[0]}`}>
+      <div class="sect-h">
+        <div>
+          <span class="kick">Industrias</span>
+          <h2 class="h2" id="h-s">Experiencia por sector</h2>
+        </div>
+        <div class="ctrl"><span class="ct" aria-live="polite">{`01 / ${pad(n)}`}</span></div>
       </div>
-      <div class="ctrl"><span class="ct" aria-live="polite">{`01 / ${pad(n)}`}</span></div>
-    </div>
 
-    <div class="sol-stage rv d1" data-dir="1" style={`--sc:${accents[0]}`}>
       <!-- Sistema solar: sol monumental luminoso (+4 años) + arco orbital con los 5 planetas -->
       <div class="sol-vis" role="region" aria-roledescription="selector orbital" aria-label="Sectores en órbita. Use las flechas o seleccione un planeta.">
         <div class="sol-sun" aria-hidden="true">
@@ -146,7 +146,7 @@ const RING_B =
         </p>
 
         <!-- Arco orbital SVG (se sincroniza en src/scripts/sectors.ts) -->
-        <svg class="sol-arc" viewBox="0 0 490 504" aria-hidden="true" focusable="false">
+        <svg class="sol-arc" viewBox="0 0 566 582" aria-hidden="true" focusable="false">
           <defs>
             <linearGradient id="sol-arc-g" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#5FD6FF" stop-opacity="0" />
@@ -156,8 +156,8 @@ const RING_B =
               <stop offset="100%" stop-color="#7C5CF5" stop-opacity="0" />
             </linearGradient>
           </defs>
-          <path class="sol-arc-bg" d="M 263.3 -11.4 A 420 420 0 0 1 263.3 515.4" fill="none" />
-          <path class="sol-arc-hi" d="M 327.3 99.9 A 420 420 0 0 1 327.3 404.1" fill="none" stroke="url(#sol-arc-g)" />
+          <path class="sol-arc-bg" d="M 304.0 -12.9 A 485 485 0 0 1 304.0 594.9" fill="none" />
+          <path class="sol-arc-hi" d="M 378.1 115.5 A 485 485 0 0 1 378.1 466.5" fill="none" stroke="url(#sol-arc-g)" />
         </svg>
 
         <!-- Planetas montados sobre brazos orbitales concéntricos al sol (movimiento curvo real) -->
