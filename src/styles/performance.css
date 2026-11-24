@@ -24,15 +24,16 @@
    Se congela el fondo pesado (estrellas, grano y blobs) con destellos tenues fijos,
    pero se mantienen vivas las animaciones de interfaz (órbita, Método Byte, productos y logos). */
 .low-effects .stars,.low-effects .stars>img,.low-effects .stars>svg:not(.bs),.low-effects .stars .bs,
-.low-effects .trust::before,.low-effects .trust::after,.low-effects #metodo::before,.low-effects #metodo::after,
+.low-effects .trust::before,.low-effects .trust::after,.low-effects #sectores::before,.low-effects #sectores::after,.low-effects #metodo::before,.low-effects #metodo::after,
 .low-effects #nosotros::before,.low-effects #nosotros::after,.low-effects .cons-sec::before,.low-effects .cons-sec::after{animation:none !important;will-change:auto !important}
 .low-effects .stars .b .sh{animation:none !important;opacity:0}
 .low-effects .stars .bs .b:nth-of-type(3n+1) .sh{opacity:.2}
 .low-effects .blob{animation:none !important}
+.low-effects .sol-ring,.low-effects .sol-arc-hi{animation:none !important}
 .low-effects .grain{display:none}
 
 @media(prefers-reduced-motion:reduce){
- .blob,.cl .seg.on::before,.orb .spoke.on::before,.orbn::after{animation:none !important}
+ .blob,.cl .seg.on::before,.orb .spoke.on::before,.orbn::after,.sol-ring,.sol-arc-hi,.sol-pbtn::after{animation:none !important}
  .grain{display:none}
  .stars{will-change:auto}
  .logos{mask-image:none;-webkit-mask-image:none;overflow-x:auto}

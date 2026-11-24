@@ -1,7 +1,7 @@
 /* Barra: marca la sección visible, abre y cierra el menú móvil, y centra la sección al navegar. */
 import { perFrame, reducedMotion } from './env';
 
-const SECTIONS = ['inicio', 'productos', 'metodo', 'nosotros', 'contacto'];
+const SECTIONS = ['inicio', 'sectores', 'productos', 'metodo', 'nosotros', 'contacto'];
 
 export function initNav(): void {
   const header = document.querySelector<HTMLElement>('.nav');

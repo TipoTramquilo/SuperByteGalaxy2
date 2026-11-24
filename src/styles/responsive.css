@@ -23,7 +23,6 @@
  .nav .mnav a.on:not(.btn){color:#FFFFFF !important;background:rgba(237,234,245,.07);border-color:transparent;box-shadow:none;border-radius:0}
  .nav .mnav a.mcontact{color:#309AE7 !important;border-bottom:0}
  .hgrid{grid-template-columns:minmax(0,1fr)}
- .sect-l{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
  .cgrid{grid-template-columns:minmax(0,1fr);gap:48px}
 }
 @media (max-width:400px){
@@ -31,7 +30,6 @@
  .ctas .btn{font-size:13px;padding:0 16px;white-space:nowrap}
 }
 @media (max-width:560px){
- .sect-l{grid-template-columns:minmax(0,1fr);gap:28px}
  .nums{flex-wrap:wrap;row-gap:28px;justify-content:center;text-align:center}.nums div{width:calc(50% - 16px)}.nums span{margin-left:auto;margin-right:auto}
  .nav .btn.sm{display:none}
  .hero{padding-top:80px}

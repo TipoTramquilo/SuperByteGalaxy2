@@ -31,6 +31,7 @@
   "privacy": "/politica-de-privacidad",
   "nav": [
     { "id": "inicio", "label": "Inicio" },
+    { "id": "sectores", "label": "Experiencia" },
     { "id": "productos", "label": "Productos" },
     { "id": "metodo", "label": "Método" },
     { "id": "nosotros", "label": "Nosotros" }

@@ -38,7 +38,7 @@ export function initEffects(): void {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => entry.target.classList.toggle('effects-paused', !entry.isIntersecting));
     }, { rootMargin: '160px' });
-    document.querySelectorAll('.hero,.trust,.cons-sec,#metodo,#nosotros,.cta,.privacy-main').forEach((section) => observer.observe(section));
+    document.querySelectorAll('.hero,.trust,#sectores,.cons-sec,#metodo,#nosotros,.cta,.privacy-main').forEach((section) => observer.observe(section));
   }
 
   let low = false;

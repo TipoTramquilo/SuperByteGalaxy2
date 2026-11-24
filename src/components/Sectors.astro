@@ -1,18 +1,219 @@
 ---
-/* Experiencia por sector. Los sectores viven en sectors.json y sus íconos en src/lib/glyphs.ts. */
+/* Experiencia por sector: sistema solar monumental + planetas sobre arco rotatorio real + spotlight editorial.
+   Escritorio (> 900px): medio sol gigante a la izquierda (+4 años), arco orbital vertical con 5 planetas
+   que orbitan suavemente sobre la curva sin cruzarse y spotlight grande del sector activo a la derecha.
+   Móvil / tablet (<= 900px): rota 90° — horizonte solar arriba, arco horizontal táctil de 5 planetas
+   y spotlight editorial centrado debajo. Lógica en src/scripts/sectors.ts. */
+import Starfield from './Starfield.astro';
 import sectors from '../data/sectors.json';
 import { glyphImage } from '../lib/glyphs';
 
-const delay = ['rv', 'rv d1', 'rv d2'];
-const glyphs = sectors.map((s) => glyphImage(s.glyph, '#5FD6FF', '#7C5CF5'));
+const glyphs = sectors.map((s) => glyphImage(s.glyph, s.colors[0], s.colors[1]));
+const accents = sectors.map((s) => s.colors[1]);
+
+const n = sectors.length;
+const half = Math.floor(n / 2);
+const pad = (i: number) => String(i).padStart(2, '0');
+
+/* Geometría inicial SSR para escritorio (coincide con src/scripts/sectors.ts):
+   pivote solar en (-75, 296), radio orbital 495px, ángulos ópticos (0°, ±20.4°, ±33.8°). */
+const CX = -75;
+const CY = 296;
+const R = 495;
+const DESKTOP_ANGLES = [0, 20.4, 33.8];
+
+const signedOffset = (i: number, active: number) => ((i - active + n + half) % n) - half;
+
+const initialPos = sectors.map((_, i) => {
+  const off = signedOffset(i, 0);
+  const absOff = Math.abs(off);
+  const deg = Math.sign(off) * (DESKTOP_ANGLES[absOff] ?? absOff * 17);
+  const tier = off === 0 ? '0' : absOff === 1 ? '1' : '2';
+  return { deg: deg.toFixed(2), off, tier };
+});
+
+/* Dos anillos orgánicos cerrados (Beziers C1 continuos) para la corona solar estilo aura líquida sin blur GPU. */
+const RING_A =
+  'M 175 0 C 175 46.4 149.4 86.8 118.1 118.1 C 86.8 149.4 47.2 178 0 178 C -47.2 178 -87.8 151.2 -119.5 119.5 C -151.2 87.8 -174 46.1 -174 0 C -174 -46.1 -147.6 -85.8 -116.7 -116.7 C -85.8 -147.6 -46.9 -177 0 -177 C 46.9 -177 87.3 -150.3 118.8 -118.8 C 150.3 -87.3 175 -46.4 175 0 Z';
+const RING_B =
+  'M 166 0 C 166 44 158.4 92 125.2 125.2 C 92 158.4 44.5 168 0 168 C -44.5 168 -90.9 156.5 -123.7 123.7 C -156.5 90.9 -165 43.8 -165 0 C -165 -43.8 -157.5 -91.5 -124.5 -124.5 C -91.5 -157.5 -44.3 -167 0 -167 C 44.3 -167 92.5 -159.3 125.9 -125.9 C 159.3 -92.5 166 -44 166 0 Z';
 ---
 <section class="sec" id="sectores" aria-labelledby="h-s">
+  <Starfield name="sectores" />
   <div class="w">
-    <div class="sect-h rv"><div><span class="kick">Industrias</span><h2 class="h2" id="h-s">Experiencia por sector</h2></div><p class="yrs"><b>+4</b> años en el mercado</p></div>
-    <ul class="sect-l">
-      {sectors.map((s, i) => (
-        <li class={delay[i % delay.length]}><span class="sg" aria-hidden="true" style={`background-image:${glyphs[i]}`}></span><h3>{s.name}</h3><p>{s.description}</p></li>
-      ))}
-    </ul>
+    <div class="sect-h rv">
+      <div>
+        <span class="kick">Industrias</span>
+        <h2 class="h2" id="h-s">Experiencia por sector</h2>
+      </div>
+      <div class="ctrl"><span class="ct" aria-live="polite">{`01 / ${pad(n)}`}</span></div>
+    </div>
+
+    <div class="sol-stage rv d1" data-dir="1" style={`--sc:${accents[0]}`}>
+      <!-- Sistema solar: sol monumental luminoso (+4 años) + arco orbital con los 5 planetas -->
+      <div class="sol-vis" role="region" aria-roledescription="selector orbital" aria-label="Sectores en órbita. Use las flechas o seleccione un planeta.">
+        <div class="sol-sun" aria-hidden="true">
+          <div class="sol-react">
+            <svg class="sol-corona" viewBox="-230 -230 460 460" focusable="false">
+              <defs>
+                <radialGradient id="sol-bloom" cx="50%" cy="50%" r="50%">
+                  <stop offset="52%" stop-color="#309AE7" stop-opacity="0" />
+                  <stop offset="72%" stop-color="#309AE7" stop-opacity="0.24" />
+                  <stop offset="85%" stop-color="#5036EA" stop-opacity="0.16" />
+                  <stop offset="100%" stop-color="#5036EA" stop-opacity="0" />
+                </radialGradient>
+                <radialGradient id="sol-core" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#070B16" stop-opacity="1" />
+                  <stop offset="75%" stop-color="#070B16" stop-opacity="0.97" />
+                  <stop offset="92%" stop-color="#0A1534" stop-opacity="0.58" />
+                  <stop offset="100%" stop-color="#0A1534" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="sol-g1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#8CE8FF" />
+                  <stop offset="30%" stop-color="#309AE7" />
+                  <stop offset="66%" stop-color="#5036EA" />
+                  <stop offset="100%" stop-color="#5FD6FF" />
+                </linearGradient>
+                <linearGradient id="sol-g2" x1="100%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#5FD6FF" />
+                  <stop offset="44%" stop-color="#7C5CF5" />
+                  <stop offset="80%" stop-color="#309AE7" stop-opacity="0.32" />
+                  <stop offset="100%" stop-color="#7EE2FF" />
+                </linearGradient>
+                <linearGradient id="sol-spot-g" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#5FD6FF" stop-opacity="0" />
+                  <stop offset="30%" stop-color="#5FD6FF" stop-opacity="0.72" />
+                  <stop offset="50%" stop-color="#B8F0FF" stop-opacity="1" />
+                  <stop offset="70%" stop-color="#5FD6FF" stop-opacity="0.72" />
+                  <stop offset="100%" stop-color="#5036EA" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+              <circle cx="0" cy="0" r="228" fill="url(#sol-bloom)" />
+              <g class="sol-ring sol-r1">
+                <path d={RING_A} fill="none" stroke="url(#sol-g1)" stroke-width="46" stroke-opacity="0.06" />
+                <path d={RING_A} fill="none" stroke="url(#sol-g1)" stroke-width="28" stroke-opacity="0.12" />
+                <path d={RING_A} fill="none" stroke="url(#sol-g1)" stroke-width="14" stroke-opacity="0.24" />
+                <path d={RING_A} fill="none" stroke="url(#sol-g1)" stroke-width="5.5" stroke-opacity="0.62" />
+                <path d={RING_A} fill="none" stroke="#D1F5FF" stroke-width="1.6" stroke-opacity="0.92" />
+              </g>
+              <g class="sol-ring sol-r2">
+                <path d={RING_B} fill="none" stroke="url(#sol-g2)" stroke-width="24" stroke-opacity="0.14" />
+                <path d={RING_B} fill="none" stroke="url(#sol-g2)" stroke-width="3.2" stroke-opacity="0.5" />
+              </g>
+              <g class="sol-spot">
+                <path d="M 123.7 -123.7 A 175 175 0 0 1 123.7 123.7" fill="none" stroke="url(#sol-spot-g)" stroke-width="30" stroke-opacity="0.22" stroke-linecap="round" />
+                <path d="M 123.7 -123.7 A 175 175 0 0 1 123.7 123.7" fill="none" stroke="url(#sol-spot-g)" stroke-width="10" stroke-opacity="0.58" stroke-linecap="round" />
+                <path d="M 123.7 -123.7 A 175 175 0 0 1 123.7 123.7" fill="none" stroke="url(#sol-spot-g)" stroke-width="2.4" stroke-opacity="0.95" stroke-linecap="round" />
+              </g>
+              <circle cx="0" cy="0" r="161" fill="url(#sol-core)" />
+            </svg>
+          </div>
+        </div>
+
+        <p class="sol-stat">
+          <span class="sol-line sol-l1"><span>+</span>4</span>
+          <span class="sol-line sol-l2">años en el</span>
+          <span class="sol-line sol-l3">mercado</span>
+        </p>
+
+        <!-- Arco orbital SVG (se sincroniza en src/scripts/sectors.ts) -->
+        <svg class="sol-arc" viewBox="0 0 560 592" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="sol-arc-g" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#5FD6FF" stop-opacity="0" />
+              <stop offset="22%" stop-color="#5FD6FF" stop-opacity="0.45" />
+              <stop offset="50%" stop-color="#7EE2FF" stop-opacity="0.88" />
+              <stop offset="78%" stop-color="#7C5CF5" stop-opacity="0.45" />
+              <stop offset="100%" stop-color="#7C5CF5" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+          <path class="sol-arc-bg" d="M 310.7 -14.1 A 495 495 0 0 1 310.7 606.1" fill="none" />
+          <path class="sol-arc-hi" d="M 386.1 116.7 A 495 495 0 0 1 386.1 475.3" fill="none" stroke="url(#sol-arc-g)" />
+        </svg>
+
+        <!-- Planetas montados sobre brazos orbitales concéntricos al sol (movimiento curvo real) -->
+        <div class="sol-planets" role="tablist" aria-label="Industrias">
+          <div class="sol-pivot" style={`transform:translate3d(${CX}px,${CY}px,0)`}>
+            {sectors.map((s, i) => {
+              const p = initialPos[i];
+              const on = i === 0;
+              return (
+                <div
+                  class={on ? 'sol-arm on' : 'sol-arm'}
+                  data-sector={String(i)}
+                  data-off={String(p.off)}
+                  data-tier={p.tier}
+                  style={`--pc:${accents[i]};transform:rotate(${p.deg}deg)`}
+                >
+                  <div class="sol-p" style={`transform:translate3d(${R}px,0,0) rotate(${(-Number(p.deg)).toFixed(2)}deg)`}>
+                    <button
+                      type="button"
+                      class="sol-pbtn"
+                      role="tab"
+                      id={`sec-tab-${i}`}
+                      aria-selected={on ? 'true' : 'false'}
+                      aria-controls={`sec-panel-${i}`}
+                      aria-label={on ? `${s.name} (seleccionado)` : s.name}
+                      tabindex={on ? 0 : -1}
+                      data-sector={String(i)}
+                    >
+                      <span class="sol-gl" aria-hidden="true" style={`background-image:${glyphs[i]}`}></span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <!-- Spotlight editorial único (escritorio y móvil) + controles orbitales -->
+      <div class="sol-body">
+        <div class="sol-deck">
+          {sectors.map((s, i) => {
+            const on = i === 0;
+            return (
+              <article
+                class={on ? 'sol-slide on' : 'sol-slide'}
+                id={`sec-panel-${i}`}
+                role="tabpanel"
+                aria-labelledby={`sec-tab-${i}`}
+                aria-hidden={on ? 'false' : 'true'}
+                data-sector={String(i)}
+              >
+                <h3 class="sol-title">{s.name}</h3>
+                <p class="sol-desc">{s.description}</p>
+              </article>
+            );
+          })}
+        </div>
+
+        <div class="sol-ctrl">
+          <div class="sol-nav">
+            <button type="button" class="ib sol-btn sol-prev" aria-label="Sector anterior">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 10l4-4 4 4"></path>
+              </svg>
+            </button>
+            <button type="button" class="ib sol-btn sol-next" aria-label="Sector siguiente">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 6l4 4 4-4"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="sol-dots" role="presentation">
+            {sectors.map((s, i) => (
+              <button
+                type="button"
+                class={i === 0 ? 'sol-dot on' : 'sol-dot'}
+                aria-label={`Ver ${s.name}`}
+                aria-pressed={i === 0 ? 'true' : 'false'}
+                data-sector={String(i)}
+              ></button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
