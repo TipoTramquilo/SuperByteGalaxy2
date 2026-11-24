@@ -30,6 +30,11 @@ export function initProducts(): void {
   const next = root.querySelector<HTMLButtonElement>('.cnav.r')!;
   const counter = document.querySelector<HTMLElement>('#productos .ct');
   const n = nodes.length;
+  if (!n) return;
+
+  const orbButtons = nodes.map((node) => node.querySelector<HTMLElement>('.orbn'));
+  const moreEls = nodes.map((node) => node.querySelector<HTMLElement>('.more'));
+  let segEls = Array.from(cluster.querySelectorAll<HTMLElement>('.seg'));
 
   let active = 0;
   let sw = Number(root.dataset.sw) || 0;
@@ -41,17 +46,21 @@ export function initProducts(): void {
     track.style.cssText = css(trackStyle(g, active));
     far.style.cssText = css(farStyle(g, farWidth, active));
     const segs = segments(g, active);
-    cluster.querySelectorAll<HTMLElement>('.seg').forEach((el, i) => {
-      el.className = segs[i].on ? 'seg on' : 'seg';
-      el.style.cssText = css(segs[i].style);
+    segEls.forEach((el, i) => {
+      const s = segs[i];
+      if (!s) return;
+      el.className = s.on ? 'seg on' : 'seg';
+      el.style.cssText = css(s.style);
     });
     nodes.forEach((node, i) => {
       const on = i === active;
       node.classList.toggle('on', on);
-      const btn = node.querySelector<HTMLElement>('.orbn')!;
-      btn.setAttribute('aria-current', on ? 'true' : 'false');
-      btn.setAttribute('aria-label', products[i].name + (on ? ' (seleccionado)' : ''));
-      node.querySelector('.more')?.setAttribute('aria-hidden', on ? 'false' : 'true');
+      const btn = orbButtons[i];
+      if (btn) {
+        btn.setAttribute('aria-current', on ? 'true' : 'false');
+        btn.setAttribute('aria-label', products[i].name + (on ? ' (seleccionado)' : ''));
+      }
+      moreEls[i]?.setAttribute('aria-hidden', on ? 'false' : 'true');
     });
     if (counter) counter.textContent = `${pad2(active + 1)} / ${pad2(n)}`;
     prev.setAttribute('aria-disabled', active === 0 ? 'true' : 'false');
@@ -70,6 +79,7 @@ export function initProducts(): void {
     nodes.forEach((node, i) => (node.style.cssText = css(nodeStyle(g, i, products[i].colors[1]))));
     far.innerHTML = farMarkup(f);
     cluster.innerHTML = clusterMarkup(g, active);
+    segEls = Array.from(cluster.querySelectorAll<HTMLElement>('.seg'));
     apply();
   };
 
@@ -80,18 +90,9 @@ export function initProducts(): void {
     apply();
   };
 
-  nodes.forEach((node, i) => node.querySelector('.orbn')?.addEventListener('click', () => go(i)));
+  orbButtons.forEach((btn, i) => btn?.addEventListener('click', () => go(i)));
   prev.addEventListener('click', () => go(active - 1));
   next.addEventListener('click', () => go(active + 1));
-  vp.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      go(active + 1);
-    } else if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      go(active - 1);
-    }
-  });
   let downX: number | null = null;
   let downY: number | null = null;
   let activePointer: number | null = null;
@@ -107,8 +108,10 @@ export function initProducts(): void {
     downX = e.clientX;
     downY = e.clientY;
   });
-  vp.addEventListener('pointercancel', resetSwipe);
-  vp.addEventListener('pointerup', (e) => {
+  window.addEventListener('pointercancel', (e) => {
+    if (e.pointerId === activePointer) resetSwipe();
+  });
+  window.addEventListener('pointerup', (e) => {
     if (e.pointerId !== activePointer || downX == null || downY == null) return;
     const dx = e.clientX - downX;
     const dy = e.clientY - downY;

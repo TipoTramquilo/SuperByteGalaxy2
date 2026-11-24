@@ -4,11 +4,13 @@ import { finePointer, reducedMotion } from './env';
 
 export function initClients(): void {
   if (!finePointer()) return;
-  const wrap = document.querySelector<HTMLElement>('.trust .logos');
-  if (!wrap) return;
+  const section = document.querySelector<HTMLElement>('.trust');
+  const wrap = section?.querySelector<HTMLElement>('.logos');
+  if (!section || !wrap) return;
 
   let active: Element | null = null;
   let inside = false;
+  let moved = false;
   let px = 0;
   let py = 0;
   let raf = 0;
@@ -23,6 +25,7 @@ export function initClients(): void {
 
   const stop = () => {
     inside = false;
+    moved = false;
     if (raf) cancelAnimationFrame(raf);
     raf = 0;
     setActive(null);
@@ -39,11 +42,12 @@ export function initClients(): void {
 
   const loop = (now: number) => {
     raf = 0;
-    if (!inside || document.hidden) {
+    if (!inside || document.hidden || section.classList.contains('effects-paused')) {
       stop();
       return;
     }
-    if (now - lastCheck >= 40) {
+    if (moved || now - lastCheck >= 40) {
+      moved = false;
       lastCheck = now;
       hit();
     }
@@ -55,9 +59,8 @@ export function initClients(): void {
     px = ev.clientX;
     py = ev.clientY;
     inside = true;
-    lastCheck = performance.now();
-    hit();
-    if (!raf && !reducedMotion()) raf = requestAnimationFrame(loop);
+    moved = true;
+    if (!raf) raf = requestAnimationFrame(loop);
   };
 
   wrap.addEventListener('pointerenter', onPointer, { passive: true });

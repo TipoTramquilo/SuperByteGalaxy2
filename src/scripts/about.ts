@@ -127,7 +127,7 @@ function initAboutCarousel(): void {
   const n = slides.length;
   if (n < 2) return;
 
-  let active = 0;
+  let active = -1;
   let lockTimer = 0;
   let locked = false;
 
@@ -138,19 +138,22 @@ function initAboutCarousel(): void {
   };
 
   const sync = (index: number) => {
-    active = Math.max(0, Math.min(n - 1, index));
+    const nextIdx = Math.max(0, Math.min(n - 1, index));
+    if (nextIdx === active) return;
+    active = nextIdx;
     if (counter) counter.textContent = `${String(active + 1).padStart(2, '0')} / ${String(n).padStart(2, '0')}`;
     pips.forEach((p, i) => p.classList.toggle('on', i === active));
     prev.setAttribute('aria-disabled', active === 0 ? 'true' : 'false');
     next.setAttribute('aria-disabled', active === n - 1 ? 'true' : 'false');
   };
 
-  const targetLeft = (slide: HTMLElement) =>
-    Math.max(0, Math.round(slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2));
+  const targetLeft = (slide: HTMLElement, viewWidth: number) =>
+    Math.max(0, Math.round(slide.offsetLeft - (viewWidth - slide.offsetWidth) / 2));
 
   const go = (index: number) => {
     const target = Math.max(0, Math.min(n - 1, index));
-    const left = targetLeft(slides[target]);
+    if (target === active) return;
+    const left = targetLeft(slides[target], track.clientWidth);
     locked = true;
     window.clearTimeout(lockTimer);
     lockTimer = window.setTimeout(unlock, 560);
@@ -160,16 +163,18 @@ function initAboutCarousel(): void {
 
   const onScroll = perFrame(() => {
     if (locked) return;
-    const maxScroll = track.scrollWidth - track.clientWidth;
+    const viewWidth = track.clientWidth;
+    const scrollLeft = track.scrollLeft;
+    const maxScroll = track.scrollWidth - viewWidth;
     if (maxScroll <= 2) return;
-    if (track.scrollLeft >= maxScroll - 6) {
+    if (scrollLeft >= maxScroll - 6) {
       sync(n - 1);
       return;
     }
     let best = 0;
     let bestDist = Infinity;
     for (let i = 0; i < n; i++) {
-      const dist = Math.abs(targetLeft(slides[i]) - track.scrollLeft);
+      const dist = Math.abs(targetLeft(slides[i], viewWidth) - scrollLeft);
       if (dist < bestDist) {
         bestDist = dist;
         best = i;
@@ -183,5 +188,6 @@ function initAboutCarousel(): void {
   track.addEventListener('scroll', onScroll, { passive: true });
   track.addEventListener('scrollend', unlock, { passive: true });
   track.addEventListener('touchstart', unlock, { passive: true });
+  track.addEventListener('wheel', unlock, { passive: true });
   sync(0);
 }

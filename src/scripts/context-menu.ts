@@ -225,6 +225,7 @@ function fallbackCopy(text: string): boolean {
   area.style.top = '0';
   area.style.opacity = '0';
   document.body.appendChild(area);
+  area.focus({ preventScroll: true });
   area.select();
   let ok = false;
   try {
@@ -300,7 +301,9 @@ export function initContextMenu(): void {
   };
 
   const scrollToSection = (hash: string) => {
-    const navLink = document.querySelector<HTMLAnchorElement>(`.nav a[href="${hash}"]`);
+    const navLink = Array.from(document.querySelectorAll<HTMLAnchorElement>('.nav a[href^="#"]')).find(
+      (a) => a.getAttribute('href') === hash,
+    );
     if (navLink) {
       navLink.click();
       return;
@@ -615,31 +618,6 @@ export function initContextMenu(): void {
     if (ev.key === 'Escape') {
       ev.preventDefault();
       close(true);
-      return;
-    }
-    const items = getItems();
-    if (!items.length) return;
-    const idx = items.indexOf(document.activeElement as HTMLButtonElement);
-    if (ev.key === 'ArrowDown') {
-      ev.preventDefault();
-      const next = idx < 0 ? 0 : idx < 4 ? Math.min(4, items.length - 1) : (idx + 1) % items.length;
-      items[next].focus();
-    } else if (ev.key === 'ArrowUp') {
-      ev.preventDefault();
-      const prev = idx <= 0 ? items.length - 1 : idx === 4 ? 0 : idx - 1;
-      items[prev].focus();
-    } else if (ev.key === 'ArrowRight' && idx >= 0 && idx < 4) {
-      ev.preventDefault();
-      items[(idx + 1) % 4].focus();
-    } else if (ev.key === 'ArrowLeft' && idx >= 0 && idx < 4) {
-      ev.preventDefault();
-      items[(idx + 3) % 4].focus();
-    } else if (ev.key === 'Home') {
-      ev.preventDefault();
-      items[0].focus();
-    } else if (ev.key === 'End') {
-      ev.preventDefault();
-      items[items.length - 1].focus();
     } else if (ev.key === 'Tab') {
       close();
     }
@@ -648,4 +626,5 @@ export function initContextMenu(): void {
   window.addEventListener('scroll', () => close(), { passive: true });
   window.addEventListener('resize', () => close(), { passive: true });
   window.addEventListener('blur', () => close());
+  document.addEventListener('sectionnav', () => close());
 }

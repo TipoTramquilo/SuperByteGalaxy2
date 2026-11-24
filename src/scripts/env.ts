@@ -1,6 +1,21 @@
 /* Utilidades compartidas por los scripts de la página. */
 
-const mq = (q: string) => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia(q).matches;
+let cachedMatchMedia: typeof window.matchMedia | null = null;
+const mqCache = new Map<string, MediaQueryList>();
+
+const mq = (q: string): boolean => {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+  if (cachedMatchMedia !== window.matchMedia) {
+    cachedMatchMedia = window.matchMedia;
+    mqCache.clear();
+  }
+  let list = mqCache.get(q);
+  if (!list) {
+    list = window.matchMedia(q);
+    mqCache.set(q, list);
+  }
+  return Boolean(list.matches);
+};
 
 /** El visitante pidió menos movimiento: nada avanza solo. */
 export const reducedMotion = (): boolean => mq('(prefers-reduced-motion:reduce)');

@@ -48,9 +48,13 @@ export function initMeteors(): void {
     m.style.setProperty('--mt', `${travel}px`);
     m.style.setProperty('--md', `${duration}ms`);
 
-    const cleanup = () => m.remove();
+    let fallbackTimer = 0;
+    const cleanup = () => {
+      window.clearTimeout(fallbackTimer);
+      m.remove();
+    };
     m.addEventListener('animationend', cleanup, { once: true });
-    window.setTimeout(cleanup, duration + 250);
+    fallbackTimer = window.setTimeout(cleanup, duration + 250);
     sky.appendChild(m);
   };
 

@@ -5,7 +5,7 @@
  .stars,.stars>img,.stars>svg:not(.bs),.stars .bs{animation:none !important;will-change:auto !important}
  .trust::before,.trust::after,#sectores::before,#sectores::after,.sol-const,#metodo::before,#metodo::after,#nosotros::before,#nosotros::after,.cons-sec::before,.cons-sec::after{animation:none !important}
  .stars .b .sh{animation:none !important;opacity:0}
- .stars .bs .b:nth-of-type(3n+1) .sh{opacity:.2}
+ .stars .bs .b:nth-of-type(3n+1) .sh{opacity:.17}
  .blob{animation:none}
  .grain{display:none}
  .nb{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,18,34,.92)}

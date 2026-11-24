@@ -25,7 +25,7 @@ const pad = (i: number) => String(i).padStart(2, '0');
     </div>
   </div>
   <div class="cons rv d1" style={css(consStyle(g))} data-sw={String(SW)}>
-    <div class="vp" tabindex="0" role="group" aria-roledescription="carrusel" aria-label="Productos de Byte. Use las flechas para recorrerlos.">
+    <div class="vp" role="group" aria-roledescription="carrusel" aria-label="Productos de Byte.">
       <div class="far" style={css(farStyle(g, far.width, 0))} aria-hidden="true" set:html={farMarkup(far)}></div>
       <div class="track" style={css(trackStyle(g, 0))}>
         <div class="cl" aria-hidden="true" set:html={clusterMarkup(g, 0)}></div>

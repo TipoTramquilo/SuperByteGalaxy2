@@ -46,6 +46,8 @@ export function initTrail(): void {
       canvas.height = nextH;
     }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
   };
   resize();
   window.addEventListener('resize', perFrame(resize), { passive: true });
@@ -57,8 +59,20 @@ export function initTrail(): void {
   let visible = false;
   let curX = 0;
   let curY = 0;
+  let headDirty = false;
   let lastTarget: EventTarget | null = null;
   let lastHot = false;
+
+  const syncHead = () => {
+    if (!headDirty) return;
+    headDirty = false;
+    head.style.transform = `translate3d(${curX}px,${curY}px,0)`;
+    if (!visible) {
+      visible = true;
+      head.classList.add('vis');
+    }
+    head.classList.toggle('hot', lastHot);
+  };
 
   const clearDirty = () => {
     if (!dirty) return;
@@ -75,6 +89,7 @@ export function initTrail(): void {
 
   const hideHead = () => {
     visible = false;
+    headDirty = false;
     lastTarget = null;
     lastHot = false;
     head.classList.remove('vis', 'hot');
@@ -88,8 +103,10 @@ export function initTrail(): void {
       return;
     }
 
+    syncHead();
+
     if (low && now - lastDraw < 40) {
-      raf = requestAnimationFrame(render);
+      if (points.length || headDirty) raf = requestAnimationFrame(render);
       return;
     }
     lastDraw = now;
@@ -118,15 +135,14 @@ export function initTrail(): void {
       if (p.x > maxX) maxX = p.x;
       if (p.y > maxY) maxY = p.y;
     }
+    const dx0 = Math.max(0, Math.floor(minX - DIRTY_PAD));
+    const dy0 = Math.max(0, Math.floor(minY - DIRTY_PAD));
     dirty = [
-      Math.max(0, Math.floor(minX - DIRTY_PAD)),
-      Math.max(0, Math.floor(minY - DIRTY_PAD)),
-      Math.ceil(maxX - minX + DIRTY_PAD * 2),
-      Math.ceil(maxY - minY + DIRTY_PAD * 2),
+      dx0,
+      dy0,
+      Math.max(0, Math.min(width - dx0, Math.ceil(maxX + DIRTY_PAD) - dx0)),
+      Math.max(0, Math.min(height - dy0, Math.ceil(maxY + DIRTY_PAD) - dy0)),
     ];
-
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
 
     // Tono azul celeste ligeramente contenido para armonizar con el cielo oscuro
     for (let i = 1; i < points.length; i++) {
@@ -162,23 +178,20 @@ export function initTrail(): void {
     if (ev.pointerType === 'touch' || document.hidden || reducedMotion()) return;
     curX = ev.clientX;
     curY = ev.clientY;
-    head.style.transform = `translate3d(${curX}px,${curY}px,0)`;
-    if (!visible) {
-      visible = true;
-      head.classList.add('vis');
-    }
+    headDirty = true;
     if (ev.target !== lastTarget) {
       lastTarget = ev.target;
       lastHot = !!(ev.target as Element | null)?.closest?.(INTERACTIVE);
-      head.classList.toggle('hot', lastHot);
     }
 
     const now = performance.now();
     const last = points[points.length - 1];
-    if (last && Math.hypot(curX - last.x, curY - last.y) < (low ? 4 : 2)) return;
-    points.push({ x: curX, y: curY, t: now });
-    const limit = low ? 12 : 20;
-    if (points.length > limit) points.shift();
+    const minDist = low ? 4 : 2;
+    if (!last || (curX - last.x) * (curX - last.x) + (curY - last.y) * (curY - last.y) >= minDist * minDist) {
+      points.push({ x: curX, y: curY, t: now });
+      const limit = low ? 12 : 20;
+      if (points.length > limit) points.shift();
+    }
     if (!raf) raf = requestAnimationFrame(render);
   };
 

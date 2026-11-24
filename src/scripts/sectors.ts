@@ -385,18 +385,6 @@ export function initSectors(): void {
     }
   });
 
-  stage.addEventListener('keydown', (e) => {
-    if ((!compact && e.key === 'ArrowDown') || (compact && e.key === 'ArrowRight')) {
-      e.preventDefault();
-      userSelect(active + 1, 1);
-      arms[active]?.querySelector<HTMLButtonElement>('.sol-pbtn')?.focus();
-    } else if ((!compact && e.key === 'ArrowUp') || (compact && e.key === 'ArrowLeft')) {
-      e.preventDefault();
-      userSelect(active - 1, -1);
-      arms[active]?.querySelector<HTMLButtonElement>('.sol-pbtn')?.focus();
-    }
-  });
-
   /* Swipe horizontal en toda la sección (círculos, sol, textos y cabecera) en modo compacto */
   let downX: number | null = null;
   let downY: number | null = null;
@@ -501,6 +489,17 @@ export function initSectors(): void {
 
   let ptrX = 0;
   let ptrY = 0;
+  let sunRect: DOMRect | null = null;
+  const invalidateSun = () => {
+    sunRect = null;
+  };
+  window.addEventListener('scroll', invalidateSun, { passive: true });
+  window.addEventListener('resize', invalidateSun, { passive: true });
+  mq.addEventListener('change', invalidateSun);
+  document.addEventListener('effectschange', () => {
+    if (document.documentElement.classList.contains('low-effects')) kickSun();
+  });
+
   const sampleSun = perFrame(() => {
     if (
       compact ||
@@ -511,7 +510,7 @@ export function initSectors(): void {
     ) {
       return;
     }
-    const r = sun.getBoundingClientRect();
+    const r = sunRect ?? (sunRect = sun.getBoundingClientRect());
     if (r.bottom < 0 || r.top > window.innerHeight) return;
     const cx = r.left + r.width / 2;
     const cy = r.top + r.height / 2;

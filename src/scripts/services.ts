@@ -127,7 +127,7 @@ export function initServices(): void {
   };
 
   const tick = () => {
-    if (!document.hidden && !reducedMotion()) {
+    if (!document.hidden && !reducedMotion() && !hero.classList.contains('effects-paused')) {
       const r = hero.getBoundingClientRect();
       if (r.bottom >= 0 && r.top <= window.innerHeight && (!hasFinePointer || !orb.querySelector('.nb:hover'))) {
         show((active + 1) % buttons.length);
@@ -159,11 +159,16 @@ export function initServices(): void {
   /* ---- la B se acerca al cursor ---- */
   if (!hasFinePointer || rm) return;
   const img = orb.querySelector<HTMLElement>('.core img');
+  const core = img?.parentElement;
   const halo = orb.querySelector<HTMLElement>('.halo');
-  if (!img) return;
+  if (!img || !core) return;
   let x = 0;
   let y = 0;
   let raf = 0;
+  let coreRect: DOMRect | null = null;
+  const invalidateRect = () => {
+    coreRect = null;
+  };
   const resetCore = () => {
     if (raf) {
       cancelAnimationFrame(raf);
@@ -172,6 +177,11 @@ export function initServices(): void {
     img.style.transform = '';
     if (halo) halo.style.transform = '';
   };
+  window.addEventListener('scroll', invalidateRect, { passive: true });
+  window.addEventListener('resize', invalidateRect, { passive: true });
+  document.addEventListener('effectschange', () => {
+    if (document.documentElement.classList.contains('low-effects')) resetCore();
+  });
   hero.addEventListener(
     'pointermove',
     (ev) => {
@@ -188,7 +198,7 @@ export function initServices(): void {
       raf = requestAnimationFrame(() => {
         raf = 0;
         if (reducedMotion() || document.documentElement.classList.contains('low-effects')) return;
-        const r = (img.parentNode as HTMLElement).getBoundingClientRect();
+        const r = coreRect ?? (coreRect = core.getBoundingClientRect());
         if (r.bottom < 0 || r.top > window.innerHeight) return;
         const d = Math.hypot(x - (r.left + r.width / 2), y - (r.top + r.height / 2));
         const R = Math.max(340, r.width * 3);

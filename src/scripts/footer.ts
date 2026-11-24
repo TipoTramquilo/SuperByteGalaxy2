@@ -12,9 +12,13 @@ export function initFooter(): void {
     wave.setAttribute('aria-hidden', 'true');
     wave.style.left = `${(r.left + r.width / 2).toFixed(1)}px`;
     wave.style.top = `${(r.top + r.height / 2).toFixed(1)}px`;
-    const cleanup = () => wave.remove();
+    let fallbackTimer = 0;
+    const cleanup = () => {
+      window.clearTimeout(fallbackTimer);
+      wave.remove();
+    };
     wave.addEventListener('animationend', cleanup, { once: true });
-    window.setTimeout(cleanup, WAVE_MS + 140);
+    fallbackTimer = window.setTimeout(cleanup, WAVE_MS + 140);
     document.body.appendChild(wave);
   });
 }

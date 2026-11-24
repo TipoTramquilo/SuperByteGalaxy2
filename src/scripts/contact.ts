@@ -4,9 +4,9 @@ const CONFIRM_MS = 2400;
 
 export function initContact(): void {
   const button = document.querySelector<HTMLButtonElement>('.clist [data-copy]');
-  if (!button) return;
-  const icon = button.querySelector<HTMLElement>('.cic .ic2')!;
-  const note = button.querySelector<HTMLElement>('.note')!;
+  const icon = button?.querySelector<HTMLElement>('.cic .ic2');
+  const note = button?.querySelector<HTMLElement>('.note');
+  if (!button || !icon || !note) return;
   const text = button.dataset.copy || '';
   let timer = 0;
 
@@ -31,6 +31,7 @@ export function initContact(): void {
     a.style.top = '0';
     a.style.opacity = '0';
     document.body.appendChild(a);
+    a.focus({ preventScroll: true });
     a.select();
     try {
       document.execCommand('copy');
