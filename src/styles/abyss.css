@@ -4,7 +4,7 @@
   left:0;
   right:0;
   bottom:0;
-  z-index:6;
+  z-index:4;
   padding:14px 20px calc(14px + env(safe-area-inset-bottom,0px));
   background:#070B16;
   border-top:1px solid rgba(237,234,245,.08);
@@ -31,6 +31,7 @@
 }
 
 .abyss-in{
+  position:relative;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -38,6 +39,8 @@
   margin:0 auto;
 }
 .abyss-cat{
+  position:relative;
+  z-index:1;
   display:block;
   width:112px;
   height:112px;
@@ -48,13 +51,66 @@
   opacity:1;
   transition:opacity 120ms ease;
 }
+.abyss.open .abyss-cat{
+  pointer-events:auto;
+}
 .abyss-cat.loading{
   opacity:0;
+}
+.abyss-in.exploding .abyss-cat,
+.abyss-in.exploded .abyss-cat{
+  pointer-events:none;
+}
+.abyss-in.exploded .abyss-cat{
+  opacity:0;
+  transition:none;
+}
+
+.abyss-sad{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:rgba(95,214,255,.38);
+  z-index:0;
+  opacity:0;
+  pointer-events:none;
+  user-select:none;
+}
+.abyss-sad svg{
+  display:block;
+  width:12px;
+  height:14px;
+}
+.abyss-in.exploded .abyss-sad{
+  opacity:1;
+}
+
+.abyss-boom{
+  position:absolute;
+  left:50%;
+  bottom:-45px;
+  transform:translateX(-50%);
+  width:158px;
+  height:230px;
+  z-index:2;
+  pointer-events:none;
+  opacity:0;
+  visibility:hidden;
+}
+.abyss-in.exploding .abyss-boom{
+  opacity:1;
+  visibility:visible;
 }
 
 @media (max-width:560px){
   .abyss{padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px))}
   .abyss-cat{width:88px;height:88px}
+  .abyss-sad svg{width:10px;height:12px}
+  .abyss-boom{width:124px;height:180px;bottom:-35px}
 }
 
 @media (prefers-reduced-motion:reduce){

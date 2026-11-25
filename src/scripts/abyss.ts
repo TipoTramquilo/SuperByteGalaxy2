@@ -4,6 +4,16 @@
 export const ABYSS_DEADZONE = 900;
 export const ABYSS_THRESHOLD = 2100;
 export const ABYSS_HOLD_GRACE_MS = 280;
+export const EXPLOSION_FX_SRC = '/img/cat-boom-fx.webp';
+export const EXPLOSION_SFX_SRC = '/img/cat-boom-sfx.mp3';
+export const EXPLOSION_HIDE_CAT_MS = 45;
+export const EXPLOSION_DURATION_MS = 1150;
+export const EXPLOSION_AUTOCLOSE_DELAY_MS = 800;
+
+const PIXEL_SAD_SVG =
+  '<svg viewBox="0 0 6 7" width="12" height="14" shape-rendering="crispEdges" aria-hidden="true">' +
+  '<path fill="currentColor" d="M0 1h1v1H0zM0 5h1v1H0zM5 0h1v1H5zM4 1h1v1H4zM3 2h1v3H3zM4 5h1v1H4zM5 6h1v1H5z"/>' +
+  '</svg>';
 export const CAT_SOURCES = [
   '/img/cat-kungfu.mp4',
   '/img/cat-cats.mp4',
@@ -12,6 +22,21 @@ export const CAT_SOURCES = [
   '/img/cat-eat.mp4',
   '/img/cat-tongue.mp4',
   '/img/cat-gang.mp4',
+  '/img/cat-sleep.mp4',
+  '/img/cat-pufferfish.mp4',
+  '/img/cat-baby.mp4',
+  '/img/cat-shower.mp4',
+  '/img/cat-minecraft.mp4',
+  '/img/cat-sup.mp4',
+  '/img/cat-laugh.mp4',
+  '/img/cat-icecream.mp4',
+  '/img/cat-boom.mp4',
+  '/img/cat-shh.mp4',
+  '/img/cat-beg.mp4',
+  '/img/cat-yell.mp4',
+  '/img/cat-angry.mp4',
+  '/img/dog-cooking.mp4',
+  '/img/cat-sardines.mp4',
 ] as const;
 
 const MAX_WHEEL_STEP = 130;
@@ -65,6 +90,23 @@ export function pickRandomCat(
   const list = pool.length ? pool : sources;
   const idx = Math.floor(Math.max(0, Math.min(0.999999, rng())) * list.length);
   return list[idx] ?? sources[0];
+}
+
+/** Recorre todos los gatos en orden aleatorio sin repetir ninguno hasta agotar la lista completa. */
+export function createCatPicker(
+  sources: readonly string[] = CAT_SOURCES,
+  rng: () => number = Math.random,
+): () => string {
+  let remaining: string[] = [];
+  let last: string | null = null;
+  return () => {
+    if (!remaining.length) remaining = [...sources];
+    const picked = pickRandomCat(remaining, rng, remaining.length > 1 ? last : null);
+    const idx = remaining.indexOf(picked);
+    if (idx !== -1) remaining.splice(idx, 1);
+    last = picked;
+    return picked;
+  };
 }
 
 /** Paso analítico de resorte (zeta = 1 sin rebote; zeta < 1 con rebote elástico controlado). */
@@ -133,6 +175,7 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
   if (!pg || !foot) return null;
 
   const rng = options.rng ?? Math.random;
+  const pickNextCat = createCatPicker(CAT_SOURCES, rng);
 
   const panel = document.createElement('aside');
   panel.className = 'abyss';
@@ -157,6 +200,17 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
   video.setAttribute('preload', 'none');
   video.setAttribute('aria-label', 'Gato secreto');
 
+  const sad = document.createElement('span');
+  sad.className = 'abyss-sad';
+  sad.innerHTML = PIXEL_SAD_SVG;
+  sad.setAttribute('aria-label', ':(');
+  sad.setAttribute('aria-hidden', 'true');
+
+  const boom = document.createElement('img');
+  boom.className = 'abyss-boom';
+  boom.setAttribute('alt', '');
+  boom.setAttribute('aria-hidden', 'true');
+
   const onMediaReady = () => video.classList.remove('loading');
   video.addEventListener?.('loadeddata', onMediaReady);
   video.addEventListener?.('canplay', onMediaReady);
@@ -164,6 +218,8 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
   video.addEventListener?.('error', onMediaReady);
 
   inner.appendChild(video);
+  inner.appendChild(sad);
+  inner.appendChild(boom);
   panel.appendChild(inner);
   document.body.append(panel);
 
@@ -176,12 +232,20 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
   let allowCloseBounce = false;
   let lastInputAt = 0;
   let activeSrc: string | null = null;
-  let lastSrc: string | null = null;
   let cachedHeight = 0;
   let rafId = 0;
   let lastFrameAt = 0;
   let touchY: number | null = null;
   let trackingTouch = false;
+  let exploded = false;
+  let hideCatTimer = 0;
+  let finishBoomTimer = 0;
+  let autoCloseTimer = 0;
+  let boomAudio: HTMLAudioElement | null = null;
+  let cachedBoomBlob: Blob | null = null;
+  let boomPreloading = false;
+  let activeBoomUrl: string | null = null;
+  let boomRunId = 0;
 
   const measurePanelHeight = (): number => {
     cachedHeight = panel.offsetHeight || 140;
@@ -212,8 +276,7 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
 
   const ensureMediaLoaded = () => {
     if (!activeSrc) {
-      activeSrc = pickRandomCat(CAT_SOURCES, rng, lastSrc);
-      lastSrc = activeSrc;
+      activeSrc = pickNextCat();
       if (video.getAttribute('src') !== activeSrc) {
         if (typeof video.readyState === 'number') video.classList.add('loading');
         video.src = activeSrc;
@@ -223,7 +286,110 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
     playMedia();
   };
 
+  const clearBoomImage = () => {
+    if (typeof boom.removeAttribute === 'function') boom.removeAttribute('src');
+    boom.src = '';
+    if (activeBoomUrl && typeof URL !== 'undefined' && typeof URL.revokeObjectURL === 'function') {
+      URL.revokeObjectURL(activeBoomUrl);
+      activeBoomUrl = null;
+    }
+  };
+
+  const resetExplosion = () => {
+    if (hideCatTimer) {
+      clearTimeout(hideCatTimer);
+      hideCatTimer = 0;
+    }
+    if (finishBoomTimer) {
+      clearTimeout(finishBoomTimer);
+      finishBoomTimer = 0;
+    }
+    if (autoCloseTimer) {
+      clearTimeout(autoCloseTimer);
+      autoCloseTimer = 0;
+    }
+    exploded = false;
+    inner.classList.remove('exploding', 'exploded');
+    sad.setAttribute('aria-hidden', 'true');
+    clearBoomImage();
+    if (boomAudio) {
+      if (typeof boomAudio.pause === 'function') boomAudio.pause();
+      try {
+        boomAudio.currentTime = 0;
+      } catch {
+        /* ignore */
+      }
+    }
+  };
+
+  const preloadExplosion = () => {
+    if (typeof Audio === 'function' && !boomAudio) {
+      boomAudio = new Audio(EXPLOSION_SFX_SRC);
+      boomAudio.preload = 'auto';
+      boomAudio.volume = 0.22;
+    }
+    if (!cachedBoomBlob && !boomPreloading && typeof fetch === 'function') {
+      boomPreloading = true;
+      fetch(EXPLOSION_FX_SRC)
+        .then((res) => (res.ok ? res.blob() : null))
+        .then((blob) => {
+          if (blob) cachedBoomBlob = blob;
+        })
+        .catch(() => {})
+        .finally(() => {
+          boomPreloading = false;
+        });
+    }
+  };
+
+  const triggerExplosion = () => {
+    if (!unlocked || exploded || !activeSrc) return;
+    exploded = true;
+    boomRunId += 1;
+    inner.classList.add('exploding');
+
+    preloadExplosion();
+    if (boomAudio) {
+      try {
+        boomAudio.currentTime = 0;
+      } catch {
+        /* ignore */
+      }
+      const p = boomAudio.play?.();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
+    }
+
+    clearBoomImage();
+    let fxUrl: string;
+    if (cachedBoomBlob && typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function') {
+      activeBoomUrl = URL.createObjectURL(cachedBoomBlob);
+      fxUrl = activeBoomUrl;
+    } else {
+      fxUrl = boomRunId === 1 ? EXPLOSION_FX_SRC : `${EXPLOSION_FX_SRC}?r=${boomRunId}`;
+    }
+    boom.src = fxUrl;
+    boom.setAttribute('src', fxUrl);
+
+    hideCatTimer = setTimeout(() => {
+      hideCatTimer = 0;
+      pauseMedia();
+      inner.classList.add('exploded');
+      sad.setAttribute('aria-hidden', 'false');
+    }, EXPLOSION_HIDE_CAT_MS) as unknown as number;
+
+    finishBoomTimer = setTimeout(() => {
+      finishBoomTimer = 0;
+      inner.classList.remove('exploding');
+      clearBoomImage();
+      autoCloseTimer = setTimeout(() => {
+        autoCloseTimer = 0;
+        if (unlocked) close(false);
+      }, EXPLOSION_AUTOCLOSE_DELAY_MS) as unknown as number;
+    }, EXPLOSION_DURATION_MS) as unknown as number;
+  };
+
   const resetMedia = () => {
+    resetExplosion();
     pauseMedia();
     activeSrc = null;
     video.classList.remove('loading');
@@ -340,6 +506,7 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
   const open = () => {
     measurePanelHeight();
     ensureMediaLoaded();
+    preloadExplosion();
     unlocked = true;
     unlockedAt = Date.now();
     closingUntil = 0;
@@ -526,9 +693,10 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
   const onVisibilityChange = () => {
     if (!activeSrc) return;
     if (document.hidden) pauseMedia();
-    else if (unlocked) playMedia();
+    else if (unlocked && !exploded) playMedia();
   };
 
+  video.addEventListener?.('click', triggerExplosion);
   window.addEventListener('wheel', onWheel, { passive: false });
   window.addEventListener('touchstart', onTouchStart, { passive: true });
   window.addEventListener('touchmove', onTouchMove, { passive: false });
@@ -549,6 +717,7 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
     closingUntil = 0;
     resetMedia();
     applyLift(0);
+    video.removeEventListener?.('click', triggerExplosion);
     window.removeEventListener('wheel', onWheel);
     window.removeEventListener('touchstart', onTouchStart);
     window.removeEventListener('touchmove', onTouchMove);

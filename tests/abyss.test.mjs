@@ -4,7 +4,13 @@ import {
   ABYSS_DEADZONE,
   ABYSS_THRESHOLD,
   CAT_SOURCES,
+  EXPLOSION_AUTOCLOSE_DELAY_MS,
+  EXPLOSION_DURATION_MS,
+  EXPLOSION_FX_SRC,
+  EXPLOSION_HIDE_CAT_MS,
+  EXPLOSION_SFX_SRC,
   computeAbyssProgress,
+  createCatPicker,
   initAbyss,
   normalizeWheelDelta,
   pickRandomCat,
@@ -25,6 +31,7 @@ function makeClassList() {
 function makeEl(tag) {
   const attrs = new Map();
   const children = [];
+  const listeners = new Map();
   let reads = 0;
   const el = {
     tagName: tag.toUpperCase(),
@@ -63,8 +70,15 @@ function makeEl(tag) {
     append(...nodes) {
       children.push(...nodes);
     },
-    addEventListener() {},
-    removeEventListener() {},
+    addEventListener(type, fn) {
+      listeners.set(type, [...(listeners.get(type) || []), fn]);
+    },
+    removeEventListener(type, fn) {
+      listeners.set(type, (listeners.get(type) || []).filter((f) => f !== fn));
+    },
+    click() {
+      for (const fn of [...(listeners.get('click') || [])]) fn();
+    },
     play() {
       el.played++;
       return Promise.resolve();
@@ -177,6 +191,8 @@ function setupAbyssEnv(t, { scrollY = 2200, scrollHeight = 3000, innerHeight = 8
   const [panel] = bodyChildren;
   const inner = panel.children[0];
   const video = inner.children[0];
+  const sad = inner.children[1];
+  const boom = inner.children[2];
 
   const emit = (type, ev) => {
     let prevented = false;
@@ -228,6 +244,8 @@ function setupAbyssEnv(t, { scrollY = 2200, scrollHeight = 3000, innerHeight = 8
     panel,
     inner,
     video,
+    sad,
+    boom,
     state,
     emit,
     emitDoc,
@@ -238,11 +256,24 @@ function setupAbyssEnv(t, { scrollY = 2200, scrollHeight = 3000, innerHeight = 8
   };
 }
 
-test('helpers puros soportan los 7 gatos sin repetir seguidos y calculan el resorte elástico', () => {
-  assert.equal(CAT_SOURCES.length, 7);
+test('helpers puros soportan los 22 gatos sin repetir seguidos y calculan el resorte elástico', () => {
+  assert.equal(CAT_SOURCES.length, 22);
   const first = pickRandomCat(CAT_SOURCES, () => 0);
   const second = pickRandomCat(CAT_SOURCES, () => 0, first);
   assert.notEqual(first, second);
+
+  // createCatPicker recorre los 22 sin repetir ninguno hasta completar la vuelta, y no repite en el empalme
+  let seed = 42;
+  const seededRng = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 0x100000000;
+  };
+  const nextCat = createCatPicker(CAT_SOURCES, seededRng);
+  const cycle1 = Array.from({ length: CAT_SOURCES.length }, () => nextCat());
+  assert.equal(new Set(cycle1).size, CAT_SOURCES.length);
+  const cycle2 = Array.from({ length: CAT_SOURCES.length }, () => nextCat());
+  assert.equal(new Set(cycle2).size, CAT_SOURCES.length);
+  assert.notEqual(cycle2[0], cycle1[cycle1.length - 1]);
 
   assert.equal(normalizeWheelDelta(100, 0), 100);
   assert.equal(normalizeWheelDelta(900, 0), 130);
@@ -344,6 +375,106 @@ test('se abre más ágil con ArrowDown en el fondo (~6 toques) y cierra con 1 Ar
   assert.equal(env.panel.classList.contains('open'), false);
   assert.equal(env.main.style.transform, '');
   assert.equal(env.emit('keydown', { key: 'ArrowUp' }).stopped, false);
+
+  env.ctrl.destroy();
+});
+
+test('al hacer clic en el gato explota con sonido, revela :,( y se reinicia al cerrar', (t) => {
+  const origAudio = globalThis.Audio;
+  const origSetTimeout = globalThis.setTimeout;
+  const origClearTimeout = globalThis.clearTimeout;
+  const origFetch = globalThis.fetch;
+
+  const audioInstances = [];
+  const timers = new Map();
+  let nextTimerId = 1;
+
+  globalThis.Audio = function MockAudio(src) {
+    const inst = {
+      src,
+      preload: '',
+      volume: 1,
+      currentTime: 0,
+      played: 0,
+      paused: 0,
+      play() {
+        inst.played += 1;
+        return Promise.resolve();
+      },
+      pause() {
+        inst.paused += 1;
+      },
+    };
+    audioInstances.push(inst);
+    return inst;
+  };
+  globalThis.setTimeout = (fn, ms) => {
+    const id = nextTimerId++;
+    timers.set(id, { fn, ms });
+    return id;
+  };
+  globalThis.clearTimeout = (id) => {
+    timers.delete(id);
+  };
+  globalThis.fetch = undefined;
+
+  t.after(() => {
+    globalThis.Audio = origAudio;
+    globalThis.setTimeout = origSetTimeout;
+    globalThis.clearTimeout = origClearTimeout;
+    globalThis.fetch = origFetch;
+  });
+
+  const env = setupAbyssEnv(t, { rng: () => 0 });
+  assert.equal(env.sad.getAttribute('aria-label'), ':(');
+  assert.ok(env.sad.innerHTML.includes('shape-rendering="crispEdges"'));
+
+  // Abrir el easter egg
+  for (let i = 0; i < 6; i++) {
+    env.emit('keydown', { key: 'ArrowDown' });
+    env.runFrames(1);
+  }
+  env.runFrames(90);
+  assert.equal(env.panel.classList.contains('open'), true);
+
+  // Clic en el gato -> dispara explosión y sonido
+  env.video.click();
+  assert.equal(env.inner.classList.contains('exploding'), true);
+  assert.equal(env.boom.src, EXPLOSION_FX_SRC);
+  assert.equal(audioInstances.length, 1);
+  assert.equal(audioInstances[0].src, EXPLOSION_SFX_SRC);
+  assert.equal(audioInstances[0].played, 1);
+
+  // Un segundo clic mientras explota no duplica el efecto
+  env.video.click();
+  assert.equal(audioInstances[0].played, 1);
+
+  // Ejecutar timer de ocultar gato (200ms) -> pausa video y muestra :,(
+  const hideEntry = [...timers.entries()].find(([, v]) => v.ms === EXPLOSION_HIDE_CAT_MS);
+  assert.ok(hideEntry);
+  timers.delete(hideEntry[0]);
+  hideEntry[1].fn();
+  assert.equal(env.inner.classList.contains('exploded'), true);
+  assert.equal(env.sad.getAttribute('aria-hidden'), 'false');
+
+  // Ejecutar timer de fin de explosión -> limpia overlay, deja :( y programa autocierre a 0.8 s
+  const endEntry = [...timers.entries()].find(([, v]) => v.ms === EXPLOSION_DURATION_MS);
+  assert.ok(endEntry);
+  timers.delete(endEntry[0]);
+  endEntry[1].fn();
+  assert.equal(env.inner.classList.contains('exploding'), false);
+  assert.equal(env.inner.classList.contains('exploded'), true);
+  assert.equal(env.boom.src, '');
+
+  // Pasados 0.8 s se cierra sola la sección y se reinicia para el próximo gato
+  const closeEntry = [...timers.entries()].find(([, v]) => v.ms === EXPLOSION_AUTOCLOSE_DELAY_MS);
+  assert.ok(closeEntry);
+  timers.delete(closeEntry[0]);
+  closeEntry[1].fn();
+  env.runFrames(90);
+  assert.equal(env.panel.classList.contains('open'), false);
+  assert.equal(env.inner.classList.contains('exploded'), false);
+  assert.equal(env.sad.getAttribute('aria-hidden'), 'true');
 
   env.ctrl.destroy();
 });
