@@ -39,7 +39,7 @@ export function initMeteors(): void {
     const my = 8 + Math.random() * 52;
     const length = Math.round(115 + Math.random() * 85);
     const travel = Math.round(280 + Math.random() * 200);
-    const duration = Math.round(540 + Math.random() * 280);
+    const duration = Math.round(490 + Math.random() * 240);
 
     m.style.setProperty('--mx', `${mx.toFixed(1)}%`);
     m.style.setProperty('--my', `${my.toFixed(1)}%`);
