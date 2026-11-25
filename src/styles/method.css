@@ -10,20 +10,18 @@
 .mstep-node{position:relative;z-index:1;display:grid;place-items:center;width:var(--nd,64px);height:var(--nd,64px);border-radius:50%;padding:0;border:1px solid rgba(237,234,245,.18);background:#0B1124;color:#7D869B;cursor:pointer;transition:background-color 320ms ease,border-color 320ms ease,color 320ms ease,box-shadow 320ms ease,transform 160ms var(--eo)}
 .mstep-node:active{transform:scale(.94)}
 .done>.mstep-node,.mstep-node.done{border-color:rgba(48,154,231,.55);color:#5FD6FF}
-.on>.mstep-node,.mstep-node.on{background:#309AE7;border-color:#309AE7;color:#06101F;box-shadow:0 0 0 6px rgba(48,154,231,.16),0 10px 40px -8px rgba(48,154,231,.9);transition-delay:var(--arr,380ms)}
-/* la etapa activa late: dos ondas que se expanden y un pequeño golpe al encenderse */
-.on>.mstep-node::after,.mstep-node.on::after,.on>.mstep-node::before,.mstep-node.on::before{content:"";position:absolute;inset:-1px;border-radius:50%;opacity:0;pointer-events:none}
-.on>.mstep-node::after,.mstep-node.on::after{border:2px solid #5FD6FF;box-shadow:0 0 18px rgba(95,214,255,.55),inset 0 0 10px rgba(95,214,255,.3);animation:mRing 1.8s cubic-bezier(.2,.7,.3,1) var(--arr,380ms) infinite}
-.on>.mstep-node::before,.mstep-node.on::before{border:1px solid rgba(95,214,255,.75);animation:mRing 1.8s cubic-bezier(.2,.7,.3,1) calc(var(--arr,380ms) + 450ms) infinite}
+.on>.mstep-node,.mstep-node.on{background:#309AE7;border-color:#309AE7;color:#06101F;box-shadow:0 0 0 6px rgba(48,154,231,.16),0 10px 40px -8px rgba(48,154,231,.9);transition-delay:var(--arr,320ms)}
+/* la etapa activa late: una onda que se expande y un pequeño golpe al encenderse */
+.on>.mstep-node::after,.mstep-node.on::after{content:"";position:absolute;inset:-1px;border-radius:50%;opacity:0;pointer-events:none;border:2px solid #5FD6FF;box-shadow:0 0 18px rgba(95,214,255,.55),inset 0 0 10px rgba(95,214,255,.3);animation:mRing 1.8s cubic-bezier(.2,.7,.3,1) var(--arr,320ms) 1}
 @keyframes mRing{0%{transform:scale(1);opacity:.95}100%{transform:scale(2.2);opacity:0}}
-.on>.mstep-node{animation:mPop 700ms var(--eo) var(--arr,380ms) both}
+.on>.mstep-node{animation:mPop 700ms var(--eo) var(--arr,320ms) both}
 @keyframes mPop{0%{transform:scale(1)}35%{transform:scale(1.16)}100%{transform:scale(1)}}
 .mp .mstep-node{cursor:default}
 @media (hover:hover) and (pointer:fine){.mstep-node:not(.on):hover{border-color:rgba(95,214,255,.7);color:#EDEAF5}}
 .mbar{display:block;height:2px;border-radius:2px;background:rgba(237,234,245,.08);overflow:hidden;opacity:0;transition:opacity 300ms ease}
 .mbar i{display:block;height:100%;background:linear-gradient(90deg,#5FD6FF,#309AE7);transform-origin:left;transform:scaleX(0)}
 .auto .on .mbar{opacity:1}
-.auto .on .mbar i{animation:mBar 2900ms linear both}
+.auto .on .mbar i{animation:mBar 2300ms linear both}
 @keyframes mBar{to{transform:scaleX(1)}}
 
 /* A · Pipeline: un pulso viaja por la línea y enciende cada etapa al llegar */
@@ -31,8 +29,8 @@
 .mp-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
 .mp-rail{position:absolute;left:calc(var(--nd) / 2);top:calc(var(--nd) / 2);width:80%;height:2px;margin-top:-1px;border-radius:2px;background:rgba(237,234,245,.10);clip-path:inset(0 100% 0 0);transition:clip-path 1400ms var(--eo) 300ms}
 .rv.in .mp-rail,.mp-rail.drawn{clip-path:inset(-20px -20px -20px -20px)}
-.mp-fill{position:absolute;inset:0;border-radius:inherit;transform-origin:left;transform:scaleX(var(--mf,0));background:linear-gradient(90deg,#5FD6FF,#309AE7 60%,#5036EA);transition:transform 820ms cubic-bezier(.77,0,.175,1)}
-.mp-pk{position:absolute;top:50%;left:calc(var(--mf,0) * 100%);width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#EAF8FF;box-shadow:0 0 0 4px rgba(95,214,255,.18),0 0 22px 6px rgba(95,214,255,.65);transition:left 820ms cubic-bezier(.77,0,.175,1),top 820ms cubic-bezier(.77,0,.175,1)}
+.mp-fill{position:absolute;inset:0;border-radius:inherit;transform-origin:left;transform:scaleX(var(--mf,0));background:linear-gradient(90deg,#5FD6FF,#309AE7 60%,#5036EA);transition:transform 680ms cubic-bezier(.77,0,.175,1)}
+.mp-pk{position:absolute;top:50%;left:calc(var(--mf,0) * 100%);width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#EAF8FF;box-shadow:0 0 0 4px rgba(95,214,255,.18),0 0 22px 6px rgba(95,214,255,.65);transition:left 680ms cubic-bezier(.77,0,.175,1),top 680ms cubic-bezier(.77,0,.175,1)}
 .mp li{position:relative;padding-right:28px}
 .mp small{display:block;font:500 12px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;color:#5E677C;margin-top:28px;transition:color 400ms ease}
 .mp h3{font:700 24px/1.15 "Satoshi",system-ui,sans-serif;margin-top:10px;color:#AEB6C8;transition:color 400ms ease}

@@ -3,7 +3,7 @@
    Móvil: el pulso baja con el scroll y enciende cada etapa al alcanzarla. */
 import { MOBILE, perFrame, reducedMotion } from './env';
 
-const STEP_MS = 2900;
+const STEP_MS = 2300;
 
 export function initMethod(): void {
   const wrap = document.querySelector<HTMLElement>('#metodo .mp');

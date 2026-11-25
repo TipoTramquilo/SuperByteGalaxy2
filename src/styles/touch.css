@@ -18,4 +18,4 @@
 /* móvil: la línea sigue al scroll (sin autoavance) */
 .mp.scrub{--arr:0ms}
 .mp.scrub .mp-fill,.mp.scrub .mp-pk{transition-duration:180ms;transition-timing-function:linear}
-@media (prefers-reduced-motion:reduce){.mp-fill,.mp-pk,.mp-rail{transition:none}.mstep-node::after,.mstep-node::before,.mstep-node{animation:none !important}}
+@media (prefers-reduced-motion:reduce){.mp-fill,.mp-pk,.mp-rail{transition:none}.mstep-node::after,.mstep-node{animation:none !important}}
