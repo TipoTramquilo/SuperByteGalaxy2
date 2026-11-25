@@ -9,7 +9,7 @@
  .cn::before{opacity:0}
  .cn.on::before{opacity:.6}
  .v1 .orb .halo{opacity:.6}
- .v1 .orb .core img{filter:drop-shadow(0 0 10px rgba(95,214,255,.35)) drop-shadow(0 8px 24px rgba(80,54,234,.45))}
+ .v1 .orb .core img,.v1 .orb .core .core-mark{filter:drop-shadow(0 0 10px rgba(95,214,255,.35)) drop-shadow(0 8px 24px rgba(80,54,234,.45))}
  .cta{padding-top:64px;padding-bottom:calc(48px + var(--fh));background:radial-gradient(90% 46% at 50% 107%,rgba(95,214,255,.15),transparent 58%),radial-gradient(80% 50% at 15% 10%,rgba(80,54,234,.32),transparent 66%),linear-gradient(180deg,#070B16 0%,#09112D 16%,#0C153A 56%,#122150 100%)}
 }
 @media (max-width:1000px){

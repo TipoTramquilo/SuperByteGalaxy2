@@ -12,7 +12,7 @@
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes unspin{to{transform:rotate(-360deg)}}
 .orb .core{position:absolute;left:50%;top:50%;width:23%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:28%;display:grid;place-items:center;background:radial-gradient(120% 120% at 20% 10%,#7EE2FF 0%,#309AE7 42%,#5036EA 100%);box-shadow:0 0 0 1px rgba(255,255,255,.18) inset,0 40px 90px -30px rgba(80,54,234,.75),0 0 120px -10px rgba(48,154,231,.45)}
-.orb .core img{width:54%;display:block}
+.orb .core img,.orb .core .core-mark{width:54%;height:auto;display:block}
 .orb .core .grain{border-radius:inherit;--go:.35}
 .orb .halo{position:absolute;left:50%;top:50%;width:46%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(48,154,231,.25),transparent 65%);filter:blur(8px)}
 .node{position:absolute;transform:translate(-50%,-50%)}

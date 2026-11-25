@@ -3,7 +3,7 @@
 .v1 .grain{--go:.07}
 .v1 .orb .core{width:29%;background:none;box-shadow:none;border-radius:0}
 .v1 .orb .core .grain{display:none}
-.v1 .orb .core img{width:100%;transform:translateX(-11%);filter:drop-shadow(0 0 18px rgba(95,214,255,.55)) drop-shadow(0 12px 40px rgba(80,54,234,.7));transition:transform 240ms var(--eo);will-change:transform}
+.v1 .orb .core img,.v1 .orb .core .core-mark{width:100%;height:auto;transform:translateX(-11%);filter:drop-shadow(0 0 18px rgba(95,214,255,.55)) drop-shadow(0 12px 40px rgba(80,54,234,.7));transition:transform 240ms var(--eo);will-change:transform}
 .v1 .orb .halo{transition:transform 240ms var(--eo)}
 .v1 .orb .halo{width:52%;background:radial-gradient(circle,rgba(48,154,231,.32),rgba(80,54,234,.12) 45%,transparent 68%)}
 .hero .milky{left:-20%;top:30%;width:140%;height:36%;transform:rotate(-27deg);background:radial-gradient(closest-side,rgba(95,214,255,.11),rgba(80,54,234,.09) 45%,transparent 100%)}

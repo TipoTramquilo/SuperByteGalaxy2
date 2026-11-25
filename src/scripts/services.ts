@@ -158,7 +158,7 @@ export function initServices(): void {
 
   /* ---- la B se acerca al cursor ---- */
   if (!hasFinePointer || rm) return;
-  const img = orb.querySelector<HTMLElement>('.core img');
+  const img = orb.querySelector<HTMLElement | SVGElement>('.core .core-mark, .core img');
   const core = img?.parentElement;
   const halo = orb.querySelector<HTMLElement>('.halo');
   if (!img || !core) return;

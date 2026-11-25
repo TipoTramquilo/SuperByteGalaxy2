@@ -9,7 +9,7 @@
 .nav img,.foot img{width:auto}
 .nb{background:rgba(12,18,34,.94)}
 .nb.on{background:var(--acc)}
-.v1 .orb .core img{height:auto;filter:none;will-change:auto}
+.v1 .orb .core img,.v1 .orb .core .core-mark{height:auto;filter:none;will-change:auto}
 .track,.far{will-change:auto}
 
 /* Desenfoque detrás de barra y pie solo en escritorio con puntero fino, soporte nativo y aceleración por hardware. */

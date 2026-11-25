@@ -13,6 +13,7 @@ import { initTrail } from './trail';
 import { initContextMenu } from './context-menu';
 import { initMeteors } from './meteors';
 import { initFooter } from './footer';
+import { initAbyss } from './abyss';
 import { initNoSelect } from './noselect';
 import { initConsoleBanner } from './console-banner';
 
@@ -20,6 +21,7 @@ initConsoleBanner();
 initNoSelect();
 initReveal();
 initEffects();
+initAbyss();
 initNav();
 initServices();
 initClients();
