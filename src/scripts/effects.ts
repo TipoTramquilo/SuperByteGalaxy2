@@ -407,7 +407,11 @@ export function initEffects(): void {
     return;
   }
 
-  if (isReduced) return;
+  // En móvil/táctil touch.css ya desactiva los efectos pesados de fondo; omitir Capa 3 evita falsos
+  // positivos por pantallas LTPO/30Hz, modo ahorro o decodificación de video del easter egg que congelan el sol.
+  if (isReduced || isTouchOrMobile) return;
+
+  const isAbyssVisible = () => Boolean(document.querySelector?.('.abyss.visible'));
 
   /* Capa 3: monitor continuo de fluidez (arranque + ventanas bajo scroll/puntero + LoAF). */
   let rafId = 0;
@@ -441,7 +445,7 @@ export function initEffects(): void {
   };
 
   const triggerInteractionSample = () => {
-    if (low || sampling || document.hidden) return;
+    if (low || sampling || document.hidden || isAbyssVisible()) return;
     if (defaultNow() - lastWindowEnd < INTERACTION_COOLDOWN_MS) return;
     beginWindow(INTERACTION_FRAMES);
   };
@@ -536,11 +540,18 @@ export function initEffects(): void {
   const sample = (now: number) => {
     rafId = 0;
     if (low) return;
-    // Una pestaña en segundo plano no indica que el equipo sea lento.
+    // Una pestaña en segundo plano o el easter egg de gatos activo no indican que el equipo sea lento.
     if (document.hidden) {
       sampling = false;
       resetWindow();
       document.addEventListener('visibilitychange', resume, { once: true });
+      return;
+    }
+    if (isAbyssVisible()) {
+      sampling = false;
+      resetWindow();
+      lastWindowEnd = defaultNow();
+      armInteractionListeners();
       return;
     }
     if (previous) {
@@ -575,7 +586,7 @@ export function initEffects(): void {
     const PO = (globalThis as Record<string, unknown>).PerformanceObserver as typeof PerformanceObserver | undefined;
     if (PO && Array.isArray(PO.supportedEntryTypes) && PO.supportedEntryTypes.includes('long-animation-frame')) {
       loafObserver = new PO((list) => {
-        if (low || document.hidden) return;
+        if (low || document.hidden || isAbyssVisible()) return;
         const now = defaultNow();
         if (now - lastVisibleAt < 1000) return;
         for (const entry of list.getEntries()) {

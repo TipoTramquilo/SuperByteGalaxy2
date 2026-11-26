@@ -522,14 +522,43 @@ test('capa 2: en zona intermedia usa la mediana de 3 lotes para evitar falsos po
   assert.equal(okMock.readCalls, 4);
 });
 
-test('capa 2: omite el micro-benchmark en dispositivos táctiles/móviles', (t) => {
+test('capa 2 y 3: en dispositivos táctiles/móviles omite benchmark y monitor continuo para no congelar el sol por falsos positivos', (t) => {
   const env = environment(t, {
     mobile: true,
     webgl: { strict: { renderer: 'ANGLE (ARM, Mali-G68)', benchMs: [40] } },
   });
   initEffects();
   assert.equal(env.benchDraws, 0);
+  assert.equal(env.queue.length, 0);
+  assert.equal(env.listenerCount('scroll'), 0);
   assert.equal(env.classes.has('low-effects'), false);
+
+  // Aun así, Capa 1 sigue activando low-effects si la GPU móvil es débil conocida
+  const weakEnv = environment(t, {
+    mobile: true,
+    webgl: { strict: { renderer: 'ANGLE (ARM, Mali-G52)' } },
+  });
+  initEffects();
+  assert.equal(weakEnv.classes.has('low-effects'), true);
+});
+
+test('capa 3: ignora picos de FPS y LoAF mientras el easter egg .abyss está visible', (t) => {
+  const env = environment(t);
+  let abyssOpen = true;
+  document.querySelector = (sel) => (sel === '.abyss.visible' && abyssOpen ? {} : null);
+
+  initEffects();
+  env.advance(1500);
+  env.emitLoaf([95, 110, 88, 92, 120]);
+  env.run(50);
+  assert.equal(env.classes.has('low-effects'), false);
+
+  // Al cerrar el easter egg, el monitor vuelve a operar con normalidad
+  abyssOpen = false;
+  env.advance(4000);
+  env.scroll();
+  env.run(50);
+  assert.equal(env.classes.has('low-effects'), true);
 });
 
 test('capa 3: detecta caídas de FPS que solo aparecen al hacer scroll tras pasar el arranque en reposo', (t) => {
