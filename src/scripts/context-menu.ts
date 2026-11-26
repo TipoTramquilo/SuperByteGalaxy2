@@ -36,6 +36,7 @@ export interface ContextInfo {
   link: LinkContext | null;
   image: ImageContext | null;
   copyData: CopyContext | null;
+  cat: boolean;
   scrolled: boolean;
   isHome: boolean;
 }
@@ -57,12 +58,12 @@ type IconName =
   | 'search'
   | 'external'
   | 'image'
-  | 'share'
   | 'up'
   | 'mail'
   | 'home'
   | 'native'
-  | 'check';
+  | 'check'
+  | 'hand';
 
 const ICONS: Record<IconName, string> = {
   back: '<path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>',
@@ -73,12 +74,12 @@ const ICONS: Record<IconName, string> = {
   search: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/>',
   external: '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>',
   image: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
-  share: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>',
   up: '<path d="M12 19V5"/><path d="M5 12l7-7 7 7"/>',
   mail: '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>',
   home: '<path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/>',
   native: '<rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><circle cx="7" cy="6.5" r=".7" fill="currentColor" stroke="none"/><circle cx="10" cy="6.5" r=".7" fill="currentColor" stroke="none"/>',
   check: '<polyline points="20 6 9 17 4 12"/>',
+  hand: '<path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>',
 };
 
 const mq = (q: string): boolean => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia(q).matches;
@@ -164,6 +165,7 @@ export function inspectContext(target: EventTarget | null, selectionText: string
   const anchor = el?.closest<HTMLAnchorElement>('a[href]') || null;
   const img = el?.closest<HTMLImageElement>('img[src]') || null;
   const copyEl = el?.closest<HTMLElement>('[data-copy]') || null;
+  const cat = Boolean(el?.closest('.abyss-cat'));
 
   let link: LinkContext | null = null;
   if (anchor) {
@@ -189,6 +191,7 @@ export function inspectContext(target: EventTarget | null, selectionText: string
     link,
     image,
     copyData,
+    cat,
     scrolled: scrollY > 120,
     isHome,
   };
@@ -401,6 +404,17 @@ export function initContextMenu(): void {
     /* ---- acciones contextuales ---- */
     const contextual: MenuAction[] = [];
 
+    if (info.cat) {
+      contextual.push({
+        id: 'pet-cat',
+        label: 'Acariciar',
+        icon: 'hand',
+        run: () => {
+          document.dispatchEvent(new CustomEvent('abyss:pet'));
+        },
+      });
+    }
+
     if (info.selection) {
       contextual.push(
         {
@@ -490,18 +504,6 @@ export function initContextMenu(): void {
 
     /* ---- acciones de página y accesos rápidos de Byte Services ---- */
     const appActions: MenuAction[] = [];
-    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
-      appActions.push({
-        id: 'share',
-        label: 'Compartir página',
-        icon: 'share',
-        run: () => {
-          navigator.share({ title: document.title, url: window.location.href }).catch(() => {
-            /* el usuario canceló compartir */
-          });
-        },
-      });
-    }
     if (info.scrolled) {
       appActions.push({
         id: 'scroll-top',
@@ -580,8 +582,9 @@ export function initContextMenu(): void {
 
     let x = ev.clientX;
     let y = ev.clientY;
+    const openedByKeyboard = x === 0 && y === 0;
     /* apertura por teclado (tecla Menú / Shift+F10 sin Shift+clic) */
-    if (x === 0 && y === 0 && lastFocused) {
+    if (openedByKeyboard && lastFocused) {
       const r = lastFocused.getBoundingClientRect();
       x = r.left + Math.min(r.width / 2, 40);
       y = r.bottom + 6;
@@ -603,8 +606,10 @@ export function initContextMenu(): void {
     root.classList.add('open');
     open = true;
 
-    const first = getItems()[4] || getItems()[0];
-    if (first) first.focus({ preventScroll: true });
+    if (openedByKeyboard) {
+      const first = getItems()[4] || getItems()[0];
+      if (first) first.focus({ preventScroll: true });
+    }
   });
 
   document.addEventListener('pointerdown', (ev) => {

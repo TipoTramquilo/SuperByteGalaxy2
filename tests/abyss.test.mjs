@@ -9,6 +9,10 @@ import {
   EXPLOSION_FX_SRC,
   EXPLOSION_HIDE_CAT_MS,
   EXPLOSION_SFX_SRC,
+  PET_DURATION_MS,
+  PET_FX_SRC,
+  PET_HOLD_MS,
+  PET_HOLD_RELEASE_MS,
   computeAbyssProgress,
   createCatPicker,
   initAbyss,
@@ -78,6 +82,9 @@ function makeEl(tag) {
     },
     click() {
       for (const fn of [...(listeners.get('click') || [])]) fn();
+    },
+    emit(type, ev = {}) {
+      for (const fn of [...(listeners.get(type) || [])]) fn(ev);
     },
     play() {
       el.played++;
@@ -193,6 +200,7 @@ function setupAbyssEnv(t, { scrollY = 2200, scrollHeight = 3000, innerHeight = 8
   const video = inner.children[0];
   const sad = inner.children[1];
   const boom = inner.children[2];
+  const pet = inner.children[3];
 
   const emit = (type, ev) => {
     let prevented = false;
@@ -246,6 +254,7 @@ function setupAbyssEnv(t, { scrollY = 2200, scrollHeight = 3000, innerHeight = 8
     video,
     sad,
     boom,
+    pet,
     state,
     emit,
     emitDoc,
@@ -466,7 +475,7 @@ test('al hacer clic en el gato explota con sonido, revela :,( y se reinicia al c
   assert.equal(env.inner.classList.contains('exploded'), true);
   assert.equal(env.boom.src, '');
 
-  // Pasados 0.8 s se cierra sola la sección y se reinicia para el próximo gato
+  // Pasados 0.8 s se cierra sola la sección y se reinicia para el próximo gato sin cortar el audio
   const closeEntry = [...timers.entries()].find(([, v]) => v.ms === EXPLOSION_AUTOCLOSE_DELAY_MS);
   assert.ok(closeEntry);
   timers.delete(closeEntry[0]);
@@ -475,6 +484,89 @@ test('al hacer clic en el gato explota con sonido, revela :,( y se reinicia al c
   assert.equal(env.panel.classList.contains('open'), false);
   assert.equal(env.inner.classList.contains('exploded'), false);
   assert.equal(env.sad.getAttribute('aria-hidden'), 'true');
+  assert.equal(audioInstances[0].paused, 0);
+
+  env.ctrl.destroy();
+  assert.equal(audioInstances[0].paused, 1);
+});
+
+test('el evento abyss:pet y mantener presionado acarician al gato sin explotarlo al soltar', (t) => {
+  const origSetTimeout = globalThis.setTimeout;
+  const origClearTimeout = globalThis.clearTimeout;
+  const origAudio = globalThis.Audio;
+  const origFetch = globalThis.fetch;
+
+  const timers = new Map();
+  let nextTimerId = 1;
+  globalThis.setTimeout = (fn, ms) => {
+    const id = nextTimerId++;
+    timers.set(id, { fn, ms });
+    return id;
+  };
+  globalThis.clearTimeout = (id) => {
+    timers.delete(id);
+  };
+  globalThis.Audio = undefined;
+  globalThis.fetch = undefined;
+
+  t.after(() => {
+    globalThis.setTimeout = origSetTimeout;
+    globalThis.clearTimeout = origClearTimeout;
+    globalThis.Audio = origAudio;
+    globalThis.fetch = origFetch;
+  });
+
+  const env = setupAbyssEnv(t, { rng: () => 0 });
+
+  // Cerrado no acaricia
+  env.emitDoc('abyss:pet');
+  assert.equal(env.inner.classList.contains('petting'), false);
+
+  // Abrir el easter egg
+  for (let i = 0; i < 6; i++) {
+    env.emit('keydown', { key: 'ArrowDown' });
+    env.runFrames(1);
+  }
+  env.runFrames(90);
+  assert.equal(env.panel.classList.contains('open'), true);
+
+  // Disparar caricia por menú contextual -> activa la manito
+  env.emitDoc('abyss:pet');
+  assert.equal(env.inner.classList.contains('petting'), true);
+  assert.equal(env.pet.children[0].src, PET_FX_SRC);
+
+  // Al cumplirse PET_DURATION_MS se detiene la animación
+  const petEntry = [...timers.entries()].find(([, v]) => v.ms === PET_DURATION_MS);
+  assert.ok(petEntry);
+  timers.delete(petEntry[0]);
+  petEntry[1].fn();
+  assert.equal(env.inner.classList.contains('petting'), false);
+
+  // Mantener presionado (móvil / escritorio) acaricia y al soltar NO explota
+  env.video.emit('pointerdown', { button: 0, clientX: 50, clientY: 50 });
+  const holdEntry = [...timers.entries()].find(([, v]) => v.ms === PET_HOLD_MS);
+  assert.ok(holdEntry);
+  timers.delete(holdEntry[0]);
+  holdEntry[1].fn();
+  assert.equal(env.inner.classList.contains('petting'), true);
+
+  env.video.emit('pointerup');
+  // El click sintético tras soltar queda suprimido (no explota)
+  env.video.click();
+  assert.equal(env.inner.classList.contains('exploding'), false);
+
+  const releaseEntry = [...timers.entries()].find(([, v]) => v.ms === PET_HOLD_RELEASE_MS);
+  assert.ok(releaseEntry);
+  timers.delete(releaseEntry[0]);
+  releaseEntry[1].fn();
+  assert.equal(env.inner.classList.contains('petting'), false);
+
+  // Un clic rápido posterior sí explota al gato y cancela cualquier caricia activa
+  env.emitDoc('abyss:pet');
+  assert.equal(env.inner.classList.contains('petting'), true);
+  env.video.click();
+  assert.equal(env.inner.classList.contains('petting'), false);
+  assert.equal(env.inner.classList.contains('exploding'), true);
 
   env.ctrl.destroy();
 });

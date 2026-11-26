@@ -103,7 +103,7 @@
  to{opacity:0;filter:blur(3px);transform:translate3d(0,calc(var(--sdir,1) * -16px),0)}
 }
 
-.sol-title{font:500 clamp(26px,2.35vw,34px)/1.12 "Satoshi",system-ui,sans-serif;letter-spacing:-.022em;color:#E2E8F5;text-wrap:balance;max-width:20ch;margin-left:auto}
+.sol-title{font:700 clamp(26px,2.35vw,34px)/1.12 "Satoshi",system-ui,sans-serif;letter-spacing:-.02em;color:#EDEAF5;text-wrap:balance;max-width:20ch;margin-left:auto}
 .sol-desc{margin:14px 0 0 auto;color:#AEB8CE;font-size:clamp(17px,1.35vw,19px);line-height:1.6;max-width:38ch;text-wrap:pretty}
 
 /* Controles orbitales (^ / v + indicadores de los 5 sectores) */

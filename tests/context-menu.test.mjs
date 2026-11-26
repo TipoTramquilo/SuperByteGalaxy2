@@ -102,8 +102,15 @@ test('inspecciona contexto de selección, enlace, imagen y botón con data-copy'
   assert.equal(info.image?.badge, 'Byte');
   assert.equal(info.copyData?.value, 'proyectos@byteservices.net');
   assert.equal(info.copyData?.label, 'Copiar correo');
+  assert.equal(info.cat, false);
   assert.equal(info.scrolled, true);
   assert.equal(info.isHome, true);
+
+  const catTarget = {
+    closest: (selector) => (selector === '.abyss-cat' ? {} : null),
+  };
+  const catInfo = inspectContext(catTarget, '', 0, true);
+  assert.equal(catInfo.cat, true);
 });
 
 test('acorta cadenas largas colapsando espacios', () => {

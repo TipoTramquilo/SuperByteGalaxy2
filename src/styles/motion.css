@@ -11,7 +11,7 @@
 .e4{animation:fade 1600ms ease 520ms both}
 @media (prefers-reduced-motion:reduce){
  html{scroll-behavior:auto}
- .logos-in,.orb .rot,.node .in,.orb .spoke.on,.stars,.stars *{animation:none}
+ .logos-in,.orb .rot,.orb .sats,.node .in,.orb .spoke.on,.stars,.stars *{animation:none}
  .e1,.e2,.e3,.e4{animation:none}
  .js .rv{transform:none;transition:opacity 300ms ease}
 }

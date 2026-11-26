@@ -61,11 +61,31 @@ Para bajar aún más el peso:
 | Experiencia por sector (nombre, descripción y glifo) | `src/data/sectors.json` |
 | Etapas del Método Byte | `src/data/method.json` |
 | Logos de clientes | `src/data/clients.json` + imágenes en `public/logos/` (`<slug>-mono.webp` y `<slug>-color.webp`) |
+| Easter egg del fondo (gatos, explosión y caricia) | `src/scripts/abyss.ts`, `src/styles/abyss.css` y assets en `public/img/` (`cat-*.mp4`, `cat-boom-*`, `cat-pet-fx.webp`) |
 | Textos de Quiénes somos | `src/components/About.astro` |
 | Colores, tamaños y animaciones | `src/styles/` (un archivo por sección) |
 
 Para sumar un producto basta con añadirlo a `products.json`: la constelación calcula sola posiciones, líneas y botones.
 Si necesita un glifo nuevo, se dibuja en `src/lib/glyphs.ts` (9 × 9, `#` = celda encendida).
+
+## Estándar de videos del easter egg (`.abyss`)
+
+Al añadir un nuevo GIF o video a `CAT_SOURCES` en `src/scripts/abyss.ts`, conviértelo siempre a MP4 con estos parámetros para mantener todo el easter egg muy liviano (los clips se muestran a `112×112 px` en escritorio y `88×88 px` en móvil con `border-radius: 6px`):
+
+- **Formato:** `.mp4` (`H.264 / libx264`, `-pix_fmt yuv420p`, `-movflags +faststart`, sin audio `-an`, sin metadatos `-map_metadata -1`).
+- **Dimensiones:** cuadrado **1:1 `128×128 px`** (múltiplo de 16 para macrobloques H.264; recorte centrado o ajustado al sujeto si el encuadre centrado corta la cabeza).
+- **Cuadros por segundo:** **`12 fps`** por defecto (`10 fps` si el original ya viene a `<= 10.5 fps`; mínimo `10 fps`, máximo `12 fps`).
+- **Compresión:** `-preset veryslow -crf 31` para clips cortos (`<= 5 s`) y `-crf 32` para clips largos (`> 5 s`).
+- **Presupuesto objetivo:** ideal `5–20 KB`, máximo `35 KB` por clip.
+- **Registro y pruebas:** guardar en `public/img/<nombre>.mp4`, añadir la ruta a `CAT_SOURCES` en `src/scripts/abyss.ts` y actualizar el conteo esperado en `tests/abyss.test.mjs`.
+
+```bash
+ffmpeg -y -i entrada.gif \
+  -vf "crop=min(iw\,ih):min(iw\,ih),scale=128:128:flags=lanczos,fps=12" \
+  -c:v libx264 -crf 31 -preset veryslow \
+  -pix_fmt yuv420p -movflags +faststart -an -map_metadata -1 \
+  public/img/cat-nuevo.mp4
+```
 
 ## Estructura
 

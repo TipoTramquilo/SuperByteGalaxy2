@@ -49,6 +49,8 @@
   flex:none;
   pointer-events:none;
   opacity:1;
+  touch-action:manipulation;
+  -webkit-touch-callout:none;
   transition:opacity 120ms ease;
 }
 .abyss.open .abyss-cat{
@@ -106,15 +108,64 @@
   visibility:visible;
 }
 
+.abyss-pet{
+  position:absolute;
+  left:50%;
+  top:-20px;
+  width:98px;
+  height:87px;
+  margin-left:-52px;
+  overflow:hidden;
+  z-index:2;
+  pointer-events:none;
+  opacity:0;
+  visibility:hidden;
+  transform:translate3d(0,-6px,0);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 10%,#000 100%);
+  mask-image:linear-gradient(90deg,transparent 0%,#000 10%,#000 100%);
+  transition:opacity 140ms cubic-bezier(.23,1,.32,1),transform 160ms cubic-bezier(.23,1,.32,1),visibility 0s 160ms;
+}
+.abyss-pet-img{
+  display:block;
+  width:400%;
+  height:100%;
+  max-width:none;
+  pointer-events:none;
+}
+.abyss-in.petting .abyss-pet{
+  opacity:1;
+  visibility:visible;
+  transform:translate3d(0,0,0);
+  transition:opacity 140ms cubic-bezier(.23,1,.32,1),transform 160ms cubic-bezier(.23,1,.32,1),visibility 0s;
+}
+.abyss-in.petting .abyss-pet-img{
+  animation:abyssPetHand 320ms steps(4,end) infinite;
+}
+@keyframes abyssPetHand{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-100%,0,0)}
+}
+.abyss-in.petting .abyss-cat{
+  transform-origin:50% 100%;
+  animation:abyssPetSquish 320ms steps(2,end) infinite;
+}
+@keyframes abyssPetSquish{
+  0%,100%{transform:scaleX(1) scaleY(1)}
+  25%{transform:scaleX(.98) scaleY(1.02)}
+  50%{transform:scaleX(1.06) scaleY(.91)}
+  75%{transform:scaleX(1.03) scaleY(.95)}
+}
+
 @media (max-width:560px){
   .abyss{padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px))}
   .abyss-cat{width:88px;height:88px}
   .abyss-sad svg{width:10px;height:12px}
   .abyss-boom{width:124px;height:180px;bottom:-35px}
+  .abyss-pet{width:78px;height:69px;margin-left:-41px;top:-16px}
 }
 
 @media (prefers-reduced-motion:reduce){
-  .abyss-cat{transition:none}
+  .abyss-cat,.abyss-pet,.abyss-pet-img{transition:none;animation:none}
 }
 
 @media print{

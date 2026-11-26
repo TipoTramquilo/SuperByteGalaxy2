@@ -1,5 +1,13 @@
 /* Easter egg del fondo: si el visitante fuerza mucho el scroll o la flecha abajo al final de la landing,
-   el contenido y el pie suben como una liga con un leve rebote al abrir y cerrar para revelar un gato aleatorio. */
+   el contenido y el pie suben como una liga con un leve rebote al abrir y cerrar para revelar un gato aleatorio.
+
+   Estándar de compresión para nuevos clips en CAT_SOURCES (ver README.md):
+   - Contenedor/códec: MP4 H.264 (libx264), yuv420p, +faststart, sin audio (-an), sin metadatos (-map_metadata -1)
+   - Tamaño y proporción: 1:1 cuadrado 128x128 px (múltiplo de 16; se muestra a 112x112 escritorio / 88x88 móvil con border-radius 6px)
+   - FPS: 12 fps máx. (10 fps si el original es <= 10.5 fps; nunca menos de 10 fps)
+   - Calidad: -preset veryslow -crf 31 (-crf 32 si dura > 5 s); peso objetivo <= 35 KB por clip
+   - Comando base:
+     ffmpeg -i input.gif -vf "crop=min(iw\,ih):min(iw\,ih),scale=128:128:flags=lanczos,fps=12" -c:v libx264 -crf 31 -preset veryslow -pix_fmt yuv420p -movflags +faststart -an -map_metadata -1 output.mp4 */
 
 export const ABYSS_DEADZONE = 900;
 export const ABYSS_THRESHOLD = 2100;
@@ -9,6 +17,10 @@ export const EXPLOSION_SFX_SRC = '/img/cat-boom-sfx.mp3';
 export const EXPLOSION_HIDE_CAT_MS = 45;
 export const EXPLOSION_DURATION_MS = 1150;
 export const EXPLOSION_AUTOCLOSE_DELAY_MS = 800;
+export const PET_FX_SRC = '/img/cat-pet-fx.webp';
+export const PET_DURATION_MS = 2800;
+export const PET_HOLD_MS = 220;
+export const PET_HOLD_RELEASE_MS = 260;
 
 const PIXEL_SAD_SVG =
   '<svg viewBox="0 0 6 7" width="12" height="14" shape-rendering="crispEdges" aria-hidden="true">' +
@@ -211,6 +223,16 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
   boom.setAttribute('alt', '');
   boom.setAttribute('aria-hidden', 'true');
 
+  const pet = document.createElement('span');
+  pet.className = 'abyss-pet';
+  pet.setAttribute('aria-hidden', 'true');
+
+  const petImg = document.createElement('img');
+  petImg.className = 'abyss-pet-img';
+  petImg.setAttribute('alt', '');
+  petImg.setAttribute('aria-hidden', 'true');
+  pet.appendChild(petImg);
+
   const onMediaReady = () => video.classList.remove('loading');
   video.addEventListener?.('loadeddata', onMediaReady);
   video.addEventListener?.('canplay', onMediaReady);
@@ -220,6 +242,7 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
   inner.appendChild(video);
   inner.appendChild(sad);
   inner.appendChild(boom);
+  inner.appendChild(pet);
   panel.appendChild(inner);
   document.body.append(panel);
 
@@ -241,6 +264,12 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
   let hideCatTimer = 0;
   let finishBoomTimer = 0;
   let autoCloseTimer = 0;
+  let petTimer = 0;
+  let holdTimer = 0;
+  let suppressClickTimer = 0;
+  let holdingPet = false;
+  let suppressNextClick = false;
+  let holdOrigin: { x: number; y: number } | null = null;
   let boomAudio: HTMLAudioElement | null = null;
   let cachedBoomBlob: Blob | null = null;
   let boomPreloading = false;
@@ -286,6 +315,109 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
     playMedia();
   };
 
+  const clearHoldState = () => {
+    if (holdTimer) {
+      clearTimeout(holdTimer);
+      holdTimer = 0;
+    }
+    holdingPet = false;
+    holdOrigin = null;
+  };
+
+  const stopPetting = () => {
+    clearHoldState();
+    if (suppressClickTimer) {
+      clearTimeout(suppressClickTimer);
+      suppressClickTimer = 0;
+    }
+    suppressNextClick = false;
+    if (petTimer) {
+      clearTimeout(petTimer);
+      petTimer = 0;
+    }
+    inner.classList.remove('petting');
+  };
+
+  const triggerPetting = (holdMode = false) => {
+    if (!unlocked || exploded || !activeSrc) return;
+    if (petImg.getAttribute('src') !== PET_FX_SRC) {
+      petImg.src = PET_FX_SRC;
+      petImg.setAttribute('src', PET_FX_SRC);
+    }
+    inner.classList.add('petting');
+    if (petTimer) {
+      clearTimeout(petTimer);
+      petTimer = 0;
+    }
+    if (!holdMode) {
+      petTimer = setTimeout(() => {
+        petTimer = 0;
+        inner.classList.remove('petting');
+      }, PET_DURATION_MS) as unknown as number;
+    }
+  };
+
+  const onPetEvent = () => triggerPetting(false);
+
+  const onCatPointerDown = (ev: PointerEvent) => {
+    if (!unlocked || exploded || !activeSrc) return;
+    if (typeof ev.button === 'number' && ev.button !== 0) return;
+    clearHoldState();
+    holdOrigin = { x: ev.clientX ?? 0, y: ev.clientY ?? 0 };
+    holdTimer = setTimeout(() => {
+      holdTimer = 0;
+      holdingPet = true;
+      suppressNextClick = true;
+      triggerPetting(true);
+    }, PET_HOLD_MS) as unknown as number;
+  };
+
+  const onCatPointerMove = (ev: PointerEvent) => {
+    if (!holdTimer || !holdOrigin) return;
+    const dx = (ev.clientX ?? 0) - holdOrigin.x;
+    const dy = (ev.clientY ?? 0) - holdOrigin.y;
+    if (dx * dx + dy * dy > 144) clearHoldState();
+  };
+
+  const onCatPointerEnd = () => {
+    const wasHolding = holdingPet;
+    clearHoldState();
+    if (wasHolding) {
+      if (petTimer) clearTimeout(petTimer);
+      petTimer = setTimeout(() => {
+        petTimer = 0;
+        inner.classList.remove('petting');
+      }, PET_HOLD_RELEASE_MS) as unknown as number;
+      if (suppressClickTimer) clearTimeout(suppressClickTimer);
+      suppressClickTimer = setTimeout(() => {
+        suppressClickTimer = 0;
+        suppressNextClick = false;
+      }, 60) as unknown as number;
+    }
+  };
+
+  const onCatContextMenu = (ev: MouseEvent) => {
+    const isFine =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+    if (!isFine || holdingPet) {
+      preventIfPossible(ev);
+    }
+  };
+
+  const onCatClick = () => {
+    if (suppressNextClick) {
+      suppressNextClick = false;
+      if (suppressClickTimer) {
+        clearTimeout(suppressClickTimer);
+        suppressClickTimer = 0;
+      }
+      return;
+    }
+    triggerExplosion();
+  };
+
   const clearBoomImage = () => {
     if (typeof boom.removeAttribute === 'function') boom.removeAttribute('src');
     boom.src = '';
@@ -295,7 +427,7 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
     }
   };
 
-  const resetExplosion = () => {
+  const resetExplosion = (stopAudio = false) => {
     if (hideCatTimer) {
       clearTimeout(hideCatTimer);
       hideCatTimer = 0;
@@ -312,7 +444,7 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
     inner.classList.remove('exploding', 'exploded');
     sad.setAttribute('aria-hidden', 'true');
     clearBoomImage();
-    if (boomAudio) {
+    if (stopAudio && boomAudio) {
       if (typeof boomAudio.pause === 'function') boomAudio.pause();
       try {
         boomAudio.currentTime = 0;
@@ -344,6 +476,7 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
 
   const triggerExplosion = () => {
     if (!unlocked || exploded || !activeSrc) return;
+    stopPetting();
     exploded = true;
     boomRunId += 1;
     inner.classList.add('exploding');
@@ -388,8 +521,9 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
     }, EXPLOSION_DURATION_MS) as unknown as number;
   };
 
-  const resetMedia = () => {
-    resetExplosion();
+  const resetMedia = (stopAudio = false) => {
+    stopPetting();
+    resetExplosion(stopAudio);
     pauseMedia();
     activeSrc = null;
     video.classList.remove('loading');
@@ -696,7 +830,13 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
     else if (unlocked && !exploded) playMedia();
   };
 
-  video.addEventListener?.('click', triggerExplosion);
+  video.addEventListener?.('click', onCatClick);
+  video.addEventListener?.('pointerdown', onCatPointerDown);
+  video.addEventListener?.('pointermove', onCatPointerMove);
+  video.addEventListener?.('pointerup', onCatPointerEnd);
+  video.addEventListener?.('pointercancel', onCatPointerEnd);
+  video.addEventListener?.('pointerleave', onCatPointerEnd);
+  video.addEventListener?.('contextmenu', onCatContextMenu);
   window.addEventListener('wheel', onWheel, { passive: false });
   window.addEventListener('touchstart', onTouchStart, { passive: true });
   window.addEventListener('touchmove', onTouchMove, { passive: false });
@@ -706,6 +846,7 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
   window.addEventListener('keydown', onKeyDown, true);
   window.addEventListener('resize', onResize, { passive: true });
   document.addEventListener?.('visibilitychange', onVisibilityChange);
+  document.addEventListener?.('abyss:pet', onPetEvent);
 
   const destroy = () => {
     stopLoop();
@@ -715,9 +856,15 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
     visualLift = 0;
     velocity = 0;
     closingUntil = 0;
-    resetMedia();
+    resetMedia(true);
     applyLift(0);
-    video.removeEventListener?.('click', triggerExplosion);
+    video.removeEventListener?.('click', onCatClick);
+    video.removeEventListener?.('pointerdown', onCatPointerDown);
+    video.removeEventListener?.('pointermove', onCatPointerMove);
+    video.removeEventListener?.('pointerup', onCatPointerEnd);
+    video.removeEventListener?.('pointercancel', onCatPointerEnd);
+    video.removeEventListener?.('pointerleave', onCatPointerEnd);
+    video.removeEventListener?.('contextmenu', onCatContextMenu);
     window.removeEventListener('wheel', onWheel);
     window.removeEventListener('touchstart', onTouchStart);
     window.removeEventListener('touchmove', onTouchMove);
@@ -727,6 +874,7 @@ export function initAbyss(options: AbyssOptions = {}): AbyssController | null {
     window.removeEventListener('keydown', onKeyDown, true);
     window.removeEventListener('resize', onResize);
     document.removeEventListener?.('visibilitychange', onVisibilityChange);
+    document.removeEventListener?.('abyss:pet', onPetEvent);
     panel.remove();
   };
 

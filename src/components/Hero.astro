@@ -35,6 +35,11 @@ const first = services[0];
     <div class="e4">
       <div class="orb" style="--os:600px">
         <div class="halo"></div>
+        <div class="sats" aria-hidden="true">
+          <i class="sat" style="left:86.28%;top:61.79%"></i>
+          <i class="sat" style="left:16.32%;top:67.91%"></i>
+          <i class="sat" style="left:33.28%;top:15.71%"></i>
+        </div>
         <div class="rot">
           <svg class="rings" viewBox="0 0 540 540" aria-hidden="true">
             <circle class="ring" cx="270" cy="270" r="206"></circle>
@@ -42,8 +47,6 @@ const first = services[0];
             <circle class="ring" cx="270" cy="270" r="262" style="opacity:.5"></circle>
           </svg>
           {nodes.map((n, i) => <i class={i === 0 ? 'spoke on' : 'spoke'} style={css(n.spoke)} aria-hidden="true"></i>)}
-          <i class="sat" style="left:98.5%;top:50%" aria-hidden="true"></i>
-          <i class="sat" style="left:9%;top:24%;opacity:.5" aria-hidden="true"></i>
           {nodes.map((n, i) => (
             <div class="node" style={css(n.pos)}><div class="in"><button class={i === 0 ? 'nb on' : 'nb'} type="button" aria-label={services[i].title} title={services[i].title} aria-pressed={i === 0 ? 'true' : 'false'} data-svc={String(i)}><span class={`ic ic-${services[i].icon}`} aria-hidden="true"></span></button></div></div>
           ))}
